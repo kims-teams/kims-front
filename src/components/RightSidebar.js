@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Box,
   Drawer,
@@ -11,11 +11,11 @@ import {
   ListItemText,
   Collapse,
   InputAdornment,
-} from '@mui/material';
+} from "@mui/material";
 
-import SearchIcon from '@mui/icons-material/Search';
-import ExpandLess from '@mui/icons-material/ExpandLess';
-import ExpandMore from '@mui/icons-material/ExpandMore';
+import SearchIcon from "@mui/icons-material/Search";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
 
 export default function RightSidebar() {
   const [open, setOpen] = useState({
@@ -36,17 +36,20 @@ export default function RightSidebar() {
       sx={{
         width: 280,
         flexShrink: 0,
-        '& .MuiDrawer-paper': {
+        "& .MuiDrawer-paper": {
           width: 280,
-          boxSizing: 'border-box',
+          boxSizing: "border-box",
           p: 2,
           right: 0,
         },
       }}
     >
-      <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2 }}>
+      {/* 기존 입력 데이터 목록 제목 */}
+      <Typography variant="h6" sx={{ fontWeight: "bold", mt: 2, mb: 2 }}>
         입력 데이터 목록
       </Typography>
+
+      {/* 검색창 이하 생략 */}
 
       {/* 🔍 검색창 */}
       <TextField
@@ -64,67 +67,93 @@ export default function RightSidebar() {
       />
 
       <List disablePadding>
-        <ListItemButton onClick={() => toggle('config')}>
+        <ListItemButton onClick={() => toggle("config")}>
           <ListItemText primary="Configurations" />
           {open.config ? <ExpandLess /> : <ExpandMore />}
         </ListItemButton>
         <Collapse in={open.config}>
           <List component="div" disablePadding sx={{ pl: 2 }}>
-            <ListItemButton><ListItemText primary="엔진 실행 옵션" /></ListItemButton>
+            <ListItemButton>
+              <ListItemText primary="엔진 실행 옵션" />
+            </ListItemButton>
           </List>
         </Collapse>
 
-        <ListItemButton onClick={() => toggle('input')}>
+        <ListItemButton onClick={() => toggle("input")}>
           <ListItemText primary="Input Data" />
           {open.input ? <ExpandLess /> : <ExpandMore />}
         </ListItemButton>
         <Collapse in={open.input}>
-          <ListItemButton onClick={() => toggle('bop')} sx={{ pl: 2 }}>
+          <ListItemButton onClick={() => toggle("bop")} sx={{ pl: 2 }}>
             <ListItemText primary="Bop" />
             {open.bop ? <ExpandLess /> : <ExpandMore />}
           </ListItemButton>
           <Collapse in={open.bop}>
             <List component="div" disablePadding sx={{ pl: 4 }}>
-              <ListItemButton><ListItemText primary="생산 프로세스" /></ListItemButton>
-              <ListItemButton><ListItemText primary="공정 마스터" /></ListItemButton>
-              <ListItemButton><ListItemText primary="자재 마스터" /></ListItemButton>
-              <ListItemButton><ListItemText primary="BOM" /></ListItemButton>
-              <ListItemButton><ListItemText primary="플랜트 마스터" /></ListItemButton>
-              <ListItemButton><ListItemText primary="공정 순서" /></ListItemButton>
+              <ListItemButton>
+                <ListItemText primary="생산 프로세스" />
+              </ListItemButton>
+              <ListItemButton>
+                <ListItemText primary="공정 마스터" />
+              </ListItemButton>
+              <ListItemButton>
+                <ListItemText primary="자재 마스터" />
+              </ListItemButton>
+              <ListItemButton>
+                <ListItemText primary="BOM" />
+              </ListItemButton>
+              <ListItemButton>
+                <ListItemText primary="플랜트 마스터" />
+              </ListItemButton>
+              <ListItemButton>
+                <ListItemText primary="공정 순서" />
+              </ListItemButton>
             </List>
           </Collapse>
 
-          <ListItemButton onClick={() => toggle('configSub')} sx={{ pl: 2 }}>
+          <ListItemButton onClick={() => toggle("configSub")} sx={{ pl: 2 }}>
             <ListItemText primary="Config" />
             {open.configSub ? <ExpandLess /> : <ExpandMore />}
           </ListItemButton>
           <Collapse in={open.configSub}>
             <List component="div" disablePadding sx={{ pl: 4 }}>
-              <ListItemButton><ListItemText primary="우선순위" /></ListItemButton>
+              <ListItemButton>
+                <ListItemText primary="우선순위" />
+              </ListItemButton>
             </List>
           </Collapse>
 
-          <ListItemButton onClick={() => toggle('resource')} sx={{ pl: 2 }}>
+          <ListItemButton onClick={() => toggle("resource")} sx={{ pl: 2 }}>
             <ListItemText primary="Resource" />
             {open.resource ? <ExpandLess /> : <ExpandMore />}
           </ListItemButton>
           <Collapse in={open.resource}>
             <List component="div" disablePadding sx={{ pl: 4 }}>
-              <ListItemButton><ListItemText primary="작업도구 마스터" /></ListItemButton>
-              <ListItemButton><ListItemText primary="작업장 마스터" /></ListItemButton>
-              <ListItemButton><ListItemText primary="생산 라우팅" /></ListItemButton>
-              <ListItemButton><ListItemText primary="작업장-도구 매핑관리" /></ListItemButton>
+              <ListItemButton>
+                <ListItemText primary="작업도구 마스터" />
+              </ListItemButton>
+              <ListItemButton>
+                <ListItemText primary="작업장 마스터" />
+              </ListItemButton>
+              <ListItemButton>
+                <ListItemText primary="생산 라우팅" />
+              </ListItemButton>
+              <ListItemButton>
+                <ListItemText primary="작업장-도구 매핑관리" />
+              </ListItemButton>
             </List>
           </Collapse>
         </Collapse>
 
-        <ListItemButton onClick={() => toggle('target')}>
+        <ListItemButton onClick={() => toggle("target")}>
           <ListItemText primary="Target" />
           {open.target ? <ExpandLess /> : <ExpandMore />}
         </ListItemButton>
         <Collapse in={open.target}>
           <List component="div" disablePadding sx={{ pl: 2 }}>
-            <ListItemButton><ListItemText primary="판매오더" /></ListItemButton>
+            <ListItemButton>
+              <ListItemText primary="판매오더" />
+            </ListItemButton>
           </List>
         </Collapse>
       </List>
