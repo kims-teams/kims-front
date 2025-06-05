@@ -1,0 +1,33 @@
+/* src/app/page.module.css */
+.page {
+  padding: 2rem;
+  background: #f0f0f0;
+}
+
+.main {
+  text-align: center;
+}
+
+.logo {
+  margin: 1rem auto;
+}
+
+.ctas {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.primary, .secondary {
+  padding: 0.5rem 1rem;
+  text-decoration: none;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.footer {
+  margin-top: 4rem;
+  text-align: center;
+  font-size: 0.9rem;
+}
