@@ -1,9 +1,11 @@
-// src/app/dashboard/page.js
+"use client";
+
+import React from "react";
 
 export default function DashboardPage() {
   return (
-    <div>
-      <h1>대시보드 화면</h1>
-    </div>
+    <>
+      <div style={{ padding: "16px" }}>대시보드 화면</div>
+    </>
   );
 }
