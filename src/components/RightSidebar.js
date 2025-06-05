@@ -41,6 +41,9 @@ export default function RightSidebar() {
           boxSizing: 'border-box',
           p: 2,
           right: 0,
+          top: '50px', // ✅ 헤더 높이만큼 내려줌
+          height: 'calc(100% - 50px)', // ✅ 남은 영역에만 표시
+          position: 'fixed', // ✅ 명시적으로 지정
         },
       }}
     >
