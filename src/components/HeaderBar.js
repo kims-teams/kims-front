@@ -88,6 +88,40 @@ export default function HeaderBar() {
             </IconButton>
           </Tooltip>
         </Box>
+
+        {/* 오른쪽 버튼 */}
+        <Button
+          variant="outlined"
+          size="small"
+          sx={{
+            mr: 1,
+            borderColor: 'black',
+            color: 'black',
+            '&:hover': {
+              borderColor: 'black',
+              backgroundColor: '#f0f0f0',
+            },
+          }}
+          onClick={handleAddEmployee}
+        >
+          사원추가
+        </Button>
+
+        <Button
+          variant="outlined"
+          size="small"
+          sx={{
+            borderColor: 'black',
+            color: 'black',
+            '&:hover': {
+              borderColor: 'black',
+              backgroundColor: '#f0f0f0',
+            },
+          }}
+          onClick={handleLogin}
+        >
+          로그인
+        </Button>
       </Toolbar>
       <Divider />
     </AppBar>
