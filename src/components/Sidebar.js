@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Box,
   Drawer,
@@ -12,15 +12,15 @@ import {
   ListItemText,
   Collapse,
   InputAdornment,
-} from '@mui/material';
+} from "@mui/material";
 
-import SearchIcon from '@mui/icons-material/Search';
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import StarBorderIcon from '@mui/icons-material/StarBorder';
-import EngineeringIcon from '@mui/icons-material/Engineering';
-import BarChartIcon from '@mui/icons-material/BarChart';
-import ExpandLess from '@mui/icons-material/ExpandLess';
-import ExpandMore from '@mui/icons-material/ExpandMore';
+import SearchIcon from "@mui/icons-material/Search";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import StarBorderIcon from "@mui/icons-material/StarBorder";
+import EngineeringIcon from "@mui/icons-material/Engineering";
+import BarChartIcon from "@mui/icons-material/BarChart";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
 
 export default function Sidebar({ onSelect }) {
   const [open, setOpen] = useState({
@@ -38,19 +38,19 @@ export default function Sidebar({ onSelect }) {
       sx={{
         width: 280,
         flexShrink: 0,
-        '& .MuiDrawer-paper': {
+        "& .MuiDrawer-paper": {
           width: 280,
-          boxSizing: 'border-box',
+          boxSizing: "border-box",
           p: 2,
-          top: '50px', 
-          height: 'calc(100% - 50px)', 
-          position: 'fixed',
+          top: "50px",
+          height: "calc(100% - 50px)",
+          position: "fixed",
         },
       }}
     >
       {/* 상단 로고 + 뒤로가기 */}
-      <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-        <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+      <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+        <Typography variant="h6" sx={{ fontWeight: "bold" }}>
           RVCS
         </Typography>
         <Box sx={{ flexGrow: 1 }} />
@@ -76,43 +76,29 @@ export default function Sidebar({ onSelect }) {
 
       <List disablePadding>
         {/* 즐겨찾기 */}
-        <ListItemButton onClick={() => toggle('fav')}>
+        <ListItemButton onClick={() => toggle("fav")}>
           <StarBorderIcon fontSize="small" sx={{ mr: 1 }} />
           <ListItemText primary="즐겨찾기" />
           {open.fav ? <ExpandLess /> : <ExpandMore />}
         </ListItemButton>
-        <Collapse in={open.fav}>
-          <Box sx={{ pl: 2, borderLeft: '2px solid #ccc', ml: 1 }}>
-            <List disablePadding>
-              <ListItemButton onClick={() => onSelect?.('실행 관리')}>
-                <ListItemText primary="실행 관리" />
-              </ListItemButton>
-              <ListItemButton onClick={() => onSelect?.('스케줄 관리')}>
-                <ListItemText primary="스케줄 관리" />
-              </ListItemButton>
-            </List>
-          </Box>
-        </Collapse>
+        <Collapse in={open.fav}></Collapse>
 
         {/* 엔진 */}
-        <ListItemButton onClick={() => toggle('engine')}>
+        <ListItemButton onClick={() => toggle("engine")}>
           <EngineeringIcon fontSize="small" sx={{ mr: 1 }} />
           <ListItemText primary="엔진" />
           {open.engine ? <ExpandLess /> : <ExpandMore />}
         </ListItemButton>
         <Collapse in={open.engine}>
-          <Box sx={{ pl: 2, borderLeft: '2px solid #ccc', ml: 1 }}>
+          <Box sx={{ pl: 2, borderLeft: "2px solid #ccc", ml: 1 }}>
             <List disablePadding>
-              <ListItemButton onClick={() => onSelect?.('시나리오 관리')}>
+              <ListItemButton onClick={() => onSelect?.("시나리오 관리")}>
                 <ListItemText primary="시나리오 관리" />
               </ListItemButton>
-              <ListItemButton onClick={() => onSelect?.('실행 관리')}>
+              <ListItemButton onClick={() => onSelect?.("실행 관리")}>
                 <ListItemText primary="실행 관리" />
               </ListItemButton>
-              <ListItemButton onClick={() => onSelect?.('스케줄 관리')}>
-                <ListItemText primary="스케줄 관리" />
-              </ListItemButton>
-              <ListItemButton onClick={() => onSelect?.('실행 결과')}>
+              <ListItemButton onClick={() => onSelect?.("실행 결과")}>
                 <ListItemText primary="실행 결과" />
               </ListItemButton>
             </List>
@@ -120,31 +106,35 @@ export default function Sidebar({ onSelect }) {
         </Collapse>
 
         {/* 결과 분석 */}
-        <ListItemButton onClick={() => toggle('analysis')}>
+        <ListItemButton onClick={() => toggle("analysis")}>
           <BarChartIcon fontSize="small" sx={{ mr: 1 }} />
           <ListItemText primary="결과 분석" />
           {open.analysis ? <ExpandLess /> : <ExpandMore />}
         </ListItemButton>
         <Collapse in={open.analysis}>
-          <Box sx={{ pl: 2, borderLeft: '2px solid #ccc', ml: 1 }}>
+          <Box sx={{ pl: 2, borderLeft: "2px solid #ccc", ml: 1 }}>
             <List disablePadding>
-              <ListItemButton onClick={() => onSelect?.('RTF 현황')}>
-                <ListItemText primary="RTF 현황" />
-              </ListItemButton>
-              <ListItemButton onClick={() => onSelect?.('대시보드')}>
-                <ListItemText primary="대시보드" />
-              </ListItemButton>
-              <ListItemButton onClick={() => onSelect?.('자원 운영 간트')}>
+              <ListItemButton onClick={() => onSelect?.("자원 운영 간트")}>
                 <ListItemText primary="자원 운영 간트" />
               </ListItemButton>
-              <ListItemButton onClick={() => onSelect?.('생산 계획 간트')}>
+              <ListItemButton onClick={() => onSelect?.("생산 계획 간트")}>
                 <ListItemText primary="생산 계획 간트" />
               </ListItemButton>
-              <ListItemButton onClick={() => onSelect?.('설비 가동 현황')}>
-                <ListItemText primary="설비 가동 현황" />
-              </ListItemButton>
-              <ListItemButton onClick={() => onSelect?.('시나리오 비교')}>
-                <ListItemText primary="시나리오 비교" />
+            </List>
+          </Box>
+        </Collapse>
+
+        {/*관리*/}
+        <ListItemButton onClick={() => toggle("analysis")}>
+          <BarChartIcon fontSize="small" sx={{ mr: 1 }} />
+          <ListItemText primary="관리" />
+          {open.analysis ? <ExpandLess /> : <ExpandMore />}
+        </ListItemButton>
+        <Collapse in={open.analysis}>
+          <Box sx={{ pl: 2, borderLeft: "2px solid #ccc", ml: 1 }}>
+            <List disablePadding>
+              <ListItemButton onClick={() => onSelect?.("자원 운영 간트")}>
+                <ListItemText primary="사용자 관리" />
               </ListItemButton>
             </List>
           </Box>
