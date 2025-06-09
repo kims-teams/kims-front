@@ -53,6 +53,9 @@ export default function RightSidebar() {
         placeholder="검색"
         size="small"
         fullWidth
+        
+        
+        
         sx={{ mb: 2 }}
         InputProps={{
           startAdornment: (
