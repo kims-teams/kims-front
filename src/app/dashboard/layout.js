@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Box } from "@mui/material";
 import Sidebar from "../../components/Sidebar";
-import RightSidebar from "../../components/RightSidebar";
+
 import ScenarioPanel from "../../components/ScenarioPanel";
 import HeaderBar from "../../components/HeaderBar";
 
@@ -35,9 +35,6 @@ export default function DashboardLayout({ children }) {
 
         {/* 중앙 콘텐츠 */}
         <Box sx={{ flexGrow: 1, overflowY: "auto", p: 2 }}>{children}</Box>
-
-        {/* 오른쪽 사이드바 */}
-        <RightSidebar />
       </Box>
     </Box>
   );

@@ -4,11 +4,11 @@ import { useState } from "react";
 import { Box, Typography, IconButton, InputBase } from "@mui/material";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import SearchIcon from "@mui/icons-material/Search"; // 🔍 아이콘 추가
+import SearchIcon from "@mui/icons-material/Search";
 
 export default function ScenarioPanel() {
   const [collapsed, setCollapsed] = useState(false);
-  const [searchTerm, setSearchTerm] = useState(""); // 검색어 상태
+  const [searchTerm, setSearchTerm] = useState("");
 
   return (
     <Box
@@ -44,7 +44,7 @@ export default function ScenarioPanel() {
       {!collapsed && (
         <>
           <Typography variant="body2" sx={{ px: 2, color: "gray", mb: 1 }}>
-            시나리오 패널입니다
+            시나리오 패널
           </Typography>
 
           {/* 🔍 검색창 추가 */}
