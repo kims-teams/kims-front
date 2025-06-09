@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-import { AppBar, Box, Toolbar, Typography, Button } from "@mui/material";
+import { AppBar, Box, Toolbar, Button } from "@mui/material";
 
 export default function HeaderBar() {
   const router = useRouter();
@@ -29,12 +29,8 @@ export default function HeaderBar() {
       }}
     >
       <Toolbar disableGutters sx={{ minHeight: "50px !important", px: 2 }}>
-        {/* 왼쪽 타이틀 */}
-        <Box sx={{ flexGrow: 1 }}>
-          <Typography variant="subtitle1" fontWeight="bold">
-            전체 헤더
-          </Typography>
-        </Box>
+        {/* 왼쪽 공간 확보용 Box (타이틀 제거됨) */}
+        <Box sx={{ flexGrow: 1 }} />
 
         {/* 오른쪽 버튼 */}
         <Button

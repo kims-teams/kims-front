@@ -42,9 +42,9 @@ export default function Sidebar({ onSelect }) {
           width: 280,
           boxSizing: 'border-box',
           p: 2,
-          top: '50px', // ✅ 헤더 아래로
-          height: 'calc(100% - 50px)', // ✅ 나머지 영역만 사용
-          position: 'fixed', // ✅ 위치 고정
+          top: '50px', 
+          height: 'calc(100% - 50px)', 
+          position: 'fixed',
         },
       }}
     >

@@ -23,9 +23,6 @@ export default function LoginPage() {
       window.alert("이메일과 비밀번호를 모두 입력해주세요.");
       return;
     }
-
-    console.log("이메일:", email);
-    console.log("자동 로그인:", autoLogin);
     router.push("/dashboard");
   };
 

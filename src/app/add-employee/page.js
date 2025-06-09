@@ -20,7 +20,7 @@ export default function AddEmployeePage() {
     name: "",
     email: "",
     password: "",
-    hireDate: null, // 날짜 선택용
+    hireDate: null,
   });
 
   const [employees, setEmployees] = useState([]);
