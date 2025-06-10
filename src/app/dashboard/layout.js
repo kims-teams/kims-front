@@ -1,41 +1,84 @@
 "use client";
 
 import { useState } from "react";
-import { Box } from "@mui/material";
 import Sidebar from "../../components/Sidebar";
-
 import ScenarioPanel from "../../components/ScenarioPanel";
-import HeaderBar from "../../components/HeaderBar";
+import RightSidebar from "../../components/RightSidebar";
+import { Box, Typography } from "@mui/material";
 
 export default function DashboardLayout({ children }) {
-  const [selectedMenu, setSelectedMenu] = useState("");
-  const showScenarioPanel = ["시나리오 관리", "실행 관리"].includes(
-    selectedMenu
-  );
+  const [selectedTab, setSelectedTab] = useState(null);
+  const [selectedResult, setSelectedResult] = useState(null);
+  const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(true);
+  const [isRightSidebarCollapsed, setIsRightSidebarCollapsed] = useState(false);
+
+  const shouldShowScenarioPanel = [
+    "시나리오 관리",
+    "실행 관리",
+    "실행 결과",
+  ].includes(selectedTab);
+
+  const shouldShowRightSidebar =
+    selectedTab === "실행 결과" && isRightSidebarOpen;
 
   return (
-    <Box sx={{ height: "100vh", width: "100vw", overflow: "hidden" }}>
-      {/* 상단 헤더 고정 */}
-      <HeaderBar />
+    <Box
+      sx={{
+        display: "flex",
+        height: "calc(100vh - 50px)",
+        paddingTop: "50px",
+        overflow: "hidden",
+        position: "relative",
+      }}
+    >
+      <Sidebar onSelect={setSelectedTab} />
 
-      {/* 전체 콘텐츠 (헤더 아래에 위치) */}
+      {shouldShowScenarioPanel && <ScenarioPanel />}
+
       <Box
         sx={{
-          display: "flex",
-          flexDirection: "row",
-          pt: "50px",
-          height: "calc(100% - 50px)",
+          flex: 1,
+          overflowY: "auto",
+          p: 2,
+          marginRight:
+            shouldShowRightSidebar && !isRightSidebarCollapsed
+              ? "260px"
+              : shouldShowRightSidebar && isRightSidebarCollapsed
+                ? "24px"
+                : 0,
+          transition: "margin 0.2s ease",
         }}
       >
-        {/* 왼쪽 사이드바 */}
-        <Sidebar onSelect={setSelectedMenu} />
-
-        {/* 시나리오 패널 (조건부) */}
-        {showScenarioPanel && <ScenarioPanel />}
-
-        {/* 중앙 콘텐츠 */}
-        <Box sx={{ flexGrow: 1, overflowY: "auto", p: 2 }}>{children}</Box>
+        {selectedTab === "실행 결과" && selectedResult ? (
+          <Typography variant="h6">{selectedResult}</Typography>
+        ) : (
+          children
+        )}
       </Box>
+
+      {shouldShowRightSidebar && (
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50px",
+            bottom: 0,
+            right: 0,
+            width: isRightSidebarCollapsed ? 24 : 260,
+            zIndex: 1200,
+            bgcolor: "#fff",
+            borderLeft: "1px solid #ddd",
+            boxShadow: "-2px 0 4px rgba(0,0,0,0.05)",
+            transition: "width 0.2s ease",
+            overflow: "visible", 
+          }}
+        >
+          <RightSidebar
+            onSelect={setSelectedResult}
+            collapsed={isRightSidebarCollapsed}
+            setCollapsed={setIsRightSidebarCollapsed}
+          />
+        </Box>
+      )}
     </Box>
   );
 }

@@ -27,6 +27,7 @@ export default function Sidebar({ onSelect }) {
     fav: true,
     engine: true,
     analysis: true,
+    admin: true, // 🔧 관리 섹션용 상태 추가
   });
 
   const toggle = (key) => setOpen((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -48,7 +49,7 @@ export default function Sidebar({ onSelect }) {
         },
       }}
     >
-      {/* 상단 로고 + 뒤로가기 */}
+      {/* 로고 + 뒤로가기 */}
       <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
         <Typography variant="h6" sx={{ fontWeight: "bold" }}>
           RVCS
@@ -74,6 +75,7 @@ export default function Sidebar({ onSelect }) {
         }}
       />
 
+      {/* 메뉴 리스트 */}
       <List disablePadding>
         {/* 즐겨찾기 */}
         <ListItemButton onClick={() => toggle("fav")}>
@@ -81,7 +83,9 @@ export default function Sidebar({ onSelect }) {
           <ListItemText primary="즐겨찾기" />
           {open.fav ? <ExpandLess /> : <ExpandMore />}
         </ListItemButton>
-        <Collapse in={open.fav}></Collapse>
+        <Collapse in={open.fav}>
+          {/* 비워두거나 즐겨찾기 항목 추가 */}
+        </Collapse>
 
         {/* 엔진 */}
         <ListItemButton onClick={() => toggle("engine")}>
@@ -124,16 +128,16 @@ export default function Sidebar({ onSelect }) {
           </Box>
         </Collapse>
 
-        {/*관리*/}
-        <ListItemButton onClick={() => toggle("analysis")}>
+        {/* 관리 */}
+        <ListItemButton onClick={() => toggle("admin")}>
           <BarChartIcon fontSize="small" sx={{ mr: 1 }} />
           <ListItemText primary="관리" />
-          {open.analysis ? <ExpandLess /> : <ExpandMore />}
+          {open.admin ? <ExpandLess /> : <ExpandMore />}
         </ListItemButton>
-        <Collapse in={open.analysis}>
+        <Collapse in={open.admin}>
           <Box sx={{ pl: 2, borderLeft: "2px solid #ccc", ml: 1 }}>
             <List disablePadding>
-              <ListItemButton onClick={() => onSelect?.("자원 운영 간트")}>
+              <ListItemButton onClick={() => onSelect?.("사용자 관리")}>
                 <ListItemText primary="사용자 관리" />
               </ListItemButton>
             </List>
