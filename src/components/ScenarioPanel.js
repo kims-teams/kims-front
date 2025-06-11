@@ -40,7 +40,6 @@ export default function ScenarioPanel() {
         </IconButton>
       </Box>
 
-      {/* 접혀있지 않을 때만 보여줄 내용 */}
       {!collapsed && (
         <>
           <Typography variant="body2" sx={{ px: 2, color: "gray", mb: 1 }}>

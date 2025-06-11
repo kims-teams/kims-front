@@ -23,24 +23,24 @@ import { useState } from "react";
 
 const simulationItems = [
   "작업도구 사용 내역",
-  "자재 미사용 내역",
+  "재공품 미사용 내역",
   "용액 일지 조회",
-  "계획오더 로그",
-  "공정 생산 수량 조회",
-  "LOT 발행 이력",
+  "계획오더 전송 로그",
+  "공정 별 생산 수량 조회",
+  "LOT 병합 이력",
   "계획오더 조회",
-  "작업장 Dispatch 내역",
+  "작업장별 Dispatch 내역",
   "투입 재공 내역",
-  "미생성 사유 조회",
-  "생산 계획",
+  "계획 미생성 사유 조회",
+  "작업장별 생산 계획",
   "일별 투입 계획",
-  "작업장 가도 현황",
+  "작업장 가동 현황",
   "완제품 사용 내역",
-  "자재 사용 내역",
-  "미생성 오더 조회",
-  "원부자재 사용 내역",
-  "Capa 부족 LOT",
-  "미사용 원부자재",
+  "재공품 사용 내역",
+  "생산계힉 미생성 오더 조회",
+  "원/부자재 사용 내역",
+  "Capa 부족 LOT 조회",
+  "원/부자재 미사용 내역",
 ];
 
 export default function RightSidebar({ onSelect, collapsed, setCollapsed }) {
@@ -76,7 +76,6 @@ export default function RightSidebar({ onSelect, collapsed, setCollapsed }) {
         position: "relative",
       }}
     >
-      {/* Toggle icon fixed top-left INSIDE box */}
       <IconButton
         size="small"
         onClick={toggleCollapse}
@@ -103,7 +102,7 @@ export default function RightSidebar({ onSelect, collapsed, setCollapsed }) {
         <>
           <Typography
             variant="body2"
-            sx={{ px: 4, color: "gray", fontSize: "15px", mt: 3 }} // ← 제목 오른쪽으로
+            sx={{ px: 4, color: "gray", fontSize: "15px", mt: 3 }}
           >
             결과 데이터 목록
           </Typography>

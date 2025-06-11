@@ -1,0 +1,41 @@
+"use client";
+
+import { usePathname } from "next/navigation";
+import HeaderBar from "../../components/HeaderBar";
+import Sidebar from "../../components/Sidebar";
+import RightSidebar from "../../components/ResultSidebar";
+import ScenarioPanel from "../../components/ScenarioPanel";
+import { Box } from "@mui/material";
+
+export default function UserDashboard() {
+  const pathname = usePathname();
+
+  const showScenarioPanel = [
+    "/user/scenario",
+    "/user/execute",
+    "/user/result",
+  ].includes(pathname);
+  const showRightSidebar = pathname === "/user/result";
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
+      <HeaderBar />
+
+      <div style={{ display: "flex", flex: 1 }}>
+        <Sidebar />
+
+        {/* 가운데 시나리오 패널 */}
+        {showScenarioPanel && <ScenarioPanel />}
+
+        {/* 중앙 콘텐츠 */}
+        <Box sx={{ flex: 1, padding: 2 }}>
+          <h1>대시보드 화면</h1>
+          <p>이곳은 {pathname} 대시보드입니다.</p>
+        </Box>
+
+        {/* 오른쪽 결과 데이터 패널 */}
+        {showRightSidebar && <RightSidebar />}
+      </div>
+    </div>
+  );
+}

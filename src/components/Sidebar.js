@@ -22,15 +22,35 @@ import BarChartIcon from "@mui/icons-material/BarChart";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 
-export default function Sidebar({ onSelect }) {
+import { useRouter } from "next/navigation";
+
+export default function Sidebar() {
   const [open, setOpen] = useState({
     fav: true,
     engine: true,
     analysis: true,
-    admin: true, // 🔧 관리 섹션용 상태 추가
+    admin: true,
   });
 
-  const toggle = (key) => setOpen((prev) => ({ ...prev, [key]: !prev[key] }));
+  const router = useRouter();
+
+  const toggle = (key) => {
+    setOpen((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
+
+  const handleNav = (label) => {
+    const routeMap = {
+      "시나리오 관리": "/user/menu/scenario",
+      "실행 관리": "/user/menu/experiment",
+      "실행 결과": "/user/menu/result",
+      "자원 운영 간트": "/user/menu/resource-gantt",
+      "생산 계획 간트": "/user/menu/production-gantt",
+      "사용자 관리": "/user/menu/management",
+    };
+    if (routeMap[label]) {
+      router.push(routeMap[label]);
+    }
+  };
 
   return (
     <Drawer
@@ -83,9 +103,7 @@ export default function Sidebar({ onSelect }) {
           <ListItemText primary="즐겨찾기" />
           {open.fav ? <ExpandLess /> : <ExpandMore />}
         </ListItemButton>
-        <Collapse in={open.fav}>
-          {/* 비워두거나 즐겨찾기 항목 추가 */}
-        </Collapse>
+        <Collapse in={open.fav}>{/* 비워두거나 즐겨찾기 추가 가능 */}</Collapse>
 
         {/* 엔진 */}
         <ListItemButton onClick={() => toggle("engine")}>
@@ -96,13 +114,13 @@ export default function Sidebar({ onSelect }) {
         <Collapse in={open.engine}>
           <Box sx={{ pl: 2, borderLeft: "2px solid #ccc", ml: 1 }}>
             <List disablePadding>
-              <ListItemButton onClick={() => onSelect?.("시나리오 관리")}>
+              <ListItemButton onClick={() => handleNav("시나리오 관리")}>
                 <ListItemText primary="시나리오 관리" />
               </ListItemButton>
-              <ListItemButton onClick={() => onSelect?.("실행 관리")}>
+              <ListItemButton onClick={() => handleNav("실행 관리")}>
                 <ListItemText primary="실행 관리" />
               </ListItemButton>
-              <ListItemButton onClick={() => onSelect?.("실행 결과")}>
+              <ListItemButton onClick={() => handleNav("실행 결과")}>
                 <ListItemText primary="실행 결과" />
               </ListItemButton>
             </List>
@@ -118,10 +136,10 @@ export default function Sidebar({ onSelect }) {
         <Collapse in={open.analysis}>
           <Box sx={{ pl: 2, borderLeft: "2px solid #ccc", ml: 1 }}>
             <List disablePadding>
-              <ListItemButton onClick={() => onSelect?.("자원 운영 간트")}>
+              <ListItemButton onClick={() => handleNav("자원 운영 간트")}>
                 <ListItemText primary="자원 운영 간트" />
               </ListItemButton>
-              <ListItemButton onClick={() => onSelect?.("생산 계획 간트")}>
+              <ListItemButton onClick={() => handleNav("생산 계획 간트")}>
                 <ListItemText primary="생산 계획 간트" />
               </ListItemButton>
             </List>
@@ -137,7 +155,7 @@ export default function Sidebar({ onSelect }) {
         <Collapse in={open.admin}>
           <Box sx={{ pl: 2, borderLeft: "2px solid #ccc", ml: 1 }}>
             <List disablePadding>
-              <ListItemButton onClick={() => onSelect?.("사용자 관리")}>
+              <ListItemButton onClick={() => handleNav("사용자 관리")}>
                 <ListItemText primary="사용자 관리" />
               </ListItemButton>
             </List>

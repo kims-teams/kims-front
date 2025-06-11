@@ -8,11 +8,11 @@ export default function HeaderBar() {
   const router = useRouter();
 
   const handleAddEmployee = () => {
-    router.push("/add-employee");
+    router.push("/user/add-employee");
   };
 
   const handleLogin = () => {
-    router.push("/login");
+    router.push("/user/login");
   };
 
   return (
@@ -29,7 +29,6 @@ export default function HeaderBar() {
       }}
     >
       <Toolbar disableGutters sx={{ minHeight: "50px !important", px: 2 }}>
-        {/* 왼쪽 공간 확보용 Box (타이틀 제거됨) */}
         <Box sx={{ flexGrow: 1 }} />
 
         {/* 오른쪽 버튼 */}

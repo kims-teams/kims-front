@@ -27,7 +27,7 @@ export default function AddEmployeePage() {
 
   const fetchEmployees = async () => {
     try {
-      const res = await axios.get("http://localhost:8080/api/user");
+      const res = await axios.get("192.169.10.152:8080/api/user");
       setEmployees(res.data);
     } catch (err) {
       console.error("불러오기 오류:", err);
@@ -45,7 +45,7 @@ export default function AddEmployeePage() {
 
   const handleAdd = async () => {
     try {
-      await axios.post("http://localhost:8080/api/user", {
+      await axios.post("192.169.10.152:8080/api/user", {
         ...form,
         hireDate: form.hireDate ? form.hireDate.toISOString() : null,
       });
