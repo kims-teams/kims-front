@@ -14,15 +14,6 @@ const viewComponentMap = {
   "작업도구 사용 내역": dynamic(
     () => import("../../../../components/resultViews/ToolUsageView")
   ),
-  "재공품 미사용 내역": dynamic(
-    () => import("../../../../components/resultViews/UnusedWipView")
-  ),
-  "용액 일지 조회": dynamic(
-    () => import("../../../../components/resultViews/SolutionLogView")
-  ),
-  "계획오더 전송 로그": dynamic(
-    () => import("../../../../components/resultViews/OrderDispatchLogView")
-  ),
   "공정 별 생산 수량 조회": dynamic(
     () => import("../../../../components/resultViews/ProductionCountView")
   ),
@@ -38,9 +29,6 @@ const viewComponentMap = {
   "투입 재공 내역": dynamic(
     () => import("../../../../components/resultViews/InputWipView")
   ),
-  "계획 미생성 사유 조회": dynamic(
-    () => import("../../../../components/resultViews/PlanFailureReasonView")
-  ),
   "작업장별 생산 계획": dynamic(
     () => import("../../../../components/resultViews/WorkcenterPlanView")
   ),
@@ -49,24 +37,6 @@ const viewComponentMap = {
   ),
   "작업장 가동 현황": dynamic(
     () => import("../../../../components/resultViews/WorkcenterStatusView")
-  ),
-  "완제품 사용 내역": dynamic(
-    () => import("../../../../components/resultViews/FinishedProductUsageView")
-  ),
-  "재공품 사용 내역": dynamic(
-    () => import("../../../../components/resultViews/WipUsageView")
-  ),
-  "생산계획 미생성 오더 조회": dynamic(
-    () => import("../../../../components/resultViews/MissingPlanOrdersView")
-  ),
-  "원/부자재 사용 내역": dynamic(
-    () => import("../../../../components/resultViews/MaterialUsageView")
-  ),
-  "Capa 부족 LOT 조회": dynamic(
-    () => import("../../../../components/resultViews/CapaLackLotView")
-  ),
-  "원/부자재 미사용 내역": dynamic(
-    () => import("../../../../components/resultViews/UnusedMaterialView")
   ),
 };
 
