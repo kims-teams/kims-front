@@ -23,14 +23,6 @@ export default function ScenarioPanel() {
   const [collapsed, setCollapsed] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const [scenarioList, setScenarioList] = useState([
-    "S010000",
-    "S020000",
-    "S030000",
-    "S040000",
-    "S050000",
-  ]);
-
   return (
     <Box
       sx={{
@@ -67,7 +59,7 @@ export default function ScenarioPanel() {
             시나리오 패널
           </Typography>
 
-          {/* 🔍 검색창 추가 */}
+          {/* 🔍 검색창 */}
           <Box
             sx={{
               display: "flex",
@@ -88,42 +80,15 @@ export default function ScenarioPanel() {
               sx={{ fontSize: 14 }}
             />
             <Tooltip title="시나리오 추가">
-              <IconButton
-                size="small"
-                sx={{ ml: 1 }}
-                onClick={() => openDialog("add")}
-              >
-                {" "}
-                <AddIcon fontSize="small" />{" "}
+              <IconButton size="small" sx={{ ml: 1 }} onClick={() => {}}>
+                <AddIcon fontSize="small" />
               </IconButton>
             </Tooltip>
           </Box>
           <Divider />
 
           <List dense sx={{ px: 2, pt: 1 }}>
-            {scenarioList.map((id) => (
-              <ListItem
-                key={id}
-                button
-                sx={{
-                  borderRadius: 2,
-                  px: 1.5,
-                  py: 0.7,
-                  mb: 0.5,
-                  "&:hover": { bgcolor: "#f0f6ff" },
-                }}
-              >
-                <ListItemText
-                  primary={id}
-                  primaryTypographyProps={{ fontSize: 14 }}
-                />
-                <ListItemSecondaryAction sx={{ right: 8 }}>
-                  <IconButton size="small">
-                    <MoreVertIcon fontSize="small" />
-                  </IconButton>
-                </ListItemSecondaryAction>
-              </ListItem>
-            ))}
+            {/* 데이터가 들어올 자리 */}
           </List>
         </>
       )}

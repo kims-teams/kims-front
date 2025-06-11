@@ -1,109 +1,151 @@
 "use client";
 
-import { useState } from "react";
 import {
-  Drawer,
-  Box,
-  IconButton,
   Typography,
-  TextField,
-  InputAdornment,
+  InputBase,
+  Divider,
   List,
+  ListItem,
   ListItemButton,
   ListItemText,
   Collapse,
+  InputAdornment,
+  IconButton,
+  Box,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import ExpandMore from "@mui/icons-material/ExpandMore";
-import ExpandLess from "@mui/icons-material/ExpandLess";
+import { useState } from "react";
 
-export default function ScenarioSidebar({ onSelect }) {
-  const [isSidebarOpen, setSidebarOpen] = useState(true);
-  const [open, setOpen] = useState({ scenarioData: true });
+const inputDataItems = [
+  "우선순위",
+  "생산 라우팅",
+  "작업장-도구 매핑관리",
+  "작업장 마스터",
+  "판매오더",
+  "공정순서",
+  "공정 마스터",
+];
 
-  const toggleSidebar = () => setSidebarOpen((prev) => !prev);
-  const toggle = (key) => setOpen((prev) => ({ ...prev, [key]: !prev[key] }));
+export default function ScenarioSidebar({ onSelect, collapsed, setCollapsed }) {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [openGroup, setOpenGroup] = useState({ scenario: true });
 
-  const scenarioItems = [
-    { label: "우선순위", onClick: () => onSelect("우선순위") },
-    { label: "생산 라우팅", onClick: () => onSelect("생산 라우팅") },
-    {
-      label: "작업장-도구 매핑관리",
-      onClick: () => onSelect("작업장-도구 매핑관리"),
-    },
-    { label: "작업장 마스터", onClick: () => onSelect("작업장 마스터") },
-    { label: "판매오더", onClick: () => onSelect("판매오더") },
-    { label: "공정순서", onClick: () => onSelect("공정순서") },
-    { label: "공정 마스터", onClick: () => onSelect("공정 마스터") },
-    // 다른 항목들도 동일하게
-  ];
+  const toggleGroup = (key) =>
+    setOpenGroup((prev) => ({ ...prev, [key]: !prev[key] }));
+
+  const toggleCollapse = () => setCollapsed((prev) => !prev);
+
+  const filteredItems = inputDataItems.filter((item) =>
+    item.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
-    <Drawer
-      anchor="right"
-      variant="permanent"
+    <Box
       sx={{
-        width: isSidebarOpen ? 280 : 60,
-        flexShrink: 0,
-        "& .MuiDrawer-paper": {
-          width: isSidebarOpen ? 280 : 60,
-          boxSizing: "border-box",
-          p: 2,
-          right: 0,
-          top: "50px",
-          height: "calc(100% - 50px)",
-          position: "fixed",
-          transition: "width 0.3s",
-          overflowX: "hidden",
-          whiteSpace: "nowrap",
-        },
+        width: collapsed ? 24 : 260,
+        height: "100%",
+        borderLeft: "1px solid #ddd",
+        boxSizing: "border-box",
+        pt: 1,
+        px: 1,
+        display: "flex",
+        flexDirection: "column",
+        fontSize: "13px",
+        overflow: "hidden",
+        alignItems: collapsed ? "center" : "stretch",
+        position: "relative",
       }}
     >
-      <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 1 }}>
-        <IconButton onClick={toggleSidebar} size="small">
-          {isSidebarOpen ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-        </IconButton>
-      </Box>
+      <IconButton
+        size="small"
+        onClick={toggleCollapse}
+        sx={{
+          position: "absolute",
+          top: 6,
+          left: collapsed ? 2 : 230,
+          zIndex: 2000,
+          backgroundColor: "white",
+          border: "1px solid #ccc",
+          width: 20,
+          height: 20,
+          boxShadow: 1,
+        }}
+      >
+        {collapsed ? (
+          <ChevronLeftIcon fontSize="small" />
+        ) : (
+          <ChevronRightIcon fontSize="small" />
+        )}
+      </IconButton>
 
-      {isSidebarOpen && (
+      {!collapsed && (
         <>
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
+          <Typography
+            variant="body2"
+            sx={{ px: 4, color: "gray", fontSize: "15px", mt: 3 }}
+          >
             입력 데이터 목록
           </Typography>
 
-          <TextField
+          <InputBase
             placeholder="검색"
-            size="small"
             fullWidth
-            sx={{ mb: 2 }}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon fontSize="small" />
-                </InputAdornment>
-              ),
+            sx={{
+              fontSize: 11,
+              bgcolor: "#f5f5f5",
+              px: 1,
+              py: 0.5,
+              mx: 1,
+              my: 1,
+              borderRadius: 1,
             }}
+            startAdornment={
+              <InputAdornment position="start">
+                <SearchIcon fontSize="small" sx={{ color: "#999" }} />
+              </InputAdornment>
+            }
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
 
-          <List disablePadding>
-            <ListItemButton onClick={() => toggle("scenarioData")}>
-              <ListItemText primary="Scenario" />
-              {open.scenarioData ? <ExpandLess /> : <ExpandMore />}
+          <Divider />
+
+          <List dense disablePadding sx={{ flex: 1 }}>
+            <ListItemButton
+              onClick={() => toggleGroup("scenario")}
+              sx={{ fontSize: "13px" }}
+            >
+              <ListItemText
+                primary="Scenario"
+                primaryTypographyProps={{ fontSize: "13px" }}
+              />
+              {openGroup.scenario ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
-            <Collapse in={open.scenarioData} timeout="auto" unmountOnExit>
-              <List component="div" disablePadding sx={{ pl: 2 }}>
-                {scenarioItems.map((item) => (
-                  <ListItemButton key={item.label} onClick={item.onClick}>
-                    <ListItemText primary={item.label} />
-                  </ListItemButton>
+
+            <Collapse in={openGroup.scenario} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                {filteredItems.map((item, idx) => (
+                  <ListItem key={idx} disablePadding>
+                    <ListItemButton
+                      sx={{ pl: 4 }}
+                      onClick={() => onSelect?.(item)}
+                    >
+                      <ListItemText
+                        primary={item}
+                        primaryTypographyProps={{ fontSize: "12px" }}
+                      />
+                    </ListItemButton>
+                  </ListItem>
                 ))}
               </List>
             </Collapse>
           </List>
         </>
       )}
-    </Drawer>
+    </Box>
   );
 }
