@@ -19,6 +19,18 @@ const viewComponentMap = {
   "작업장-도구 매핑관리": dynamic(
     () => import("../../../../components/scenarioViews/ToolMappingView")
   ),
+  "작업장 마스터": dynamic(
+    () => import("../../../../components/scenarioViews/WorkcenterMasterView")
+  ),
+  판매오더: dynamic(
+    () => import("../../../../components/scenarioViews/SalesOrderView")
+  ),
+  공정순서: dynamic(
+    () => import("../../../../components/scenarioViews/OperationSequenceView")
+  ),
+  "공정 마스터": dynamic(
+    () => import("../../../../components/scenarioViews/OperationMasterView")
+  ),
 };
 
 export default function ScenarioLayout({ children }) {
