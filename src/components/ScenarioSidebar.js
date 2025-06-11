@@ -29,7 +29,10 @@ export default function ScenarioSidebar({ onSelect }) {
   const scenarioItems = [
     { label: "우선순위", onClick: () => onSelect("우선순위") },
     { label: "생산 라우팅", onClick: () => onSelect("생산 라우팅") },
-    { label: "작업장-도구 매핑관리", onClick: () => onSelect("매핑") },
+    {
+      label: "작업장-도구 매핑관리",
+      onClick: () => onSelect("작업장-도구 매핑관리"),
+    },
     { label: "작업장 마스터", onClick: () => onSelect("작업장 마스터") },
     { label: "판매오더", onClick: () => onSelect("판매오더") },
     { label: "공정순서", onClick: () => onSelect("공정순서") },

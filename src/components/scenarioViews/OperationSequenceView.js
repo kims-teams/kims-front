@@ -5,17 +5,18 @@ import { DataGrid } from "@mui/x-data-grid";
 
 const columns = [
   { field: "id", headerName: "순번", width: 80 },
-  { field: "tool_size", headerName: "Tool 사이즈", width: 120 },
+  { field: "operation_id", headerName: "공정 코드", width: 130 },
+  { field: "operation_seq", headerName: "공정 순서", width: 110 },
+  { field: "operation_type", headerName: "공정 유형", width: 130 },
+  { field: "operation_name", headerName: "공정 명", width: 130 },
+  { field: "routing_id", headerName: "Routing코드", width: 130 },
   { field: "scenario_id", headerName: "시나리오", width: 120 },
-  { field: "part_name", headerName: "품목명", width: 130 },
-  { field: "tool_id", headerName: "Tool Id", width: 130 },
   { field: "site_id", headerName: "플랜트", width: 100 },
-  { field: "port_id", headerName: "품목코드", width: 120 },
 ];
 
 const rows = [];
 
-export default function ToolMappingView() {
+export default function OperationSequenceView() {
   return (
     <Box sx={{ width: "100%", overflow: "auto" }}>
       <DataGrid
