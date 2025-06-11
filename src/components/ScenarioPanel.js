@@ -1,14 +1,35 @@
 "use client";
 
 import { useState } from "react";
-import { Box, Typography, IconButton, InputBase } from "@mui/material";
+import {
+  Box,
+  Typography,
+  IconButton,
+  InputBase,
+  Tooltip,
+  List,
+  ListItem,
+  ListItemText,
+  Divider,
+  ListItemSecondaryAction,
+} from "@mui/material";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import SearchIcon from "@mui/icons-material/Search";
+import AddIcon from "@mui/icons-material/Add";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 export default function ScenarioPanel() {
   const [collapsed, setCollapsed] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+
+  const [scenarioList, setScenarioList] = useState([
+    "S010000",
+    "S020000",
+    "S030000",
+    "S040000",
+    "S050000",
+  ]);
 
   return (
     <Box
@@ -66,7 +87,44 @@ export default function ScenarioPanel() {
               onChange={(e) => setSearchTerm(e.target.value)}
               sx={{ fontSize: 14 }}
             />
+            <Tooltip title="시나리오 추가">
+              <IconButton
+                size="small"
+                sx={{ ml: 1 }}
+                onClick={() => openDialog("add")}
+              >
+                {" "}
+                <AddIcon fontSize="small" />{" "}
+              </IconButton>
+            </Tooltip>
           </Box>
+          <Divider />
+
+          <List dense sx={{ px: 2, pt: 1 }}>
+            {scenarioList.map((id) => (
+              <ListItem
+                key={id}
+                button
+                sx={{
+                  borderRadius: 2,
+                  px: 1.5,
+                  py: 0.7,
+                  mb: 0.5,
+                  "&:hover": { bgcolor: "#f0f6ff" },
+                }}
+              >
+                <ListItemText
+                  primary={id}
+                  primaryTypographyProps={{ fontSize: 14 }}
+                />
+                <ListItemSecondaryAction sx={{ right: 8 }}>
+                  <IconButton size="small">
+                    <MoreVertIcon fontSize="small" />
+                  </IconButton>
+                </ListItemSecondaryAction>
+              </ListItem>
+            ))}
+          </List>
         </>
       )}
     </Box>
