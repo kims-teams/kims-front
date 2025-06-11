@@ -20,9 +20,7 @@ const columns = [
   { field: "plannedScrapQty", headerName: "WorkcenterDispatchLogId", flex: 1.1 },
   
 ];
-
 const rows = [];
-
 export default function DispatchDetailView() {
   return (
     <Box
