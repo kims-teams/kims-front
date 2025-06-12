@@ -34,7 +34,8 @@ const viewComponentMap = {
 };
 
 export default function ScenarioLayout({ children }) {
-  const [selectedInput, setSelectedInput] = useState(null);
+
+  const [selectedInput, setSelectedInput] = useState("우선순위");
   const [isRightSidebarCollapsed, setIsRightSidebarCollapsed] = useState(false);
 
   const InputComponent = selectedInput ? viewComponentMap[selectedInput] : null;
@@ -54,14 +55,10 @@ export default function ScenarioLayout({ children }) {
             transition: "margin 0.2s ease",
           }}
         >
-          {selectedInput ? (
-            InputComponent ? (
-              <InputComponent />
-            ) : (
-              <Typography>선택한 입력 항목이 유효하지 않습니다.</Typography>
-            )
+          {InputComponent ? (
+            <InputComponent />
           ) : (
-            children
+            <Typography>선택한 입력 항목이 유효하지 않습니다.</Typography>
           )}
         </Box>
         <Box
