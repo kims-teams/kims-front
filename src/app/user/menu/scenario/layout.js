@@ -31,10 +31,12 @@ const viewComponentMap = {
   "공정 마스터": dynamic(
     () => import("../../../../components/scenarioViews/OperationMasterView")
   ),
+  "작업도구 마스터": dynamic(
+    () => import("../../../../components/scenarioViews/ToolMasterView")
+  ),
 };
 
 export default function ScenarioLayout({ children }) {
-
   const [selectedInput, setSelectedInput] = useState("우선순위");
   const [isRightSidebarCollapsed, setIsRightSidebarCollapsed] = useState(false);
 
