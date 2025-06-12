@@ -43,7 +43,7 @@ export default function LoginPage() {
           p: 4,
           width: "100%",
           maxWidth: 380,
-          borderRadius: 0, // 각진 네모
+          borderRadius: 0, 
           boxShadow: "0px 4px 20px rgba(0,0,0,0.05)",
           animation: "fadeSlideIn 0.6s ease",
           "@keyframes fadeSlideIn": {

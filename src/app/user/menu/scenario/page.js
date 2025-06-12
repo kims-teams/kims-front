@@ -7,7 +7,6 @@ export default function ScenarioPage() {
       <Typography variant="h5" gutterBottom>
         시나리오 관리
       </Typography>
-      <Typography>시나리오 기능 구현 영역입니다.</Typography>
     </Box>
   );
 }

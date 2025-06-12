@@ -9,8 +9,7 @@ import Sidebar from "../../../../components/Sidebar";
 import ScenarioPanel from "../../../../components/ScenarioPanel";
 import ResultSidebar from "../../../../components/ResultSidebar";
 
-// 결과 항목 매핑
-const viewComponentMap = {
+const ResultviewComponentMap = {
   "작업도구 사용 내역": dynamic(
     () => import("../../../../components/resultViews/ToolUsageView")
   ),
@@ -41,13 +40,11 @@ const viewComponentMap = {
 };
 
 export default function ResultLayout({ children }) {
-  const [selectedResult, setSelectedResult] = useState(null);
+  const [selectedResult, setSelectedResult] = useState("작업도구 사용 내역");
   const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(true);
   const [isRightSidebarCollapsed, setIsRightSidebarCollapsed] = useState(false);
 
-  const ResultComponent = selectedResult
-    ? viewComponentMap[selectedResult]
-    : null;
+  const ResultComponent = ResultviewComponentMap[selectedResult];
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", height: "100vh" }}>
@@ -68,14 +65,10 @@ export default function ResultLayout({ children }) {
             transition: "margin 0.2s ease",
           }}
         >
-          {selectedResult ? (
-            ResultComponent ? (
-              <ResultComponent />
-            ) : (
-              <Typography>선택한 결과 항목이 유효하지 않습니다.</Typography>
-            )
+          {ResultComponent ? (
+            <ResultComponent />
           ) : (
-            children
+            <Typography>선택한 결과 항목이 유효하지 않습니다.</Typography>
           )}
         </Box>
         {isRightSidebarOpen && (

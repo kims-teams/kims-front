@@ -7,7 +7,6 @@ export default function ScenarioPage() {
       <Typography variant="h5" gutterBottom>
         자원운영간트
       </Typography>
-      <Typography>자원운영 간트</Typography>
     </Box>
   );
 }
