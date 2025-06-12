@@ -29,8 +29,6 @@ export default function UserDashboard() {
 
         {/* 중앙 콘텐츠 */}
         <Box sx={{ flex: 1, padding: 2 }}>
-          <h1>대시보드 화면</h1>
-          <p>이곳은 {pathname} 대시보드입니다.</p>
         </Box>
 
         {/* 오른쪽 결과 데이터 패널 */}
