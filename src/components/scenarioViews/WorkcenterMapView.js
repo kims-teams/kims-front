@@ -5,14 +5,15 @@ import { DataGrid } from "@mui/x-data-grid";
 
 const columns = [
   { field: "id", headerName: "순번", width: 80 },
-  { field: "demand_id", headerName: "판매오더번호", width: 140 },
+  { field: "routing_id", headerName: "Routing코드", width: 130 },
   { field: "part_id", headerName: "품목코드", width: 120 },
-  { field: "part_name", headerName: "품목명", width: 150 },
-  { field: "due_date", headerName: "납기일", width: 120 },
-  { field: "demand_qty", headerName: "주문수량", width: 100 },
-  { field: "header_creation_date", headerName: "오더생성일(헤더)", width: 160 },
+  { field: "operation_id", headerName: "공정 코드", width: 120 },
+  { field: "routing_group", headerName: "Routing그룹", width: 120 },
+  { field: "workcenter_id", headerName: "작업장코드", width: 130 },
+  { field: "tact_time", headerName: "생산 간격", width: 120 },
+  { field: "tact_time_uom", headerName: "생산 간격 단위", width: 130 },
   { field: "scenario_id", headerName: "시나리오", width: 120 },
-  { field: "target_id", headerName: "Target 아이디", width: 120 },
+  { field: "resource_id", headerName: "Resource 아이디", width: 130 },
 ];
 
 const rows = [];

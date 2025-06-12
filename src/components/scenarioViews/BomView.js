@@ -5,14 +5,20 @@ import { DataGrid } from "@mui/x-data-grid";
 
 const columns = [
   { field: "id", headerName: "순번", width: 80 },
-  { field: "demand_id", headerName: "판매오더번호", width: 140 },
-  { field: "part_id", headerName: "품목코드", width: 120 },
-  { field: "part_name", headerName: "품목명", width: 150 },
-  { field: "due_date", headerName: "납기일", width: 120 },
-  { field: "demand_qty", headerName: "주문수량", width: 100 },
-  { field: "header_creation_date", headerName: "오더생성일(헤더)", width: 160 },
-  { field: "scenario_id", headerName: "시나리오", width: 120 },
-  { field: "target_id", headerName: "Target 아이디", width: 120 },
+  { field: "to_part_id", headerName: "생산 제품 코드", width: 130 },
+  { field: "operation_id", headerName: "공정 코드", width: 130 },
+  { field: "out_qty", headerName: "생산 량", width: 100 },
+  { field: "out_uom", headerName: "생산 단위", width: 100 },
+  { field: "from_part_id", headerName: "투입 제품 코드", width: 130 },
+  { field: "in_qty", headerName: "투입 량", width: 100 },
+  { field: "in_uom", headerName: "투입 량 단위", width: 100 },
+  { field: "to_part_name", headerName: "생산 제품명", width: 130 },
+  { field: "from_part_name", headerName: "투입 제품명", width: 130 },
+  { field: "zseq", headerName: "순서", width: 80 },
+  { field: "scenario_id", headerName: "시나리오", width: 100 },
+  { field: "from_part_level", headerName: "FromPartLevel", width: 120 },
+  { field: "to_part_level", headerName: "ToPartLevel", width: 120 },
+  { field: "bop_id", headerName: "Bop 아이디", width: 100 },
 ];
 
 const rows = [];

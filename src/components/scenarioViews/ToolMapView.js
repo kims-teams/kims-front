@@ -1,23 +1,35 @@
 "use client";
 
-import { Box } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 
 const columns = [
   { field: "id", headerName: "순번", width: 80 },
-  { field: "tool_size", headerName: "Tool 사이즈", width: 120 },
   { field: "scenario_id", headerName: "시나리오", width: 120 },
-  { field: "part_name", headerName: "품목명", width: 130 },
-  { field: "tool_id", headerName: "Tool Id", width: 130 },
-  { field: "site_id", headerName: "플랜트", width: 100 },
   { field: "port_id", headerName: "품목코드", width: 120 },
+  { field: "tool_id", headerName: "Tool Id", width: 130 },
+  { field: "part_name", headerName: "품목명", width: 150 },
+  { field: "resource_id", headerName: "Resource 아이디", width: 130 },
 ];
 
 const rows = [];
 
-export default function ToolMappingView() {
+export default function RoutingView() {
+  const handleFetch = () => {
+    console.log("🔍 데이터 가져오기 버튼 클릭됨");
+    // 여기에 fetch() API 호출 가능
+  };
+
   return (
     <Box sx={{ width: "100%", overflow: "auto" }}>
+      {/* 버튼 영역 */}
+      <Box sx={{ display: "flex", justifyContent: "flex-start", mb: 1 }}>
+        <Button variant="outlined" onClick={handleFetch}>
+          🔍 데이터 가져오기
+        </Button>
+      </Box>
+
+      {/* 테이블 */}
       <DataGrid
         autoHeight
         rows={rows}
