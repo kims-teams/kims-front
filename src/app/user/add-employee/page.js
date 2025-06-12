@@ -26,13 +26,8 @@ export default function AddEmployeePage() {
   const [employees, setEmployees] = useState([]);
 
   const fetchEmployees = async () => {
-    try {
-      const res = await axios.get("192.169.10.152:8080/api/user");
-      setEmployees(res.data);
-    } catch (err) {
-      console.error("불러오기 오류:", err);
-      alert("사원 목록 불러오기 실패!");
-    }
+    const res = await axios.get("192.169.10.152:8080/api/user");
+    setEmployees(res.data);
   };
 
   useEffect(() => {
