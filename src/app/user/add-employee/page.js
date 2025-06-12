@@ -26,7 +26,7 @@ export default function AddEmployeePage() {
   const [employees, setEmployees] = useState([]);
 
   const fetchEmployees = async () => {
-    const res = await axios.get("192.169.10.152:8080/api/user");
+    const res = await axios.get("http://192.169.10.152:8080/api/user");
     setEmployees(res.data);
   };
 
@@ -40,7 +40,7 @@ export default function AddEmployeePage() {
 
   const handleAdd = async () => {
     try {
-      await axios.post("192.169.10.152:8080/api/user", {
+      await axios.post("http://192.169.10.152:8080/api/user", {
         ...form,
         hireDate: form.hireDate ? form.hireDate.toISOString() : null,
       });

@@ -36,7 +36,6 @@ export default function ScenarioPanel() {
         transition: "width 0.2s ease",
       }}
     >
-      {/* 접기/펼치기 버튼 */}
       <Box
         sx={{
           display: "flex",
@@ -59,7 +58,6 @@ export default function ScenarioPanel() {
             시나리오 패널
           </Typography>
 
-          {/* 🔍 검색창 */}
           <Box
             sx={{
               display: "flex",
