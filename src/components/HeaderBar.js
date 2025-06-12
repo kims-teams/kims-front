@@ -30,8 +30,6 @@ export default function HeaderBar() {
     >
       <Toolbar disableGutters sx={{ minHeight: "50px !important", px: 2 }}>
         <Box sx={{ flexGrow: 1 }} />
-
-        {/* 오른쪽 버튼 */}
         <Button
           variant="outlined"
           size="small"
