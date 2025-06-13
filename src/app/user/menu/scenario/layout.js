@@ -18,7 +18,7 @@ const viewComponentMap = {
       import("../../../../components/scenarioViews/Manufacturing_processView")
   ),
   "작업장-도구 매핑관리": dynamic(
-    () => import("../../../../components/scenarioViews/ToolMapView") 
+    () => import("../../../../components/scenarioViews/ToolMapView")
   ),
   "작업장 마스터": dynamic(
     () => import("../../../../components/scenarioViews/WorkcenterMasterView")
@@ -43,6 +43,10 @@ const viewComponentMap = {
   ),
   "작업장 맵핑 마스터": dynamic(
     () => import("../../../../components/scenarioViews/WorkcenterMapView")
+  ),
+  "생산 프로세스": dynamic(
+    () =>
+      import("../../../../components/scenarioViews/Manufacturing_processView")
   ),
   BOM: dynamic(() => import("../../../../components/scenarioViews/BomView")),
 };
