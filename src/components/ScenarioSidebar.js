@@ -20,33 +20,46 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { useState } from "react";
 
-const inputDataItems = [
-  "우선순위",
-  "생산 라우팅",
-  "BOM",
-  "자재 마스터",
-  "플랜트 마스터",
-  "공정 마스터",
-  "공정순서",
-  "작업장 마스터",
-  "작업장 맵핑 마스터",
-  "작업도구 마스터",
-  "작업장-도구 매핑관리",
-  "판매오더",
-];
+const inputSubGroups = {
+  Bop: [
+    "생산 프로세스",
+    "공정 마스터",
+    "자재 마스터",
+    "BOM",
+    "플랜트 마스터",
+    "공정순서",
+  ],
+  Config: ["우선순위"],
+  Resource: [
+    "작업도구 마스터",
+    "작업장 마스터",
+    "생산 라우팅",
+    "작업장-도구 매핑관리",
+  ],
+  Target: ["판매오더"],
+};
+
+const categoryMap = {
+  Configurations: ["엔진 실행 옵션"],
+  "Input Data": Object.entries(inputSubGroups),
+};
 
 export default function ScenarioSidebar({ onSelect, collapsed, setCollapsed }) {
   const [searchTerm, setSearchTerm] = useState("");
-  const [openGroup, setOpenGroup] = useState({ scenario: true });
+  const [openGroup, setOpenGroup] = useState(
+    Object.fromEntries(
+      Object.keys(categoryMap)
+        .flatMap((key) =>
+          key === "Input Data" ? [key, ...Object.keys(inputSubGroups)] : [key]
+        )
+        .map((k) => [k, true])
+    )
+  );
 
   const toggleGroup = (key) =>
     setOpenGroup((prev) => ({ ...prev, [key]: !prev[key] }));
 
   const toggleCollapse = () => setCollapsed((prev) => !prev);
-
-  const filteredItems = inputDataItems.filter((item) =>
-    item.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   return (
     <Box
@@ -120,20 +133,21 @@ export default function ScenarioSidebar({ onSelect, collapsed, setCollapsed }) {
           <Divider />
 
           <List dense disablePadding sx={{ flex: 1 }}>
-            <ListItemButton
-              onClick={() => toggleGroup("scenario")}
-              sx={{ fontSize: "13px" }}
-            >
+            {/* Configurations */}
+            <ListItemButton onClick={() => toggleGroup("Configurations")}>
               <ListItemText
-                primary="Scenario"
+                primary="Configurations"
                 primaryTypographyProps={{ fontSize: "13px" }}
               />
-              {openGroup.scenario ? <ExpandLess /> : <ExpandMore />}
+              {openGroup.Configurations ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
-
-            <Collapse in={openGroup.scenario} timeout="auto" unmountOnExit>
+            <Collapse
+              in={openGroup.Configurations}
+              timeout="auto"
+              unmountOnExit
+            >
               <List component="div" disablePadding>
-                {filteredItems.map((item, idx) => (
+                {categoryMap.Configurations.map((item, idx) => (
                   <ListItem key={idx} disablePadding>
                     <ListItemButton
                       sx={{ pl: 4 }}
@@ -145,6 +159,61 @@ export default function ScenarioSidebar({ onSelect, collapsed, setCollapsed }) {
                       />
                     </ListItemButton>
                   </ListItem>
+                ))}
+              </List>
+            </Collapse>
+
+            {/* Input Data 그룹 */}
+            <ListItemButton onClick={() => toggleGroup("Input Data")}>
+              <ListItemText
+                primary="Input Data"
+                primaryTypographyProps={{ fontSize: "13px" }}
+              />
+              {openGroup["Input Data"] ? <ExpandLess /> : <ExpandMore />}
+            </ListItemButton>
+            <Collapse in={openGroup["Input Data"]} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                {categoryMap["Input Data"].map(([subGroup, items]) => (
+                  <div key={subGroup}>
+                    <ListItemButton
+                      onClick={() => toggleGroup(subGroup)}
+                      sx={{ pl: 2 }}
+                    >
+                      <ListItemText
+                        primary={subGroup}
+                        primaryTypographyProps={{
+                          fontSize: "12px",
+                          fontWeight: "bold",
+                        }}
+                        sx={{ pl: 2 }}
+                      />
+                      {openGroup[subGroup] ? <ExpandLess /> : <ExpandMore />}
+                    </ListItemButton>
+                    <Collapse
+                      in={openGroup[subGroup]}
+                      timeout="auto"
+                      unmountOnExit
+                    >
+                      <List component="div" disablePadding>
+                        {items.map((item, idx) => (
+                          <ListItem key={idx} disablePadding>
+                            <ListItemButton
+                              sx={{ pl: 4 }}
+                              onClick={() => onSelect?.(item)}
+                            >
+                              <ListItemText
+                                primary={item}
+                                primaryTypographyProps={{
+                                  fontSize: "12px",
+                                  color: "#666",
+                                }}
+                              />
+                            </ListItemButton>
+                          </ListItem>
+                        ))}
+                      </List>
+                    </Collapse>
+                  </div>
                 ))}
               </List>
             </Collapse>
