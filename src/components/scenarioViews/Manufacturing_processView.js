@@ -15,7 +15,6 @@ import {
 } from "@mui/material";
 
 import { DataGrid } from "@mui/x-data-grid";
-import { useState } from "react";
 
 const columns = [
   { field: "id", headerName: "순번", width: 80 },
