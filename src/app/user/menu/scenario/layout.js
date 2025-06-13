@@ -14,10 +14,11 @@ const viewComponentMap = {
     () => import("../../../../components/scenarioViews/PriorityView")
   ),
   "생산 라우팅": dynamic(
-    () => import("../../../../components/scenarioViews/Manufacturing_processView")
+    () =>
+      import("../../../../components/scenarioViews/Manufacturing_processView")
   ),
   "작업장-도구 매핑관리": dynamic(
-    () => import("../../../../components/scenarioViews/ToolMappingView")
+    () => import("../../../../components/scenarioViews/ToolMapView") // ✅ 고침
   ),
   "작업장 마스터": dynamic(
     () => import("../../../../components/scenarioViews/WorkcenterMasterView")
@@ -34,8 +35,17 @@ const viewComponentMap = {
   "작업도구 마스터": dynamic(
     () => import("../../../../components/scenarioViews/ToolMasterView")
   ),
+  "자재 마스터": dynamic(
+    () => import("../../../../components/scenarioViews/MaterialMasterView")
+  ),
+  "플랜트 마스터": dynamic(
+    () => import("../../../../components/scenarioViews/PlantMasterView")
+  ),
+  "작업장 맵핑 마스터": dynamic(
+    () => import("../../../../components/scenarioViews/WorkcenterMapView")
+  ),
+  BOM: dynamic(() => import("../../../../components/scenarioViews/BomView")),
 };
-
 export default function ScenarioLayout({ children }) {
   const [selectedInput, setSelectedInput] = useState("우선순위");
   const [isRightSidebarCollapsed, setIsRightSidebarCollapsed] = useState(false);

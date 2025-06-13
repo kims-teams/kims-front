@@ -23,11 +23,16 @@ import { useState } from "react";
 const inputDataItems = [
   "우선순위",
   "생산 라우팅",
-  "작업장-도구 매핑관리",
-  "작업장 마스터",
-  "판매오더",
-  "공정순서",
+  "BOM",
+  "자재 마스터",
+  "플랜트 마스터",
   "공정 마스터",
+  "공정순서",
+  "작업장 마스터",
+  "작업장 맵핑 마스터",
+  "작업도구 마스터",
+  "작업장-도구 매핑관리",
+  "판매오더",
 ];
 
 export default function ScenarioSidebar({ onSelect, collapsed, setCollapsed }) {
