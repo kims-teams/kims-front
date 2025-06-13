@@ -12,6 +12,12 @@ import {
   ListItemText,
   Divider,
   ListItemSecondaryAction,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Button,
 } from "@mui/material";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
@@ -22,6 +28,26 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 export default function ScenarioPanel() {
   const [collapsed, setCollapsed] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  
+  const [openDialog, setOpenDialog] = useState(false);
+  const [scenarioName, setScenarioName] = useState("");
+  const [scenarioDescription, setScenarioDescription] = useState("");
+
+  const [scenarioList, setScenarioList] = useState([]);
+
+  const handleAddScenario = () => {
+    if (scenarioName === "") return;
+
+    const newScenario = {
+      name: scenarioName,
+      description: scenarioDescription,
+    };
+
+    setScenarioList([...scenarioList, newScenario]);
+    setScenarioName("");
+    setScenarioDescription("");
+    setOpenDialog(false);
+  };
 
   return (
     <Box
@@ -78,16 +104,68 @@ export default function ScenarioPanel() {
               sx={{ fontSize: 14 }}
             />
             <Tooltip title="시나리오 추가">
-              <IconButton size="small" sx={{ ml: 1 }} onClick={() => {}}>
+              <IconButton
+                size="small"
+                sx={{ ml: 1 }}
+                onClick={() => setOpenDialog(true)}
+              >
                 <AddIcon fontSize="small" />
               </IconButton>
             </Tooltip>
           </Box>
+
           <Divider />
 
           <List dense sx={{ px: 2, pt: 1 }}>
-            {/* 데이터가 들어올 자리 */}
+            {scenarioList
+              .filter((s) =>
+                s.name.toLowerCase().includes(searchTerm.toLowerCase())
+              )
+              .map((s, idx) => (
+                <ListItem key={idx} disablePadding>
+                  <ListItemText primary={s.name} />
+                  <ListItemSecondaryAction>
+                    <IconButton size="small">
+                      <MoreVertIcon fontSize="small" />
+                    </IconButton>
+                  </ListItemSecondaryAction>
+                </ListItem>
+              ))}
           </List>
+
+          <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+            <DialogTitle>시나리오 추가</DialogTitle>
+            <DialogContent>
+              <TextField
+                label="이름"
+                fullWidth
+                required
+                size="small"
+                sx={{ my: 1 }}
+                value={scenarioName}
+                onChange={(e) => setScenarioName(e.target.value)}
+              />
+              <TextField
+                label="설명"
+                fullWidth
+                size="small"
+                multiline
+                minRows={3}
+                value={scenarioDescription}
+                onChange={(e) => setScenarioDescription(e.target.value)}
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => setOpenDialog(false)}>취소</Button>
+              <Button
+                onClick={handleAddScenario}
+                variant="contained"
+                disabled={!scenarioName.trim()}
+              >
+                추가
+              </Button>
+            </DialogActions>
+          </Dialog>
         </>
       )}
     </Box>

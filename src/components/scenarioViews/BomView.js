@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 
+
 const columns = [
   { field: "id", headerName: "순번", width: 80 },
   { field: "to_part_id", headerName: "생산 제품 코드", width: 130 },
@@ -91,7 +92,7 @@ export default function BomView() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(rows),
       });
-      setMessage(" 저장 완료");
+      setMessage(" 저장 완료!");
       setMessageType("success");
     } catch (err) {
       console.error("저장 실패", err);

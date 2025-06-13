@@ -1,19 +1,20 @@
 "use client";
 
-
 import { useState } from "react";
 import {
   Box,
   Button,
-  Stack,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
-  Typography,
   Input,
+  Typography,
+  Stack,
+  Alert,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
+
 
 const columns = [
   { field: "id", headerName: "순번", width: 100 },
