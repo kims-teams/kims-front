@@ -8,7 +8,7 @@ const columns = [
   { field: "to_part_id", headerName: "생산 제품 코드", width: 130 },
   { field: "operation_id", headerName: "공정 코드", width: 130 },
   { field: "out_qty", headerName: "생산 량", width: 100 },
-  { field: "out_uom", headerName: "생산 단위", width: 100 },
+  { field: "out_uom", headerName: "생산량 단위", width: 100 },
   { field: "from_part_id", headerName: "투입 제품 코드", width: 130 },
   { field: "in_qty", headerName: "투입 량", width: 100 },
   { field: "in_uom", headerName: "투입 량 단위", width: 100 },

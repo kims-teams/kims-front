@@ -6,7 +6,7 @@ import { DataGrid } from "@mui/x-data-grid";
 const columns = [
   { field: "id", headerName: "순번", width: 80 },
   { field: "scenario_id", headerName: "시나리오", width: 120 },
-  { field: "port_id", headerName: "품목코드", width: 120 },
+  { field: "part_id", headerName: "품목코드", width: 120 },
   { field: "tool_id", headerName: "Tool Id", width: 130 },
   { field: "part_name", headerName: "품목명", width: 150 },
   { field: "resource_id", headerName: "Resource 아이디", width: 130 },
