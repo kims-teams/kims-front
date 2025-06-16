@@ -1,5 +1,6 @@
 import { create } from "zustand";
 
+
 const useScenarioStore = create((set) => ({
   // 시나리오 선택
   selectedScenarioId: null,
