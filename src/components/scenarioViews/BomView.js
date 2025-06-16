@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import useScenarioStore from "../../hooks/useScenarioStore";
 import {
   Box,
   Button,
@@ -14,7 +15,6 @@ import {
   Alert,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-
 
 const columns = [
   { field: "id", headerName: "순번", width: 80 },
@@ -35,11 +35,32 @@ const columns = [
 ];
 
 export default function BomView() {
-  const [rows, setRows] = useState([]);
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [message, setMessage] = useState("");
-  const [messageType, setMessageType] = useState("success"); // or "error"
+  const [messageType, setMessageType] = useState("success");
+
+  const { selectedScenarioId, bomData, setBomData, resetBomData } =
+    useScenarioStore();
+
+  // 🔥 시나리오가 선택될 때마다 BOM 데이터 패치
+  useEffect(() => {
+    const fetchBomData = async () => {
+      if (!selectedScenarioId) return;
+      try {
+        const res = await fetch(
+          `http://localhost:8080/api/bom/${selectedScenarioId}`
+        );
+        if (!res.ok) throw new Error("BOM 데이터 불러오기 실패");
+
+        const data = await res.json();
+        setBomData(data);
+      } catch (err) {
+        console.error("BOM 로딩 실패:", err);
+      }
+    };
+    fetchBomData();
+  }, [selectedScenarioId]);
 
   const handleOpenDialog = () => setUploadDialogOpen(true);
   const handleCloseDialog = () => {
@@ -74,7 +95,7 @@ export default function BomView() {
       if (!res.ok) throw new Error("업로드 실패");
 
       const data = await res.json();
-      setRows(data);
+      setBomData(data); // 🔥 전역 상태로 저장
       setMessage(" 파일 업로드 성공!");
       setMessageType("success");
       handleCloseDialog();
@@ -86,12 +107,23 @@ export default function BomView() {
   };
 
   const handleSave = async () => {
+    if (!selectedScenarioId) {
+      setMessage("시나리오가 선택되지 않았습니다.");
+      setMessageType("error");
+      return;
+    }
+
     try {
-      await fetch("http://127.0.0.1:8080/api/", {
+      await fetch("http://127.0.0.1:8080/api/input-data", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(rows),
+        body: JSON.stringify({
+          scenario_id: selectedScenarioId,
+          category: "bom",
+          data: bomData,
+        }),
       });
+
       setMessage(" 저장 완료!");
       setMessageType("success");
     } catch (err) {
@@ -102,7 +134,7 @@ export default function BomView() {
   };
 
   return (
-    <Box sx={{ width: "100%", overflow: "auto", p: 2 }}>
+    <Box sx={{ width: "100%", overflow: "auto" }}>
       {message && (
         <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
           <Alert
@@ -146,16 +178,13 @@ export default function BomView() {
 
       <DataGrid
         autoHeight
-        rows={rows}
+        rows={bomData || []}
         columns={columns}
         getRowId={(row) => row.id || Math.random()}
         pageSize={10}
         rowHeight={40}
         disableRowSelectionOnClick
-        sx={{
-          backgroundColor: "#fff",
-          border: "1px solid #ccc",
-        }}
+        sx={{ backgroundColor: "#fff", border: "1px solid #ccc" }}
       />
     </Box>
   );

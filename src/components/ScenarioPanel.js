@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import {
   Box,
   Typography,
@@ -25,6 +24,10 @@ import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
+import { useState } from "react";
+import useScenarioStore from "../hooks/useScenarioStore";
+// ✅ zustand import
+
 export default function ScenarioPanel() {
   const [collapsed, setCollapsed] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -32,6 +35,8 @@ export default function ScenarioPanel() {
   const [scenarioName, setScenarioName] = useState("");
   const [scenarioList, setScenarioList] = useState([]);
   const [selectedScenario, setSelectedScenario] = useState(null);
+
+  const setScenarioData = useScenarioStore((state) => state.setScenarioData); // ✅ zustand setter
 
   const addScenario = async () => {
     if (!scenarioName.trim()) return;
@@ -49,18 +54,19 @@ export default function ScenarioPanel() {
 
       const result = await res.json();
 
-     const scenarioWithData = {
-  scenario: {
-    id: result.scenario.id,
-    name: result.scenario.name,
-    bop: result.bop,
-    config: result.config,
-    resource: result.resource,
-    target: result.target,
-  },
-};
+      const scenarioWithData = {
+        scenario: {
+          id: result.scenario.id,
+          name: result.scenario.name,
+          bop: result.bop,
+          config: result.config,
+          resource: result.resource,
+          target: result.target,
+        },
+      };
 
       setScenarioList((prev) => [...prev, scenarioWithData]);
+      setScenarioData(scenarioWithData); // ✅ 전역 상태에 저장
       setSelectedScenario(scenarioWithData);
 
       setScenarioName("");
@@ -83,9 +89,19 @@ export default function ScenarioPanel() {
         transition: "width 0.2s ease",
       }}
     >
-      <Box sx={{ display: "flex", justifyContent: collapsed ? "center" : "flex-end", p: 1 }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: collapsed ? "center" : "flex-end",
+          p: 1,
+        }}
+      >
         <IconButton size="small" onClick={() => setCollapsed(!collapsed)}>
-          {collapsed ? <ArrowForwardIosIcon fontSize="small" /> : <ArrowBackIosNewIcon fontSize="small" />}
+          {collapsed ? (
+            <ArrowForwardIosIcon fontSize="small" />
+          ) : (
+            <ArrowBackIosNewIcon fontSize="small" />
+          )}
         </IconButton>
       </Box>
 
@@ -115,7 +131,11 @@ export default function ScenarioPanel() {
               sx={{ fontSize: 14 }}
             />
             <Tooltip title="시나리오 추가">
-              <IconButton size="small" sx={{ ml: 1 }} onClick={() => setOpenDialog(true)}>
+              <IconButton
+                size="small"
+                sx={{ ml: 1 }}
+                onClick={() => setOpenDialog(true)}
+              >
                 <AddIcon fontSize="small" />
               </IconButton>
             </Tooltip>
@@ -133,7 +153,10 @@ export default function ScenarioPanel() {
                   key={idx}
                   disablePadding
                   button
-                  onClick={() => setSelectedScenario(s)}
+                  onClick={() => {
+                    setSelectedScenario(s);
+                    setScenarioData(s); // ✅ 클릭 시 전역 상태에 저장
+                  }}
                 >
                   <ListItemText primary={s.scenario.name} />
                   <ListItemSecondaryAction>
