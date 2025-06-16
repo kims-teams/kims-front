@@ -43,7 +43,6 @@ export default function BomView() {
   const { selectedScenarioId, bomData, setBomData, resetBomData } =
     useScenarioStore();
 
-  // 🔥 시나리오가 선택될 때마다 BOM 데이터 패치
   useEffect(() => {
     const fetchBomData = async () => {
       if (!selectedScenarioId) return;
@@ -95,7 +94,7 @@ export default function BomView() {
       if (!res.ok) throw new Error("업로드 실패");
 
       const data = await res.json();
-      setBomData(data); // 🔥 전역 상태로 저장
+      setBomData(data); 
       setMessage(" 파일 업로드 성공!");
       setMessageType("success");
       handleCloseDialog();

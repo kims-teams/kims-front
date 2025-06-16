@@ -36,7 +36,7 @@ export default function ScenarioPanel() {
   const [scenarioList, setScenarioList] = useState([]);
   const [selectedScenario, setSelectedScenario] = useState(null);
 
-  const setScenarioData = useScenarioStore((state) => state.setScenarioData); // ✅ zustand setter
+  const setScenarioData = useScenarioStore((state) => state.setScenarioData); setter
 
   const addScenario = async () => {
     if (!scenarioName.trim()) return;
@@ -66,7 +66,7 @@ export default function ScenarioPanel() {
       };
 
       setScenarioList((prev) => [...prev, scenarioWithData]);
-      setScenarioData(scenarioWithData); // ✅ 전역 상태에 저장
+      setScenarioData(scenarioWithData); 
       setSelectedScenario(scenarioWithData);
 
       setScenarioName("");
@@ -155,7 +155,7 @@ export default function ScenarioPanel() {
                   button
                   onClick={() => {
                     setSelectedScenario(s);
-                    setScenarioData(s); // ✅ 클릭 시 전역 상태에 저장
+                    setScenarioData(s); 
                   }}
                 >
                   <ListItemText primary={s.scenario.name} />
