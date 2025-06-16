@@ -1,5 +1,6 @@
 "use client";
 
+import useScenarioStore from "../../hooks/useScenarioStore";
 import { useState } from "react";
 import {
   Box,
@@ -14,7 +15,6 @@ import {
   Alert,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-
 
 const columns = [
   { field: "id", headerName: "순번", width: 100 },
@@ -77,17 +77,30 @@ export default function ToolMasterView() {
   };
 
   const handleSave = async () => {
+    const { selectedScenarioId } = useScenarioStore.getState(); // 🔥 전역에서 시나리오 ID 꺼냄
+
+    if (!selectedScenarioId) {
+      setMessage("시나리오가 선택되지 않았습니다.");
+      setMessageType("error");
+      return;
+    }
+
     try {
-      await fetch("http://127.0.0.1:8080/api/", {
+      await fetch("http://127.0.0.1:8080/api/input-data", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(rows),
+        body: JSON.stringify({
+          scenario_id: selectedScenarioId,
+          category: "tool_master", // 이 화면은 도구마스터니까
+          data: rows,
+        }),
       });
-      setMessage(" 저장 완료");
+
+      setMessage("저장 완료!");
       setMessageType("success");
     } catch (err) {
       console.error("저장 실패", err);
-      setMessage(" 저장 중 오류가 발생했습니다.");
+      setMessage("저장 중 오류가 발생했습니다.");
       setMessageType("error");
     }
   };
