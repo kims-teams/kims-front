@@ -15,7 +15,6 @@ import {
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 
-
 const columns = [
   { field: "id", headerName: "순번", width: 80 },
   { field: "to_part_id", headerName: "생산 제품 코드", width: 130 },
