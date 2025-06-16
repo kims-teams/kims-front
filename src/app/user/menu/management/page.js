@@ -40,11 +40,11 @@ function Management() {
     { field: "id", headerName: "순번", width: 80 },
     { field: "email", headerName: "이메일", flex: 1 },
     { field: "name", headerName: "이름", flex: 1 },
-    { field: "position", headerName: "직급", flex: 1.5 },
+    { field: "position", headerName: "역할", flex: 1.5 },
     {
       field: "edit",
       headerName: "수정",
-      width: 80,
+      width: 120,
       renderCell: () => (
         <IconButton>
           <EditIcon fontSize="small" />
@@ -54,7 +54,7 @@ function Management() {
     {
       field: "delete",
       headerName: "삭제",
-      width: 80,
+      width: 120,
       renderCell: () => (
         <IconButton>
           <DeleteIcon fontSize="small" />
@@ -64,7 +64,7 @@ function Management() {
     {
       field: "reset",
       headerName: "Reset Password",
-      width: 150,
+      width: 120,
       renderCell: () => (
         <IconButton>
           <RestartAltIcon fontSize="small" />
