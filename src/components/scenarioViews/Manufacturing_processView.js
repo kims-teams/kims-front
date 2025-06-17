@@ -30,16 +30,16 @@ export default function ManufacturingProcessView() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("success");
-
   const { selectedScenario } = useScenarioStore();
   const [routingData, setRoutingData] = useState([]);
+  const entity = "manufacturing_process";
 
   useEffect(() => {
     const fetchRoutingData = async () => {
       if (!selectedScenario?.scenario?.id) return;
       try {
         const res = await fetch(
-          `http://localhost:8080/api/manufacturing-process/${selectedScenario.scenario.id}`
+          `http://localhost:8080/api/${entity}/${selectedScenario.scenario.id}`
         );
         if (!res.ok) throw new Error("라우팅 데이터 불러오기 실패");
         const data = await res.json();
@@ -70,11 +70,10 @@ export default function ManufacturingProcessView() {
 
     const formData = new FormData();
     formData.append("file", selectedFile);
-    const fileName = selectedFile.name;
 
     try {
       const res = await fetch(
-        `http://127.0.0.1:8080/api/input-file/${fileName}`,
+        `http://127.0.0.1:5000/api/input-file/${entity}`,
         {
           method: "POST",
           body: formData,
@@ -103,12 +102,12 @@ export default function ManufacturingProcessView() {
     }
 
     try {
-      await fetch("http://127.0.0.1:8080/api/input-data", {
+      await fetch(`http://127.0.0.1:8080/api/input/${entity}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           scenario_id: scenarioId,
-          category: "manufacturing_process",
+          category: entity,
           data: routingData,
         }),
       });
