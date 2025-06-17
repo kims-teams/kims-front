@@ -34,12 +34,14 @@ export default function MaterialMasterView() {
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("success");
 
+  const entity = "material_master";
+
   useEffect(() => {
-    const fetchMaterialMaster = async () => {
+    const fetchData = async () => {
       if (!selectedScenario?.scenario?.id) return;
       try {
         const res = await fetch(
-          `http://localhost:8080/api/material-master/${selectedScenario.scenario.id}`
+          `http://localhost:8080/api/${entity}/${selectedScenario.id}`
         );
         if (!res.ok) throw new Error("Material Master 데이터 로드 실패");
         const data = await res.json();
@@ -48,7 +50,7 @@ export default function MaterialMasterView() {
         console.error("불러오기 오류:", err);
       }
     };
-    fetchMaterialMaster();
+    fetchData();
   }, [selectedScenario]);
 
   const handleOpenDialog = () => setUploadDialogOpen(true);
@@ -70,11 +72,10 @@ export default function MaterialMasterView() {
 
     const formData = new FormData();
     formData.append("file", selectedFile);
-    const fileName = selectedFile.name;
 
     try {
       const res = await fetch(
-        `http://127.0.0.1:8080/api/input-file/${fileName}`,
+        `http://127.0.0.1:5000/api/input-file/${entity}`,
         {
           method: "POST",
           body: formData,
@@ -103,12 +104,12 @@ export default function MaterialMasterView() {
     }
 
     try {
-      await fetch("http://127.0.0.1:8080/api/input-data", {
+      await fetch(`http://127.0.0.1:8080/api/input/${entity}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           scenario_id: scenarioId,
-          category: "material-master",
+          category: entity,
           data: rows,
         }),
       });

@@ -36,12 +36,14 @@ export default function SalesOrderView() {
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("success");
 
+  const entity = "sales_order";
+
   useEffect(() => {
     const fetchSalesOrders = async () => {
       if (!selectedScenario?.scenario?.id) return;
       try {
         const res = await fetch(
-          `http://localhost:8080/api/sales-order/${selectedScenario.scenario.id}`
+          `http://localhost:8080/api/${entity}/${selectedScenario.id}`
         );
         if (!res.ok) throw new Error("판매오더 불러오기 실패");
         const data = await res.json();
@@ -72,11 +74,10 @@ export default function SalesOrderView() {
 
     const formData = new FormData();
     formData.append("file", selectedFile);
-    const fileName = selectedFile.name;
 
     try {
       const res = await fetch(
-        `http://127.0.0.1:8080/api/input-file/${fileName}`,
+        `http://127.0.0.1:5000/api/input-file/${entity}`,
         {
           method: "POST",
           body: formData,
@@ -106,12 +107,12 @@ export default function SalesOrderView() {
     }
 
     try {
-      await fetch("http://127.0.0.1:8080/api/input-data", {
+      await fetch(`http://127.0.0.1:8080/api/input/${entity}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           scenario_id: scenarioId,
-          category: "sales-order",
+          category: entity,
           data: rows,
         }),
       });
