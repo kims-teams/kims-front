@@ -46,7 +46,9 @@ export default function BomView() {
     const fetchBomData = async () => {
       if (!selectedScenario?.scenario?.id) return;
       try {
-        const res = await fetch(`http://localhost:8080/api/bom/${selectedScenario.scenario.id}`);
+        const res = await fetch(
+          `http://localhost:8080/api/bom/${selectedScenario.scenario.id}`
+        );
         if (!res.ok) throw new Error("BOM 데이터 불러오기 실패");
         const data = await res.json();
         setBomData(data);
@@ -79,10 +81,13 @@ export default function BomView() {
     const fileName = selectedFile.name;
 
     try {
-      const res = await fetch(`http://127.0.0.1:8080/api/input-file/${fileName}`, {
-        method: "POST",
-        body: formData,
-      });
+      const res = await fetch(
+        `http://127.0.0.1:8080/api/input-file/${fileName}`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
       if (!res.ok) throw new Error("업로드 실패");
       const data = await res.json();
@@ -140,8 +145,12 @@ export default function BomView() {
       )}
 
       <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
-        <Button variant="contained" onClick={handleOpenDialog}>데이터 가져오기</Button>
-        <Button variant="outlined" onClick={handleSave}>저장</Button>
+        <Button variant="contained" onClick={handleOpenDialog}>
+          데이터 가져오기
+        </Button>
+        <Button variant="outlined" onClick={handleSave}>
+          저장
+        </Button>
       </Stack>
 
       <Dialog open={uploadDialogOpen} onClose={handleCloseDialog}>
@@ -154,7 +163,13 @@ export default function BomView() {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog}>취소</Button>
-          <Button variant="contained" onClick={handleUpload} disabled={!selectedFile}>업로드</Button>
+          <Button
+            variant="contained"
+            onClick={handleUpload}
+            disabled={!selectedFile}
+          >
+            업로드
+          </Button>
         </DialogActions>
       </Dialog>
 

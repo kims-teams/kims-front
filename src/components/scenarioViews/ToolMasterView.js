@@ -14,7 +14,7 @@ import {
   Alert,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import { useScenarioStore } from "../../hooks/useScenarioStore"; // ← store import
+import { useScenarioStore } from "../../hooks/useScenarioStore";
 
 const columns = [
   { field: "id", headerName: "순번", width: 100 },

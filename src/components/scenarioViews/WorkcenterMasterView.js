@@ -14,7 +14,7 @@ import {
   Alert,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import { useScenarioStore } from "../../hooks/useScenarioStore"; // zustand 스토어
+import { useScenarioStore } from "../../hooks/useScenarioStore"; 
 
 const columns = [
   { field: "id", headerName: "순번", width: 80 },
@@ -112,7 +112,7 @@ export default function WorkcenterMasterView() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           scenario_id: scenarioId,
-          category: "workcenter-master", 
+          category: "workcenter-master",
           data: rows,
         }),
       });
