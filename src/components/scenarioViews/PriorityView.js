@@ -165,19 +165,14 @@ export default function PriorityView() {
         </DialogActions>
       </Dialog>
 
-      <DataGrid
-        autoHeight
-        rows={rows || []}
-        columns={columns}
-        getRowId={(row) => row.id || Math.random()}
-        pageSize={10}
-        rowHeight={40}
-        disableRowSelectionOnClick
-        sx={{
-          backgroundColor: "#fff",
-          border: "1px solid #ccc",
-        }}
-      />
+<Box sx={{ width: "100%", minWidth: 500, height: 400 }}>
+  <DataGrid
+    rows={rows}
+    columns={columns}
+    autoHeight
+    sx={{ width: '100%' }}
+  />
+</Box>
     </Box>
   );
 }

@@ -79,7 +79,7 @@ export default function BomView() {
     const fileName = selectedFile.name;
 
     try {
-      const res = await fetch(`http://127.0.0.1:8080/api/input-file/${fileName}`, {
+      const res = await fetch(`http://127.0.0.1:5000/api/input-file/${fileName}`, {
         method: "POST",
         body: formData,
       });

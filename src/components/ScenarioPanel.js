@@ -27,7 +27,7 @@ import {
   MoreVert as MoreVertIcon,
 } from "@mui/icons-material";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useScenarioStore } from "../hooks/useScenarioStore";
 
 export default function ScenarioPanel() {
@@ -38,6 +38,7 @@ export default function ScenarioPanel() {
 
   const {
     scenarioList,
+    setScenarioList,
     selectedScenario,
     setSelectedScenario,
     addScenario,
@@ -46,11 +47,10 @@ export default function ScenarioPanel() {
   const handleAddScenario = async () => {
     if (!scenarioName.trim()) return;
 
+
     try {
-      const res = await fetch("http://localhost:8080/api/scenario", {
+      const res = await fetch("http://127.0.0.1:8080/api/scenario/" + scenarioName, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: scenarioName }),
       });
 
       if (!res.ok) throw new Error("시나리오 생성 실패");
@@ -75,6 +75,22 @@ export default function ScenarioPanel() {
       console.error("시나리오 추가 실패:", err);
     }
   };
+
+      useEffect(() => {
+  const fetchScenarioList = async () => {
+    try {
+      const res = await fetch("http://127.0.0.1:8080/api/scenario");
+      if (!res.ok) throw new Error("시나리오 조회 실패");
+
+      const data = await res.json();
+      setScenarioList(data);
+    } catch (err) {
+      console.error("시나리오 목록 불러오기 실패:", err);
+    }
+  };
+
+  fetchScenarioList();
+}, []);
 
   return (
     <Box
@@ -134,17 +150,17 @@ export default function ScenarioPanel() {
           <List dense sx={{ px: 2, pt: 1 }}>
             {scenarioList
               .filter((s) =>
-                s.scenario.name.toLowerCase().includes(searchTerm.toLowerCase())
+                s.name.toLowerCase().includes(searchTerm.toLowerCase())
               )
               .map((s, idx) => (
                 <ListItem
                   key={idx}
                   disablePadding
                   button
-                  selected={selectedScenario?.scenario?.id === s.scenario.id}
+                  selected={selectedScenario?.scenario?.id === s.id}
                   onClick={() => setSelectedScenario(s)}
                 >
-                  <ListItemText primary={s.scenario.name} />
+                  <ListItemText primary={s.name} />
                   <ListItemSecondaryAction>
                     <IconButton size="small">
                       <MoreVertIcon fontSize="small" />
