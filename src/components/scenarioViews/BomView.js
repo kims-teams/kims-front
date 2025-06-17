@@ -81,6 +81,7 @@ export default function BomView() {
     const fileName = selectedFile.name;
 
     try {
+
       const res = await fetch(
         `http://127.0.0.1:8080/api/input-file/${fileName}`,
         {
@@ -88,6 +89,7 @@ export default function BomView() {
           body: formData,
         }
       );
+
 
       if (!res.ok) throw new Error("업로드 실패");
       const data = await res.json();
