@@ -19,15 +19,21 @@ export default function AddEmployeePage() {
   const [form, setForm] = useState({
     name: "",
     email: "",
-    password: "",
+    position: "",
+    role: "",
     hireDate: null,
   });
 
   const [employees, setEmployees] = useState([]);
 
   const fetchEmployees = async () => {
-    const res = await axios.get("http://192.169.10.152:8080/api/user");
-    setEmployees(res.data);
+    try {
+      const res = await axios.get("http://localhost:8080/api/user");
+      setEmployees(res.data);
+    } catch (err) {
+      console.error("사원 목록 조회 실패:", err);
+      alert("사원 목록을 불러오지 못했습니다.");
+    }
   };
 
   useEffect(() => {
@@ -40,15 +46,20 @@ export default function AddEmployeePage() {
 
   const handleAdd = async () => {
     try {
-      await axios.post("http://192.169.10.152:8080/api/user", {
-        ...form,
+      await axios.post("http://localhost:8080/api/user", {
+        name: form.name,
+        email: form.email,
+        position: form.position,
+        role: form.role,
         hireDate: form.hireDate ? form.hireDate.toISOString() : null,
       });
-      setForm({ name: "", email: "", password: "", hireDate: null });
+
+      alert("사원 추가가 완료되었습니다.");
+      setForm({ name: "", email: "", position: "", role: "", hireDate: null });
       fetchEmployees();
     } catch (err) {
-      console.error("추가 실패:", err);
-      alert("사원 추가에 실패했습니다. 서버 상태를 확인해주세요.");
+      console.error("사원 추가 실패:", err.response?.data || err);
+      alert("사원 추가에 실패했습니다.");
     }
   };
 
@@ -80,11 +91,16 @@ export default function AddEmployeePage() {
             onChange={handleChange("email")}
           />
           <TextField
-            label="비밀번호"
-            type="password"
+            label="직급"
             size="small"
-            value={form.password}
-            onChange={handleChange("password")}
+            value={form.position}
+            onChange={handleChange("position")}
+          />
+          <TextField
+            label="역할"
+            size="small"
+            value={form.role}
+            onChange={handleChange("role")}
           />
           <DatePicker
             label="입사일"
@@ -105,7 +121,9 @@ export default function AddEmployeePage() {
             <ListItem key={emp.id}>
               <ListItemText
                 primary={`${emp.name} (${emp.email})`}
-                secondary={`입사일: ${emp.hireDate ? emp.hireDate.substring(0, 10) : "없음"}`}
+                secondary={`입사일: ${
+                  emp.hireDate ? emp.hireDate.substring(0, 10) : "없음"
+                }, 직급: ${emp.position || "-"}, 역할: ${emp.role || "-"}`}
               />
             </ListItem>
           ))}
