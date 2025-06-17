@@ -18,12 +18,33 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [autoLogin, setAutoLogin] = useState(false);
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!email || !password) {
       window.alert("이메일과 비밀번호를 모두 입력해주세요.");
       return;
     }
-    router.push("/dashboard");
+
+    try {
+      const res = await fetch("http://127.0.0.1:8080/api/user/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || "로그인 실패");
+      }
+
+      const data = await res.json();
+
+      localStorage.setItem("token", data.token);
+
+      router.push("/user");
+    } catch (err) {
+      console.error("로그인 실패:", err);
+      window.alert(err.message || "로그인 중 오류 발생");
+    }
   };
 
   return (
@@ -43,7 +64,7 @@ export default function LoginPage() {
           p: 4,
           width: "100%",
           maxWidth: 380,
-          borderRadius: 0, 
+          borderRadius: 0,
           boxShadow: "0px 4px 20px rgba(0,0,0,0.05)",
           animation: "fadeSlideIn 0.6s ease",
           "@keyframes fadeSlideIn": {
