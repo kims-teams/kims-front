@@ -14,7 +14,7 @@ import {
   Alert,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import { useScenarioStore } from "../../hooks/useScenarioStore"; // zustand store
+import { useScenarioStore } from "../../hooks/useScenarioStore";
 
 const columns = [
   { field: "id", headerName: "순번", width: 80 },
@@ -37,12 +37,14 @@ export default function WorkcenterMapView() {
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("success");
 
+  const entity = "workcenter_map";
+
   useEffect(() => {
     const fetchData = async () => {
       if (!selectedScenario?.scenario?.id) return;
       try {
         const res = await fetch(
-          `http://localhost:8080/api/workcenter-map/${selectedScenario.scenario.id}`
+          `http://localhost:8080/api/${entity}/${selectedScenario.id}`
         );
         if (!res.ok) throw new Error("불러오기 실패");
 
@@ -67,18 +69,17 @@ export default function WorkcenterMapView() {
 
   const handleUpload = async () => {
     if (!selectedFile) {
-      setMessage(" 파일을 선택해주세요");
+      setMessage("파일을 선택해주세요");
       setMessageType("error");
       return;
     }
 
     const formData = new FormData();
     formData.append("file", selectedFile);
-    const fileName = selectedFile.name;
 
     try {
       const res = await fetch(
-        `http://127.0.0.1:8080/api/input-file/${fileName}`,
+        `http://127.0.0.1:5000/api/input-file/${entity}`,
         {
           method: "POST",
           body: formData,
@@ -89,12 +90,12 @@ export default function WorkcenterMapView() {
 
       const data = await res.json();
       setRows(data);
-      setMessage(" 파일 업로드 성공!");
+      setMessage("파일 업로드 성공!");
       setMessageType("success");
       handleCloseDialog();
     } catch (err) {
       console.error("파일 업로드 실패", err);
-      setMessage(" 업로드 중 문제가 발생했습니다.");
+      setMessage("업로드 중 문제가 발생했습니다.");
       setMessageType("error");
     }
   };
@@ -108,21 +109,21 @@ export default function WorkcenterMapView() {
     }
 
     try {
-      await fetch("http://127.0.0.1:8080/api/input-data", {
+      await fetch(`http://127.0.0.1:8080/api/input/${entity}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           scenario_id: scenarioId,
-          category: "workcenter-map",
+          category: entity,
           data: rows,
         }),
       });
 
-      setMessage(" 저장 완료");
+      setMessage("저장 완료!");
       setMessageType("success");
     } catch (err) {
       console.error("저장 실패", err);
-      setMessage(" 저장 중 오류가 발생했습니다.");
+      setMessage("저장 중 오류가 발생했습니다.");
       setMessageType("error");
     }
   };

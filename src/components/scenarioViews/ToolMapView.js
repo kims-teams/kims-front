@@ -33,12 +33,14 @@ export default function ToolMapView() {
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("success");
 
+  const entity = "tool_map";
+
   useEffect(() => {
-    const fetchToolMapData = async () => {
+    const fetchData = async () => {
       if (!selectedScenario?.scenario?.id) return;
       try {
         const res = await fetch(
-          `http://localhost:8080/api/tool-map/${selectedScenario.scenario.id}`
+          `http://localhost:8080/api/${entity}/${selectedScenario.id}`
         );
         if (!res.ok) throw new Error("Tool Map 데이터 불러오기 실패");
         const data = await res.json();
@@ -47,7 +49,7 @@ export default function ToolMapView() {
         console.error("로딩 실패:", err);
       }
     };
-    fetchToolMapData();
+    fetchData();
   }, [selectedScenario]);
 
   const handleOpenDialog = () => setUploadDialogOpen(true);
@@ -69,11 +71,10 @@ export default function ToolMapView() {
 
     const formData = new FormData();
     formData.append("file", selectedFile);
-    const fileName = selectedFile.name;
 
     try {
       const res = await fetch(
-        `http://127.0.0.1:8080/api/input-file/${fileName}`,
+        `http://127.0.0.1:5000/api/input-file/${entity}`,
         {
           method: "POST",
           body: formData,
@@ -88,7 +89,7 @@ export default function ToolMapView() {
       setMessageType("success");
       handleCloseDialog();
     } catch (err) {
-      console.error("파일 업로드 실패", err);
+      console.error("업로드 실패:", err);
       setMessage("업로드 중 문제가 발생했습니다.");
       setMessageType("error");
     }
@@ -103,12 +104,12 @@ export default function ToolMapView() {
     }
 
     try {
-      await fetch("http://127.0.0.1:8080/api/input-data", {
+      await fetch(`http://127.0.0.1:8080/api/input/${entity}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           scenario_id: scenarioId,
-          category: "tool-map",
+          category: entity,
           data: rows,
         }),
       });

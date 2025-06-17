@@ -37,12 +37,14 @@ export default function OperationMasterView() {
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("success");
 
+  const entity = "operation_master";
+
   useEffect(() => {
     const fetchOperationData = async () => {
       if (!selectedScenario?.scenario?.id) return;
       try {
         const res = await fetch(
-          `http://localhost:8080/api/operation-master/${selectedScenario.scenario.id}`
+          `http://localhost:8080/api/${entity}/${selectedScenario.id}`
         );
         if (!res.ok) throw new Error("Operation Master 불러오기 실패");
         const data = await res.json();
@@ -73,11 +75,10 @@ export default function OperationMasterView() {
 
     const formData = new FormData();
     formData.append("file", selectedFile);
-    const fileName = selectedFile.name;
 
     try {
       const res = await fetch(
-        `http://127.0.0.1:8080/api/input-file/${fileName}`,
+        `http://127.0.0.1:5000/api/input-file/${entity}`,
         {
           method: "POST",
           body: formData,
@@ -107,12 +108,12 @@ export default function OperationMasterView() {
     }
 
     try {
-      await fetch("http://127.0.0.1:8080/api/input-data", {
+      await fetch(`http://127.0.0.1:8080/api/input/${entity}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           scenario_id: scenarioId,
-          category: "operation-master",
+          category: entity,
           data: rows,
         }),
       });

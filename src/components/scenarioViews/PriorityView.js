@@ -34,12 +34,14 @@ export default function PriorityView() {
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("success");
 
+  const entity = "priority";
+
   useEffect(() => {
     const fetchPriorityData = async () => {
       if (!selectedScenario?.scenario?.id) return;
       try {
         const res = await fetch(
-          `http://localhost:8080/api/priority/${selectedScenario.scenario.id}`
+          `http://localhost:8080/api/${entity}/${selectedScenario.id}`
         );
         if (!res.ok) throw new Error("우선순위 데이터 불러오기 실패");
         const data = await res.json();
@@ -70,11 +72,10 @@ export default function PriorityView() {
 
     const formData = new FormData();
     formData.append("file", selectedFile);
-    const fileName = selectedFile.name;
 
     try {
       const res = await fetch(
-        `http://127.0.0.1:8080/api/input-file/${fileName}`,
+        `http://127.0.0.1:5000/api/input-file/${entity}`,
         {
           method: "POST",
           body: formData,
@@ -104,12 +105,12 @@ export default function PriorityView() {
     }
 
     try {
-      await fetch("http://127.0.0.1:8080/api/input-data", {
+      await fetch(`http://127.0.0.1:8080/api/input/${entity}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           scenario_id: scenarioId,
-          category: "priority",
+          category: entity,
           data: rows,
         }),
       });
@@ -165,14 +166,19 @@ export default function PriorityView() {
         </DialogActions>
       </Dialog>
 
-<Box sx={{ width: "100%", minWidth: 500, height: 400 }}>
-  <DataGrid
-    rows={rows}
-    columns={columns}
-    autoHeight
-    sx={{ width: '100%' }}
-  />
-</Box>
+      <DataGrid
+        autoHeight
+        rows={rows || []}
+        columns={columns}
+        getRowId={(row) => row.id || Math.random()}
+        pageSize={10}
+        rowHeight={40}
+        disableRowSelectionOnClick
+        sx={{
+          backgroundColor: "#fff",
+          border: "1px solid #ccc",
+        }}
+      />
     </Box>
   );
 }

@@ -39,7 +39,7 @@ export default function ManufacturingProcessView() {
       if (!selectedScenario?.scenario?.id) return;
       try {
         const res = await fetch(
-          `http://localhost:8080/api/${entity}/${selectedScenario.scenario.id}`
+          `http://localhost:8080/api/${entity}/${selectedScenario.id}`
         );
         if (!res.ok) throw new Error("라우팅 데이터 불러오기 실패");
         const data = await res.json();
