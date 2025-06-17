@@ -96,12 +96,6 @@ export default function AddEmployeePage() {
             value={form.position}
             onChange={handleChange("position")}
           />
-          <TextField
-            label="역할"
-            size="small"
-            value={form.role}
-            onChange={handleChange("role")}
-          />
           <DatePicker
             label="입사일"
             value={form.hireDate}
@@ -123,7 +117,7 @@ export default function AddEmployeePage() {
                 primary={`${emp.name} (${emp.email})`}
                 secondary={`입사일: ${
                   emp.hireDate ? emp.hireDate.substring(0, 10) : "없음"
-                }, 직급: ${emp.position || "-"}, 역할: ${emp.role || "-"}`}
+                }, 직급: ${emp.position || "-"}`}
               />
             </ListItem>
           ))}
