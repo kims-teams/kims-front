@@ -39,7 +39,6 @@ export default function BomView() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("success");
-
   const { selectedScenario } = useScenarioStore();
   const [bomData, setBomData] = useState([]);
 

@@ -1,78 +1,118 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import {
-  Box, Button, Dialog, DialogTitle, DialogContent,
-  DialogActions, Input, Stack, Alert
+  Box,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Input,
+  Typography,
+  Stack,
+  Alert,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
+import { useEffect, useState } from "react";
 import { useScenarioStore } from "../../hooks/useScenarioStore";
 
-export default function Manufacturing_processView() {
+const columns = [
+  { field: "id", headerName: "순번", width: 80 },
+  { field: "routing_type", headerName: "라우팅 타입", width: 130 },
+  { field: "routing_name", headerName: "라우팅 명", width: 130 },
+  { field: "routing_id", headerName: "Routing코드", width: 130 },
+  { field: "scenario_id", headerName: "시나리오", width: 120 },
+  { field: "bop_id", headerName: "Bop 아이디", width: 120 },
+];
+
+export default function ManufacturingProcessView() {
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("success");
-  const [data, setData] = useState([]);
 
   const { selectedScenario } = useScenarioStore();
+  const [routingData, setRoutingData] = useState([]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const scenarioId = selectedScenario?.scenario?.id;
-      if (!scenarioId) return;
-
+    const fetchRoutingData = async () => {
+      if (!selectedScenario?.scenario?.id) return;
       try {
-        const res = await fetch(`http://localhost:8080/api/manufacturing-process/${scenarioId}`);
-        if (!res.ok) throw new Error("데이터 불러오기 실패");
-        const result = await res.json();
-        setData(result);
+        const res = await fetch(`http://localhost:8080/api/manufacturing-process/${selectedScenario.scenario.id}`);
+        if (!res.ok) throw new Error("라우팅 데이터 불러오기 실패");
+        const data = await res.json();
+        setRoutingData(data);
       } catch (err) {
-        console.error("불러오기 실패:", err);
+        console.error("라우팅 로딩 실패:", err);
       }
     };
-    fetchData();
+    fetchRoutingData();
   }, [selectedScenario]);
 
+  const handleOpenDialog = () => setUploadDialogOpen(true);
+  const handleCloseDialog = () => {
+    setUploadDialogOpen(false);
+    setSelectedFile(null);
+  };
+
+  const handleFileChange = (e) => {
+    setSelectedFile(e.target.files[0]);
+  };
+
   const handleUpload = async () => {
-    if (!selectedFile) return;
+    if (!selectedFile) {
+      setMessage("파일을 선택해주세요");
+      setMessageType("error");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("file", selectedFile);
+    const fileName = selectedFile.name;
 
     try {
-      const res = await fetch(`http://localhost:8080/api/input-file/${selectedFile.name}`, {
+      const res = await fetch(`http://127.0.0.1:8080/api/input-file/${fileName}`, {
         method: "POST",
         body: formData,
       });
+
       if (!res.ok) throw new Error("업로드 실패");
-      const result = await res.json();
-      setData(result);
-      setMessage("업로드 성공!");
+      const data = await res.json();
+      setRoutingData(data);
+      setMessage("파일 업로드 성공!");
       setMessageType("success");
-      setUploadDialogOpen(false);
+      handleCloseDialog();
     } catch (err) {
-      setMessage("업로드 실패");
+      console.error("파일 업로드 실패", err);
+      setMessage("업로드 중 문제가 발생했습니다.");
       setMessageType("error");
     }
   };
 
   const handleSave = async () => {
     const scenarioId = selectedScenario?.scenario?.id;
-    if (!scenarioId) return;
+    if (!scenarioId) {
+      setMessage("시나리오가 선택되지 않았습니다.");
+      setMessageType("error");
+      return;
+    }
+
     try {
-      await fetch("http://localhost:8080/api/input-data", {
+      await fetch("http://127.0.0.1:8080/api/input-data", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           scenario_id: scenarioId,
-          category: "manufacturing-process",
-          data: data,
+          category: "manufacturing_process",
+          data: routingData,
         }),
       });
+
       setMessage("저장 완료!");
       setMessageType("success");
     } catch (err) {
-      setMessage("저장 실패");
+      console.error("저장 실패", err);
+      setMessage("저장 중 오류가 발생했습니다.");
       setMessageType("error");
     }
   };
@@ -80,39 +120,39 @@ export default function Manufacturing_processView() {
   return (
     <Box sx={{ width: "100%", overflow: "auto" }}>
       {message && (
-        <Alert severity={messageType} onClose={() => setMessage("")}>
-          {message}
-        </Alert>
+        <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
+          <Alert severity={messageType} onClose={() => setMessage("")} sx={{ maxWidth: 400, width: "100%" }}>
+            {message}
+          </Alert>
+        </Box>
       )}
 
       <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
-        <Button variant="contained" onClick={() => setUploadDialogOpen(true)}>
-          데이터 가져오기
-        </Button>
+        <Button variant="contained" onClick={handleOpenDialog}>데이터 가져오기</Button>
         <Button variant="outlined" onClick={handleSave}>저장</Button>
       </Stack>
 
-      <Dialog open={uploadDialogOpen} onClose={() => setUploadDialogOpen(false)}>
+      <Dialog open={uploadDialogOpen} onClose={handleCloseDialog}>
         <DialogTitle>파일 업로드</DialogTitle>
         <DialogContent>
-          <Input type="file" onChange={(e) => setSelectedFile(e.target.files[0])} fullWidth />
+          <Typography sx={{ mb: 1 }}>클릭하거나 파일을 선택해서 업로드하세요.</Typography>
+          <Input type="file" onChange={handleFileChange} fullWidth />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setUploadDialogOpen(false)}>취소</Button>
-          <Button onClick={handleUpload} variant="contained">업로드</Button>
+          <Button onClick={handleCloseDialog}>취소</Button>
+          <Button variant="contained" onClick={handleUpload} disabled={!selectedFile}>업로드</Button>
         </DialogActions>
       </Dialog>
 
       <DataGrid
         autoHeight
-        rows={data || []}
-        columns={Object.keys(data[0] || {}).map((key) => ({
-          field: key,
-          headerName: key,
-          width: 120,
-        }))}
+        rows={routingData || []}
+        columns={columns}
         getRowId={(row) => row.id || Math.random()}
         pageSize={10}
+        rowHeight={40}
+        disableRowSelectionOnClick
+        sx={{ backgroundColor: "#fff", border: "1px solid #ccc" }}
       />
     </Box>
   );
