@@ -36,6 +36,7 @@ export default function ScenarioPanel() {
   const [openDialog, setOpenDialog] = useState(false);
   const [scenarioName, setScenarioName] = useState("");
 
+
   const {
     scenarioList,
     setScenarioList,
@@ -43,6 +44,7 @@ export default function ScenarioPanel() {
     setSelectedScenario,
     addScenario,
   } = useScenarioStore();
+
 
   const handleAddScenario = async () => {
     if (!scenarioName.trim()) return;
@@ -68,7 +70,7 @@ export default function ScenarioPanel() {
         },
       };
 
-      addScenario(scenarioWithData); 
+      addScenario(scenarioWithData);
       setScenarioName("");
       setOpenDialog(false);
     } catch (err) {
@@ -105,16 +107,24 @@ export default function ScenarioPanel() {
         transition: "width 0.2s ease",
       }}
     >
-   
-      <Box sx={{ display: "flex", justifyContent: collapsed ? "center" : "flex-end", p: 1 }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: collapsed ? "center" : "flex-end",
+          p: 1,
+        }}
+      >
         <IconButton size="small" onClick={() => setCollapsed(!collapsed)}>
-          {collapsed ? <ArrowForwardIosIcon fontSize="small" /> : <ArrowBackIosNewIcon fontSize="small" />}
+          {collapsed ? (
+            <ArrowForwardIosIcon fontSize="small" />
+          ) : (
+            <ArrowBackIosNewIcon fontSize="small" />
+          )}
         </IconButton>
       </Box>
 
       {!collapsed && (
         <>
-       
           <Typography variant="body2" sx={{ px: 2, color: "gray", mb: 1 }}>
             시나리오 패널
           </Typography>
@@ -139,7 +149,11 @@ export default function ScenarioPanel() {
               sx={{ fontSize: 14 }}
             />
             <Tooltip title="시나리오 추가">
-              <IconButton size="small" sx={{ ml: 1 }} onClick={() => setOpenDialog(true)}>
+              <IconButton
+                size="small"
+                sx={{ ml: 1 }}
+                onClick={() => setOpenDialog(true)}
+              >
                 <AddIcon fontSize="small" />
               </IconButton>
             </Tooltip>
@@ -185,7 +199,11 @@ export default function ScenarioPanel() {
             </DialogContent>
             <DialogActions>
               <Button onClick={() => setOpenDialog(false)}>취소</Button>
-              <Button onClick={handleAddScenario} variant="contained" disabled={!scenarioName.trim()}>
+              <Button
+                onClick={handleAddScenario}
+                variant="contained"
+                disabled={!scenarioName.trim()}
+              >
                 추가
               </Button>
             </DialogActions>

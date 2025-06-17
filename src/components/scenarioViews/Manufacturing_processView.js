@@ -38,7 +38,9 @@ export default function ManufacturingProcessView() {
     const fetchRoutingData = async () => {
       if (!selectedScenario?.scenario?.id) return;
       try {
-        const res = await fetch(`http://localhost:8080/api/manufacturing-process/${selectedScenario.scenario.id}`);
+        const res = await fetch(
+          `http://localhost:8080/api/manufacturing-process/${selectedScenario.scenario.id}`
+        );
         if (!res.ok) throw new Error("라우팅 데이터 불러오기 실패");
         const data = await res.json();
         setRoutingData(data);
@@ -71,10 +73,13 @@ export default function ManufacturingProcessView() {
     const fileName = selectedFile.name;
 
     try {
-      const res = await fetch(`http://127.0.0.1:8080/api/input-file/${fileName}`, {
-        method: "POST",
-        body: formData,
-      });
+      const res = await fetch(
+        `http://127.0.0.1:8080/api/input-file/${fileName}`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
       if (!res.ok) throw new Error("업로드 실패");
       const data = await res.json();
@@ -121,26 +126,42 @@ export default function ManufacturingProcessView() {
     <Box sx={{ width: "100%", overflow: "auto" }}>
       {message && (
         <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
-          <Alert severity={messageType} onClose={() => setMessage("")} sx={{ maxWidth: 400, width: "100%" }}>
+          <Alert
+            severity={messageType}
+            onClose={() => setMessage("")}
+            sx={{ maxWidth: 400, width: "100%" }}
+          >
             {message}
           </Alert>
         </Box>
       )}
 
       <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
-        <Button variant="contained" onClick={handleOpenDialog}>데이터 가져오기</Button>
-        <Button variant="outlined" onClick={handleSave}>저장</Button>
+        <Button variant="contained" onClick={handleOpenDialog}>
+          데이터 가져오기
+        </Button>
+        <Button variant="outlined" onClick={handleSave}>
+          저장
+        </Button>
       </Stack>
 
       <Dialog open={uploadDialogOpen} onClose={handleCloseDialog}>
         <DialogTitle>파일 업로드</DialogTitle>
         <DialogContent>
-          <Typography sx={{ mb: 1 }}>클릭하거나 파일을 선택해서 업로드하세요.</Typography>
+          <Typography sx={{ mb: 1 }}>
+            클릭하거나 파일을 선택해서 업로드하세요.
+          </Typography>
           <Input type="file" onChange={handleFileChange} fullWidth />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog}>취소</Button>
-          <Button variant="contained" onClick={handleUpload} disabled={!selectedFile}>업로드</Button>
+          <Button
+            variant="contained"
+            onClick={handleUpload}
+            disabled={!selectedFile}
+          >
+            업로드
+          </Button>
         </DialogActions>
       </Dialog>
 

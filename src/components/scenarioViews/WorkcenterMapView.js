@@ -113,7 +113,7 @@ export default function WorkcenterMapView() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           scenario_id: scenarioId,
-          category: "workcenter-map", 
+          category: "workcenter-map",
           data: rows,
         }),
       });
