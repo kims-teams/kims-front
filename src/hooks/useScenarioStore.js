@@ -1,17 +1,16 @@
 import { create } from "zustand";
 
+export const useScenarioStore = create((set) => ({
+  scenarioList: [],               
+  selectedScenario: null,        
 
-const useScenarioStore = create((set) => ({
+  setScenarioList: (list) => set({ scenarioList: list }),
 
-  selectedScenarioId: null,
-  setSelectedScenarioId: (id) => set({ selectedScenarioId: id }),
+  setSelectedScenario: (scenario) => set({ selectedScenario: scenario }),
 
-  
-  bomData: [],
-  setBomData: (data) => set({ bomData: data }),
-  resetBomData: () => set({ bomData: [] }),
-
-
+  addScenario: (scenario) =>
+    set((state) => ({
+      scenarioList: [...state.scenarioList, scenario],
+      selectedScenario: scenario,
+    }))
 }));
-
-export default useScenarioStore;

@@ -18,36 +18,39 @@ import {
   TextField,
   Button,
 } from "@mui/material";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import SearchIcon from "@mui/icons-material/Search";
-import AddIcon from "@mui/icons-material/Add";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
+
+import {
+  ArrowForwardIos as ArrowForwardIosIcon,
+  ArrowBackIosNew as ArrowBackIosNewIcon,
+  Search as SearchIcon,
+  Add as AddIcon,
+  MoreVert as MoreVertIcon,
+} from "@mui/icons-material";
 
 import { useState } from "react";
-import useScenarioStore from "../hooks/useScenarioStore";
-
+import { useScenarioStore } from "../hooks/useScenarioStore";
 
 export default function ScenarioPanel() {
   const [collapsed, setCollapsed] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
   const [scenarioName, setScenarioName] = useState("");
-  const [scenarioList, setScenarioList] = useState([]);
-  const [selectedScenario, setSelectedScenario] = useState(null);
 
-  const setScenarioData = useScenarioStore((state) => state.setScenarioData); setter
+  const {
+    scenarioList,
+    selectedScenario,
+    setSelectedScenario,
+    addScenario,
+  } = useScenarioStore();
 
-  const addScenario = async () => {
+  const handleAddScenario = async () => {
     if (!scenarioName.trim()) return;
 
     try {
       const res = await fetch("http://localhost:8080/api/scenario", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: scenarioName,
-        }),
+        body: JSON.stringify({ name: scenarioName }),
       });
 
       if (!res.ok) throw new Error("시나리오 생성 실패");
@@ -65,10 +68,7 @@ export default function ScenarioPanel() {
         },
       };
 
-      setScenarioList((prev) => [...prev, scenarioWithData]);
-      setScenarioData(scenarioWithData); 
-      setSelectedScenario(scenarioWithData);
-
+      addScenario(scenarioWithData); 
       setScenarioName("");
       setOpenDialog(false);
     } catch (err) {
@@ -89,24 +89,16 @@ export default function ScenarioPanel() {
         transition: "width 0.2s ease",
       }}
     >
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: collapsed ? "center" : "flex-end",
-          p: 1,
-        }}
-      >
+   
+      <Box sx={{ display: "flex", justifyContent: collapsed ? "center" : "flex-end", p: 1 }}>
         <IconButton size="small" onClick={() => setCollapsed(!collapsed)}>
-          {collapsed ? (
-            <ArrowForwardIosIcon fontSize="small" />
-          ) : (
-            <ArrowBackIosNewIcon fontSize="small" />
-          )}
+          {collapsed ? <ArrowForwardIosIcon fontSize="small" /> : <ArrowBackIosNewIcon fontSize="small" />}
         </IconButton>
       </Box>
 
       {!collapsed && (
         <>
+       
           <Typography variant="body2" sx={{ px: 2, color: "gray", mb: 1 }}>
             시나리오 패널
           </Typography>
@@ -131,11 +123,7 @@ export default function ScenarioPanel() {
               sx={{ fontSize: 14 }}
             />
             <Tooltip title="시나리오 추가">
-              <IconButton
-                size="small"
-                sx={{ ml: 1 }}
-                onClick={() => setOpenDialog(true)}
-              >
+              <IconButton size="small" sx={{ ml: 1 }} onClick={() => setOpenDialog(true)}>
                 <AddIcon fontSize="small" />
               </IconButton>
             </Tooltip>
@@ -153,10 +141,8 @@ export default function ScenarioPanel() {
                   key={idx}
                   disablePadding
                   button
-                  onClick={() => {
-                    setSelectedScenario(s);
-                    setScenarioData(s); 
-                  }}
+                  selected={selectedScenario?.scenario?.id === s.scenario.id}
+                  onClick={() => setSelectedScenario(s)}
                 >
                   <ListItemText primary={s.scenario.name} />
                   <ListItemSecondaryAction>
@@ -183,11 +169,7 @@ export default function ScenarioPanel() {
             </DialogContent>
             <DialogActions>
               <Button onClick={() => setOpenDialog(false)}>취소</Button>
-              <Button
-                onClick={addScenario}
-                variant="contained"
-                disabled={!scenarioName.trim()}
-              >
+              <Button onClick={handleAddScenario} variant="contained" disabled={!scenarioName.trim()}>
                 추가
               </Button>
             </DialogActions>
