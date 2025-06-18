@@ -96,7 +96,7 @@ export default function ManufacturingProcessView() {
   };
 
   const handleSave = async () => {
-    const scenarioId = selectedScenario?.scenario?.id;
+    const scenarioId = selectedScenario?.id;
     if (!scenarioId) {
       setMessage("시나리오가 선택되지 않았습니다.");
       setMessageType("error");

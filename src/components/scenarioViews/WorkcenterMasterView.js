@@ -138,7 +138,7 @@ try {
   };
 
   return (
-    <Box sx={{ width: "100%", overflow: "auto", p: 2 }}>
+    <Box sx={{ width: "100%", overflow: "auto" }}>
       {message && (
         <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
           <Alert
