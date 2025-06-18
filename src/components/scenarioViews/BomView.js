@@ -18,20 +18,18 @@ import { useScenarioStore } from "../../hooks/useScenarioStore";
 
 const columns = [
   { field: "id", headerName: "순번", width: 80 },
-  { field: "to_part_id", headerName: "생산 제품 코드", width: 130 },
-  { field: "operation_id", headerName: "공정 코드", width: 130 },
-  { field: "out_qty", headerName: "생산 량", width: 100 },
-  { field: "out_uom", headerName: "생산량 단위", width: 100 },
-  { field: "from_part_id", headerName: "투입 제품 코드", width: 130 },
-  { field: "in_qty", headerName: "투입 량", width: 100 },
-  { field: "in_uom", headerName: "투입 량 단위", width: 100 },
-  { field: "to_part_name", headerName: "생산 제품명", width: 130 },
-  { field: "from_part_name", headerName: "투입 제품명", width: 130 },
+  { field: "toPartId", headerName: "생산 제품 코드", width: 130 },
+  { field: "operationId", headerName: "공정 코드", width: 130 },
+  { field: "outQty", headerName: "생산 량", width: 100 },
+  { field: "outUom", headerName: "생산량 단위", width: 100 },
+  { field: "fromPartId", headerName: "투입 제품 코드", width: 130 },
+  { field: "inQty", headerName: "투입 량", width: 100 },
+  { field: "inUom", headerName: "투입 량 단위", width: 100 },
+  { field: "toPartName", headerName: "생산 제품명", width: 130 },
+  { field: "fromPartName", headerName: "투입 제품명", width: 130 },
   { field: "zseq", headerName: "순서", width: 80 },
-  { field: "scenario_id", headerName: "시나리오", width: 100 },
-  { field: "from_part_level", headerName: "FromPartLevel", width: 120 },
-  { field: "to_part_level", headerName: "ToPartLevel", width: 120 },
-  { field: "bop_id", headerName: "Bop 아이디", width: 100 },
+  { field: "fromPartLevel", headerName: "FromPartLevel", width: 120 },
+  { field: "toPartLevel", headerName: "ToPartLevel", width: 120 },
 ];
 export default function BomView() {
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
@@ -44,14 +42,18 @@ export default function BomView() {
 
   useEffect(() => {
     const fetchBomData = async () => {
-      if (!selectedScenario?.scenario?.id) return;
+      if (!selectedScenario?.id) return;
       try {
         const res = await fetch(
-          `http://localhost:8080/api/bom/${selectedScenario.id}`
+          `http://localhost:8080/api/input/bom/${selectedScenario.id}`
         );
         if (!res.ok) throw new Error("BOM 데이터 불러오기 실패");
         const data = await res.json();
-        setBomData(data);
+        const numberedRows = data.map((row, index) => ({
+        ...row,
+        id: index + 1,
+      }));
+        setBomData(numberedRows);
       } catch (err) {
         console.error("BOM 로딩 실패:", err);
       }
@@ -111,24 +113,28 @@ export default function BomView() {
     }
 
     try {
-      console.log(bomData);
-      await fetch("http://127.0.0.1:8080/api/input/" + entity, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          scenario_id: scenarioId,
-          category: "bom",
-          data: bomData,
-        }),
-      });
+  const res = await fetch(`http://127.0.0.1:8080/api/input/${entity}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      scenario_id: scenarioId,
+      category: entity,
+      data: rows,
+    }),
+  });
 
-      setMessage("저장 완료!");
-      setMessageType("success");
-    } catch (err) {
-      console.error("저장 실패", err);
-      setMessage("저장 중 오류가 발생했습니다.");
-      setMessageType("error");
-    }
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(`서버 오류: ${res.status} - ${errorText}`);
+  }
+
+  setMessage("저장 완료!");
+  setMessageType("success");
+} catch (err) {
+  console.error("❌ 저장 실패", err);
+  setMessage("저장 중 오류가 발생했습니다.");
+  setMessageType("error");
+}
   };
 
   return (

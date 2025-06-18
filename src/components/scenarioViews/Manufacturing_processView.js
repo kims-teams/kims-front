@@ -18,11 +18,9 @@ import { useScenarioStore } from "../../hooks/useScenarioStore";
 
 const columns = [
   { field: "id", headerName: "순번", width: 80 },
-  { field: "routing_type", headerName: "라우팅 타입", width: 130 },
-  { field: "routing_name", headerName: "라우팅 명", width: 130 },
-  { field: "routing_id", headerName: "Routing코드", width: 130 },
-  { field: "scenario_id", headerName: "시나리오", width: 120 },
-  { field: "bop_id", headerName: "Bop 아이디", width: 120 },
+  { field: "routingType", headerName: "라우팅 타입", width: 130 },
+  { field: "routingName", headerName: "라우팅 명", width: 130 },
+  { field: "routingId", headerName: "Routing코드", width: 130 },
 ];
 
 export default function ManufacturingProcessView() {
@@ -36,14 +34,18 @@ export default function ManufacturingProcessView() {
 
   useEffect(() => {
     const fetchRoutingData = async () => {
-      if (!selectedScenario?.scenario?.id) return;
+      if (!selectedScenario?.id) return;
       try {
         const res = await fetch(
-          `http://localhost:8080/api/${entity}/${selectedScenario.id}`
+          `http://localhost:8080/api/input/${entity}/${selectedScenario.id}`
         );
         if (!res.ok) throw new Error("라우팅 데이터 불러오기 실패");
         const data = await res.json();
-        setRoutingData(data);
+        const numberedRows = data.map((row, index) => ({
+        ...row,
+        id: index + 1,
+      }));
+        setRoutingData(numberedRows);
       } catch (err) {
         console.error("라우팅 로딩 실패:", err);
       }
@@ -102,23 +104,28 @@ export default function ManufacturingProcessView() {
     }
 
     try {
-      await fetch(`http://127.0.0.1:8080/api/input/${entity}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          scenario_id: scenarioId,
-          category: entity,
-          data: routingData,
-        }),
-      });
+  const res = await fetch(`http://127.0.0.1:8080/api/input/${entity}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      scenario_id: scenarioId,
+      category: entity,
+      data: rows,
+    }),
+  });
 
-      setMessage("저장 완료!");
-      setMessageType("success");
-    } catch (err) {
-      console.error("저장 실패", err);
-      setMessage("저장 중 오류가 발생했습니다.");
-      setMessageType("error");
-    }
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(`서버 오류: ${res.status} - ${errorText}`);
+  }
+
+  setMessage("저장 완료!");
+  setMessageType("success");
+} catch (err) {
+  console.error("❌ 저장 실패", err);
+  setMessage("저장 중 오류가 발생했습니다.");
+  setMessageType("error");
+}
   };
 
   return (

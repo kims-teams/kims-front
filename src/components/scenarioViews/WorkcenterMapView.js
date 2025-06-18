@@ -18,15 +18,13 @@ import { useScenarioStore } from "../../hooks/useScenarioStore";
 
 const columns = [
   { field: "id", headerName: "순번", width: 80 },
-  { field: "routing_id", headerName: "Routing코드", width: 130 },
-  { field: "part_id", headerName: "품목코드", width: 120 },
-  { field: "operation_id", headerName: "공정 코드", width: 120 },
+  { field: "routingId", headerName: "Routing코드", width: 130 },
+  { field: "partId", headerName: "품목코드", width: 120 },
+  { field: "operationId", headerName: "공정 코드", width: 120 },
   { field: "routing_group", headerName: "Routing그룹", width: 120 },
-  { field: "workcenter_id", headerName: "작업장코드", width: 130 },
-  { field: "tact_time", headerName: "생산 간격", width: 120 },
-  { field: "tact_time_uom", headerName: "생산 간격 단위", width: 130 },
-  { field: "scenario_id", headerName: "시나리오", width: 120 },
-  { field: "resource_id", headerName: "Resource 아이디", width: 130 },
+  { field: "workcenterId", headerName: "작업장코드", width: 130 },
+  { field: "tactTime", headerName: "생산 간격", width: 120 },
+  { field: "tactTimeUom", headerName: "생산 간격 단위", width: 130 },
 ];
 
 export default function WorkcenterMapView() {
@@ -41,15 +39,19 @@ export default function WorkcenterMapView() {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!selectedScenario?.scenario?.id) return;
+      if (!selectedScenario?.id) return;
       try {
         const res = await fetch(
-          `http://localhost:8080/api/${entity}/${selectedScenario.id}`
+          `http://localhost:8080/api/input/${entity}/${selectedScenario.id}`
         );
         if (!res.ok) throw new Error("불러오기 실패");
 
         const data = await res.json();
-        setRows(data);
+                const numberedRows = data.map((row, index) => ({
+        ...row,
+        id: index + 1,
+      }));
+        setRows(numberedRows);
       } catch (err) {
         console.error("불러오기 오류:", err);
       }
@@ -77,27 +79,29 @@ export default function WorkcenterMapView() {
     const formData = new FormData();
     formData.append("file", selectedFile);
 
-    try {
-      const res = await fetch(
-        `http://127.0.0.1:5000/api/input-file/${entity}`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
+   try {
+  const res = await fetch(`http://127.0.0.1:8080/api/input/${entity}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      scenario_id: scenarioId,
+      category: entity,
+      data: rows,
+    }),
+  });
 
-      if (!res.ok) throw new Error("업로드 실패");
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(`서버 오류: ${res.status} - ${errorText}`);
+  }
 
-      const data = await res.json();
-      setRows(data);
-      setMessage("파일 업로드 성공!");
-      setMessageType("success");
-      handleCloseDialog();
-    } catch (err) {
-      console.error("파일 업로드 실패", err);
-      setMessage("업로드 중 문제가 발생했습니다.");
-      setMessageType("error");
-    }
+  setMessage("저장 완료!");
+  setMessageType("success");
+} catch (err) {
+  console.error("❌ 저장 실패", err);
+  setMessage("저장 중 오류가 발생했습니다.");
+  setMessageType("error");
+}
   };
 
   const handleSave = async () => {
