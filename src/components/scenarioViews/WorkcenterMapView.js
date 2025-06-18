@@ -101,7 +101,7 @@ export default function WorkcenterMapView() {
   };
 
   const handleSave = async () => {
-    const scenarioId = selectedScenario?.scenario?.id;
+    const scenarioId = selectedScenario?.id;
     if (!scenarioId) {
       setMessage("시나리오가 선택되지 않았습니다.");
       setMessageType("error");
@@ -129,7 +129,7 @@ export default function WorkcenterMapView() {
   };
 
   return (
-    <Box sx={{ width: "100%", overflow: "auto", p: 2 }}>
+    <Box sx={{ width: "100%", overflow: "auto" }}>
       {message && (
         <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
           <Alert

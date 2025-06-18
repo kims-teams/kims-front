@@ -36,7 +36,7 @@ export default function ManufacturingProcessView() {
 
   useEffect(() => {
     const fetchRoutingData = async () => {
-      if (!selectedScenario?.scenario?.id) return;
+      if (!selectedScenario?.id) return;
       try {
         const res = await fetch(
           `http://localhost:8080/api/${entity}/${selectedScenario.id}`
@@ -94,7 +94,7 @@ export default function ManufacturingProcessView() {
   };
 
   const handleSave = async () => {
-    const scenarioId = selectedScenario?.scenario?.id;
+    const scenarioId = selectedScenario?.id;
     if (!scenarioId) {
       setMessage("시나리오가 선택되지 않았습니다.");
       setMessageType("error");

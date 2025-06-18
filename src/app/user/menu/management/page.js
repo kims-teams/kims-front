@@ -15,9 +15,15 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 
+import ModifyUserModal from "components/ModifyUserModal";
+import AddUserModal from "components/AddUserModal";
+
 export default function Management() {
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [addModalOpen, setAddModalOpen] = useState(false);
 
   useEffect(() => {
     fetch("http://localhost:8080/api/user")
@@ -40,7 +46,34 @@ export default function Management() {
   });
 
   const handleEdit = (row) => {
-    console.log("수정 요청:", row);
+    setSelectedUser(row);
+    setEditModalOpen(true);
+  };
+
+  const handleUpdateUser = (updatedUser) => {
+    const token = localStorage.getItem("token");
+    fetch(`http://localhost:8080/api/user/${updatedUser.realId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(updatedUser),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("수정 실패");
+        setUsers((prev) =>
+          prev.map((user) =>
+            user.id === updatedUser.realId ? { ...user, ...updatedUser } : user
+          )
+        );
+        alert("수정이 완료되었습니다.");
+        setEditModalOpen(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        alert("수정 중 오류 발생");
+      });
   };
 
   const handleDelete = (row) => {
@@ -66,6 +99,30 @@ export default function Management() {
 
   const handleResetPassword = (row) => {
     alert(`${row.email}의 비밀번호 초기화 기능은 아직 구현되지 않았습니다.`);
+  };
+
+  const handleAddUser = (newUser) => {
+    const token = localStorage.getItem("token");
+    fetch("http://localhost:8080/api/user", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(newUser),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("등록 실패");
+        return res.json();
+      })
+      .then((data) => {
+        alert("사용자 등록 완료");
+        setUsers((prev) => [...prev, data]);
+      })
+      .catch((err) => {
+        console.error(err);
+        alert("등록 실패");
+      });
   };
 
   const columns = [
@@ -131,7 +188,7 @@ export default function Management() {
     role: u.role || "",
     status: u.status || "",
   }));
-  
+
   return (
     <Box sx={{ p: 2 }}>
       <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
@@ -150,7 +207,11 @@ export default function Management() {
             ),
           }}
         />
-        <Button variant="contained" size="small">
+        <Button
+          variant="contained"
+          size="small"
+          onClick={() => setAddModalOpen(true)}
+        >
           + 사원 추가
         </Button>
       </Box>
@@ -165,6 +226,19 @@ export default function Management() {
           getRowId={(row) => row.id}
         />
       </Box>
+
+      <ModifyUserModal
+        open={editModalOpen}
+        onClose={() => setEditModalOpen(false)}
+        userData={selectedUser}
+        onSave={handleUpdateUser}
+      />
+
+      <AddUserModal
+        open={addModalOpen}
+        onClose={() => setAddModalOpen(false)}
+        onAdd={handleAddUser}
+      />
     </Box>
   );
 }
