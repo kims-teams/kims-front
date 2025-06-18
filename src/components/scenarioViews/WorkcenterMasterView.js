@@ -18,14 +18,12 @@ import { useScenarioStore } from "../../hooks/useScenarioStore";
 
 const columns = [
   { field: "id", headerName: "순번", width: 80 },
-  { field: "workcenter_id", headerName: "작업장코드", width: 130 },
-  { field: "workcenter_name", headerName: "호기명", width: 120 },
-  { field: "workcenter_group", headerName: "호기그룹", width: 120 },
-  { field: "factor_id", headerName: "우선순위 그룹", width: 130 },
-  { field: "workcenter_state", headerName: "호기상태", width: 120 },
+  { field: "workcenterId", headerName: "작업장코드", width: 130 },
+  { field: "workcenterName", headerName: "호기명", width: 120 },
+  { field: "workcenterGroup", headerName: "호기그룹", width: 120 },
+  { field: "factorId", headerName: "우선순위 그룹", width: 130 },
+  { field: "workcenterState", headerName: "호기상태", width: 120 },
   { field: "automation", headerName: "자동화 장비", width: 120 },
-  { field: "scenario_id", headerName: "시나리오", width: 120 },
-  { field: "resource_id", headerName: "Resource 아이디", width: 120 },
 ];
 
 export default function WorkcenterMasterView() {
@@ -40,14 +38,22 @@ export default function WorkcenterMasterView() {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!selectedScenario?.scenario?.id) return;
+      if (!selectedScenario?.id){
+        console.log(" 조건 불충족 ")
+       return;
+      }
       try {
         const res = await fetch(
-          `http://localhost:8080/api/${entity}/${selectedScenario.id}`
+          `http://localhost:8080/api/input/${entity}/${selectedScenario.id}`
         );
         if (!res.ok) throw new Error("불러오기 실패");
         const data = await res.json();
-        setRows(data);
+
+        const numberedRows = data.map((row, index) => ({
+        ...row,
+        id: index + 1,
+      }));
+        setRows(numberedRows);
       } catch (err) {
         console.error("불러오기 오류:", err);
       }
@@ -99,31 +105,36 @@ export default function WorkcenterMasterView() {
   };
 
   const handleSave = async () => {
-    const scenarioId = selectedScenario?.scenario?.id;
+    const scenarioId = selectedScenario?.id;
     if (!scenarioId) {
       setMessage("시나리오가 선택되지 않았습니다.");
       setMessageType("error");
       return;
     }
 
-    try {
-      await fetch(`http://127.0.0.1:8080/api/input/${entity}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          scenario_id: scenarioId,
-          category: entity,
-          data: rows,
-        }),
-      });
+try {
+  const res = await fetch(`http://127.0.0.1:8080/api/input/${entity}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      scenario_id: scenarioId,
+      category: entity,
+      data: rows,
+    }),
+  });
 
-      setMessage("저장 완료!");
-      setMessageType("success");
-    } catch (err) {
-      console.error("저장 실패", err);
-      setMessage("저장 중 오류가 발생했습니다.");
-      setMessageType("error");
-    }
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(`서버 오류: ${res.status} - ${errorText}`);
+  }
+
+  setMessage("저장 완료!");
+  setMessageType("success");
+} catch (err) {
+  console.error("❌ 저장 실패", err);
+  setMessage("저장 중 오류가 발생했습니다.");
+  setMessageType("error");
+}
   };
 
   return (

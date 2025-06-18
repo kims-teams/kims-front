@@ -18,12 +18,10 @@ import { useScenarioStore } from "../../hooks/useScenarioStore";
 
 const columns = [
   { field: "id", headerName: "순번", width: 100 },
-  { field: "priority_id", headerName: "우선순위 그룹", width: 150 },
-  { field: "factor_id", headerName: "우선순위", width: 150 },
+  { field: "priorityId", headerName: "우선순위 그룹", width: 150 },
+  { field: "factorId", headerName: "우선순위", width: 150 },
   { field: "sequence", headerName: "우선순위 순서", width: 150 },
   { field: "description", headerName: "설명", width: 200 },
-  { field: "scenario_id", headerName: "시나리오", width: 150 },
-  { field: "config_id", headerName: "Config 아이디", width: 130 },
 ];
 
 export default function PriorityView() {
@@ -38,14 +36,18 @@ export default function PriorityView() {
 
   useEffect(() => {
     const fetchPriorityData = async () => {
-      if (!selectedScenario?.scenario?.id) return;
+      if (!selectedScenario?.id) return;
       try {
         const res = await fetch(
-          `http://localhost:8080/api/${entity}/${selectedScenario.id}`
+          `http://localhost:8080/api/input/${entity}/${selectedScenario.id}`
         );
         if (!res.ok) throw new Error("우선순위 데이터 불러오기 실패");
         const data = await res.json();
-        setRows(data);
+        const numberedRows = data.map((row, index) => ({
+        ...row,
+        id: index + 1,
+      }));
+        setRows(numberedRows);
       } catch (err) {
         console.error("불러오기 실패:", err);
       }
@@ -105,22 +107,28 @@ export default function PriorityView() {
     }
 
     try {
-      await fetch(`http://127.0.0.1:8080/api/input/${entity}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          scenario_id: scenarioId,
-          category: entity,
-          data: rows,
-        }),
-      });
-      setMessage("저장 완료!");
-      setMessageType("success");
-    } catch (err) {
-      console.error("저장 실패:", err);
-      setMessage("저장 중 오류가 발생했습니다.");
-      setMessageType("error");
-    }
+  const res = await fetch(`http://127.0.0.1:8080/api/input/${entity}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      scenario_id: scenarioId,
+      category: entity,
+      data: rows,
+    }),
+  });
+
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(`서버 오류: ${res.status} - ${errorText}`);
+  }
+
+  setMessage("저장 완료!");
+  setMessageType("success");
+} catch (err) {
+  console.error("❌ 저장 실패", err);
+  setMessage("저장 중 오류가 발생했습니다.");
+  setMessageType("error");
+}
   };
 
   return (

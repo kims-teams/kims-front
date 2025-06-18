@@ -18,15 +18,15 @@ import { useScenarioStore } from "../../hooks/useScenarioStore";
 
 const columns = [
   { field: "id", headerName: "순번", width: 80 },
-  { field: "operation_id", headerName: "공정 코드", width: 130 },
-  { field: "operation_name", headerName: "공정 명", width: 130 },
-  { field: "run_time", headerName: "공정 실행 시간", width: 130 },
-  { field: "run_time_uom", headerName: "실행 시간 단위", width: 130 },
-  { field: "operation_seq", headerName: "공정 순서", width: 110 },
-  { field: "operation_type", headerName: "공정 유형", width: 130 },
-  { field: "sourcing_type", headerName: "SourcingType", width: 130 },
-  { field: "scenario_id", headerName: "시나리오", width: 120 },
-  { field: "bop_id", headerName: "Bop 아이디", width: 100 },
+  { field: "operationId", headerName: "공정 코드", width: 130 },
+  { field: "operationName", headerName: "공정 명", width: 130 },
+  { field: "runTime", headerName: "공정 실행 시간", width: 130 },
+  { field: "runTimeUom", headerName: "실행 시간 단위", width: 130 },
+  { field: "operationSeq", headerName: "공정 순서", width: 110 },
+  { field: "operationType", headerName: "공정 유형", width: 130 },
+  { field: "sourcingType", headerName: "SourcingType", width: 130 },
+  { field: "scenarioId", headerName: "시나리오", width: 120 },
+  { field: "bopId", headerName: "Bop 아이디", width: 100 },
 ];
 
 export default function OperationMasterView() {
@@ -37,18 +37,22 @@ export default function OperationMasterView() {
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("success");
 
-  const entity = "operation_master";
+  const entity = "operation";
 
   useEffect(() => {
     const fetchOperationData = async () => {
-      if (!selectedScenario?.scenario?.id) return;
+      if (!selectedScenario?.id) return;
       try {
         const res = await fetch(
-          `http://localhost:8080/api/${entity}/${selectedScenario.id}`
+          `http://localhost:8080/api/input/${entity}/${selectedScenario.id}`
         );
         if (!res.ok) throw new Error("Operation Master 불러오기 실패");
         const data = await res.json();
-        setRows(data);
+        const numberedRows = data.map((row, index) => ({
+        ...row,
+        id: index + 1,
+      }));
+        setRows(numberedRows);
       } catch (err) {
         console.error("로딩 실패:", err);
       }
@@ -107,24 +111,29 @@ export default function OperationMasterView() {
       return;
     }
 
-    try {
-      await fetch(`http://127.0.0.1:8080/api/input/${entity}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          scenario_id: scenarioId,
-          category: entity,
-          data: rows,
-        }),
-      });
+   try {
+  const res = await fetch(`http://127.0.0.1:8080/api/input/${entity}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      scenario_id: scenarioId,
+      category: entity,
+      data: rows,
+    }),
+  });
 
-      setMessage("저장 완료!");
-      setMessageType("success");
-    } catch (err) {
-      console.error("저장 실패:", err);
-      setMessage("저장 중 오류가 발생했습니다.");
-      setMessageType("error");
-    }
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(`서버 오류: ${res.status} - ${errorText}`);
+  }
+
+  setMessage("저장 완료!");
+  setMessageType("success");
+} catch (err) {
+  console.error("❌ 저장 실패", err);
+  setMessage("저장 중 오류가 발생했습니다.");
+  setMessageType("error");
+}
   };
 
   return (
