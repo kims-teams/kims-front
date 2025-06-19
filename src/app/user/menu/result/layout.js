@@ -8,6 +8,7 @@ import HeaderBar from "../../../../components/HeaderBar";
 import Sidebar from "../../../../components/Sidebar";
 import ScenarioPanel from "../../../../components/ScenarioPanel";
 import ResultSidebar from "../../../../components/ResultSidebar";
+import useAuthRedirect from "../../../../hooks/useAuthRedirect"; 
 
 const ResultviewComponentMap = {
   "작업도구 사용 내역": dynamic(
@@ -40,6 +41,7 @@ const ResultviewComponentMap = {
 };
 
 export default function ResultLayout({ children }) {
+  useAuthRedirect();
   const [selectedResult, setSelectedResult] = useState("작업도구 사용 내역");
   const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(true);
   const [isRightSidebarCollapsed, setIsRightSidebarCollapsed] = useState(false);
