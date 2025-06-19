@@ -113,13 +113,14 @@ export default function BomView() {
     }
 
     try {
+      console.log(bomData)
   const res = await fetch(`http://127.0.0.1:8080/api/input/${entity}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       scenario_id: scenarioId,
       category: entity,
-      data: rows,
+      data: bomData,
     }),
   });
 
