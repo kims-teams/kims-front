@@ -17,9 +17,9 @@ import { DataGrid } from "@mui/x-data-grid";
 import { useScenarioStore } from "../../hooks/useScenarioStore";
 
 const columns = [
-  { field: "id", headerName: "순번", width: 80 },
-  { field: "siteId", headerName: "플랜트", width: 100 },
-  { field: "siteName", headerName: "사이트명", width: 150 },
+  { field: "id", headerName: "순번", width: 100 },
+  { field: "siteId", headerName: "플랜트", width: 140 },
+  { field: "siteName", headerName: "사이트명", width: 140 },
 ];
 
 export default function PlantMasterView() {
@@ -42,9 +42,9 @@ export default function PlantMasterView() {
         if (!res.ok) throw new Error("Plant Master 불러오기 실패");
         const data = await res.json();
         const numberedRows = data.map((row, index) => ({
-        ...row,
-        id: index + 1,
-      }));
+          ...row,
+          id: index + 1,
+        }));
         setRows(numberedRows);
       } catch (err) {
         console.error("로딩 실패:", err);
@@ -105,28 +105,28 @@ export default function PlantMasterView() {
     }
 
     try {
-  const res = await fetch(`http://127.0.0.1:8080/api/input/${entity}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      scenario_id: scenarioId,
-      category: entity,
-      data: rows,
-    }),
-  });
+      const res = await fetch(`http://127.0.0.1:8080/api/input/${entity}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          scenario_id: scenarioId,
+          category: entity,
+          data: rows,
+        }),
+      });
 
-  if (!res.ok) {
-    const errorText = await res.text();
-    throw new Error(`서버 오류: ${res.status} - ${errorText}`);
-  }
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(`서버 오류: ${res.status} - ${errorText}`);
+      }
 
-  setMessage("저장 완료!");
-  setMessageType("success");
-} catch (err) {
-  console.error("❌ 저장 실패", err);
-  setMessage("저장 중 오류가 발생했습니다.");
-  setMessageType("error");
-}
+      setMessage("저장 완료!");
+      setMessageType("success");
+    } catch (err) {
+      console.error("❌ 저장 실패", err);
+      setMessage("저장 중 오류가 발생했습니다.");
+      setMessageType("error");
+    }
   };
 
   return (
@@ -172,19 +172,28 @@ export default function PlantMasterView() {
         </DialogActions>
       </Dialog>
 
-      <DataGrid
-        autoHeight
-        rows={rows || []}
-        columns={columns}
-        getRowId={(row) => row.id || Math.random()}
-        pageSize={10}
-        rowHeight={40}
-        disableRowSelectionOnClick
+      <Box
         sx={{
-          backgroundColor: "#fff",
-          border: "1px solid #ccc",
+          height: "calc(100vh - 150px)",
+          width: "100%",
+          overflow: "auto",
+          overflowY: "hidden",
         }}
-      />
+      >
+        <DataGrid
+          rows={[]}
+          columns={columns}
+          getRowId={(row) => row.id}
+          pageSize={10}
+          rowHeight={40}
+          disableRowSelectionOnClick
+          sx={{
+            width: "100%",
+            height: "100%",
+            border: "1px solid #ccc",
+          }}
+        />
+      </Box>
     </Box>
   );
 }

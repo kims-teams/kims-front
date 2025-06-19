@@ -17,20 +17,21 @@ import { useEffect, useState } from "react";
 import { useScenarioStore } from "../../hooks/useScenarioStore";
 
 const columns = [
-  { field: "id", headerName: "순번", width: 80 },
-  { field: "toPartId", headerName: "생산 제품 코드", width: 130 },
-  { field: "operationId", headerName: "공정 코드", width: 130 },
-  { field: "outQty", headerName: "생산 량", width: 100 },
-  { field: "outUom", headerName: "생산량 단위", width: 100 },
-  { field: "fromPartId", headerName: "투입 제품 코드", width: 130 },
-  { field: "inQty", headerName: "투입 량", width: 100 },
-  { field: "inUom", headerName: "투입 량 단위", width: 100 },
-  { field: "toPartName", headerName: "생산 제품명", width: 130 },
-  { field: "fromPartName", headerName: "투입 제품명", width: 130 },
-  { field: "zseq", headerName: "순서", width: 80 },
+  { field: "id", headerName: "순번", width: 100 },
+  { field: "toPartId", headerName: "생산 제품 코드", width: 120 },
+  { field: "operationId", headerName: "공정 코드", width: 120 },
+  { field: "outQty", headerName: "생산 량", width: 120 },
+  { field: "outUom", headerName: "생산량 단위", width: 120 },
+  { field: "fromPartId", headerName: "투입 제품 코드", width: 120 },
+  { field: "inQty", headerName: "투입 량", width: 120 },
+  { field: "inUom", headerName: "투입 량 단위", width: 120 },
+  { field: "toPartName", headerName: "생산 제품명", width: 120 },
+  { field: "fromPartName", headerName: "투입 제품명", width: 120 },
+  { field: "zseq", headerName: "순서", width: 120 },
   { field: "fromPartLevel", headerName: "FromPartLevel", width: 120 },
   { field: "toPartLevel", headerName: "ToPartLevel", width: 120 },
 ];
+
 export default function BomView() {
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -50,9 +51,9 @@ export default function BomView() {
         if (!res.ok) throw new Error("BOM 데이터 불러오기 실패");
         const data = await res.json();
         const numberedRows = data.map((row, index) => ({
-        ...row,
-        id: index + 1,
-      }));
+          ...row,
+          id: index + 1,
+        }));
         setBomData(numberedRows);
       } catch (err) {
         console.error("BOM 로딩 실패:", err);
@@ -80,7 +81,6 @@ export default function BomView() {
 
     const formData = new FormData();
     formData.append("file", selectedFile);
-    const fileName = selectedFile.name;
 
     try {
       const res = await fetch(
@@ -93,7 +93,11 @@ export default function BomView() {
 
       if (!res.ok) throw new Error("업로드 실패");
       const data = await res.json();
-      setBomData(data);
+      const numberedRows = data.map((row, index) => ({
+        ...row,
+        id: index + 1,
+      }));
+      setBomData(numberedRows);
       setMessage("파일 업로드 성공!");
       setMessageType("success");
       handleCloseDialog();
@@ -113,32 +117,32 @@ export default function BomView() {
     }
 
     try {
-  const res = await fetch(`http://127.0.0.1:8080/api/input/${entity}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      scenario_id: scenarioId,
-      category: entity,
-      data: rows,
-    }),
-  });
+      const res = await fetch(`http://127.0.0.1:8080/api/input/${entity}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          scenario_id: scenarioId,
+          category: entity,
+          data: bomData,
+        }),
+      });
 
-  if (!res.ok) {
-    const errorText = await res.text();
-    throw new Error(`서버 오류: ${res.status} - ${errorText}`);
-  }
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(`서버 오류: ${res.status} - ${errorText}`);
+      }
 
-  setMessage("저장 완료!");
-  setMessageType("success");
-} catch (err) {
-  console.error("❌ 저장 실패", err);
-  setMessage("저장 중 오류가 발생했습니다.");
-  setMessageType("error");
-}
+      setMessage("저장 완료!");
+      setMessageType("success");
+    } catch (err) {
+      console.error("❌ 저장 실패", err);
+      setMessage("저장 중 오류가 발생했습니다.");
+      setMessageType("error");
+    }
   };
 
   return (
-    <Box sx={{ width: "100%", overflow: "auto" }}>
+    <Box sx={{ width: "100%" }}>
       {message && (
         <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
           <Alert
@@ -180,16 +184,28 @@ export default function BomView() {
         </DialogActions>
       </Dialog>
 
-      <DataGrid
-        autoHeight
-        rows={bomData || []}
-        columns={columns}
-        getRowId={(row) => row.id || Math.random()}
-        pageSize={10}
-        rowHeight={40}
-        disableRowSelectionOnClick
-        sx={{ backgroundColor: "#fff", border: "1px solid #ccc" }}
-      />
+      <Box
+        sx={{
+          height: "calc(100vh - 150px)",
+          width: "100%",
+          overflow: "auto",
+          overflowY: "hidden",
+        }}
+      >
+        <DataGrid
+          rows={bomData}
+          columns={columns}
+          getRowId={(row) => row.id}
+          pageSize={10}
+          rowHeight={40}
+          disableRowSelectionOnClick
+          sx={{
+            width: "100%",
+            height: "100%",
+            border: "1px solid #ccc",
+          }}
+        />
+      </Box>
     </Box>
   );
 }

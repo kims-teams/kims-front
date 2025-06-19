@@ -36,7 +36,6 @@ export default function ScenarioPanel() {
   const [openDialog, setOpenDialog] = useState(false);
   const [scenarioName, setScenarioName] = useState("");
 
-
   const {
     scenarioList,
     setScenarioList,
@@ -45,15 +44,16 @@ export default function ScenarioPanel() {
     addScenario,
   } = useScenarioStore();
 
-
   const handleAddScenario = async () => {
     if (!scenarioName.trim()) return;
 
-
     try {
-      const res = await fetch("http://127.0.0.1:8080/api/scenario/" + scenarioName, {
-        method: "POST",
-      });
+      const res = await fetch(
+        "http://127.0.0.1:8080/api/scenario/" + scenarioName,
+        {
+          method: "POST",
+        }
+      );
 
       if (!res.ok) throw new Error("시나리오 생성 실패");
 
@@ -78,21 +78,21 @@ export default function ScenarioPanel() {
     }
   };
 
-      useEffect(() => {
-  const fetchScenarioList = async () => {
-    try {
-      const res = await fetch("http://127.0.0.1:8080/api/scenario");
-      if (!res.ok) throw new Error("시나리오 조회 실패");
+  useEffect(() => {
+    const fetchScenarioList = async () => {
+      try {
+        const res = await fetch("http://127.0.0.1:8080/api/scenario");
+        if (!res.ok) throw new Error("시나리오 조회 실패");
 
-      const data = await res.json();
-      setScenarioList(data);
-    } catch (err) {
-      console.error("시나리오 목록 불러오기 실패:", err);
-    }
-  };
+        const data = await res.json();
+        setScenarioList(data);
+      } catch (err) {
+        console.error("시나리오 목록 불러오기 실패:", err);
+      }
+    };
 
-  fetchScenarioList();
-}, []);
+    fetchScenarioList();
+  }, []);
 
   return (
     <Box
