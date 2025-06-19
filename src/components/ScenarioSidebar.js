@@ -46,6 +46,7 @@ const categoryMap = {
 
 export default function ScenarioSidebar({ onSelect, collapsed, setCollapsed }) {
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedItem, setSelectedItem] = useState("");
   const [openGroup, setOpenGroup] = useState(
     Object.fromEntries(
       Object.keys(categoryMap)
@@ -76,6 +77,7 @@ export default function ScenarioSidebar({ onSelect, collapsed, setCollapsed }) {
         overflow: "hidden",
         alignItems: collapsed ? "center" : "stretch",
         position: "relative",
+        bgcolor: "#fff",
       }}
     >
       <IconButton
@@ -133,7 +135,6 @@ export default function ScenarioSidebar({ onSelect, collapsed, setCollapsed }) {
           <Divider />
 
           <List dense disablePadding sx={{ flex: 1 }}>
-            {/* Configurations */}
             <ListItemButton onClick={() => toggleGroup("Configurations")}>
               <ListItemText
                 primary="Configurations"
@@ -141,6 +142,7 @@ export default function ScenarioSidebar({ onSelect, collapsed, setCollapsed }) {
               />
               {openGroup.Configurations ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
+
             <Collapse
               in={openGroup.Configurations}
               timeout="auto"
@@ -150,8 +152,27 @@ export default function ScenarioSidebar({ onSelect, collapsed, setCollapsed }) {
                 {categoryMap.Configurations.map((item, idx) => (
                   <ListItem key={idx} disablePadding>
                     <ListItemButton
-                      sx={{ pl: 4 }}
-                      onClick={() => onSelect?.(item)}
+                      sx={{
+                        pl: 4,
+                        py: 0.5,
+                        my: 0.25,
+                        borderRadius: 1,
+                        ...(selectedItem === item && {
+                          backgroundColor: "#e0e0e0",
+                          "& .MuiListItemText-primary": {
+                            fontWeight: "bold",
+                            color: "#1a237e",
+                          },
+                        }),
+                        "&:hover": {
+                          backgroundColor: "#f5f5f5",
+                        },
+                      }}
+                      onClick={() => {
+                        setSelectedItem(item);
+                        onSelect?.(item);
+                      }}
+                      selected={selectedItem === item}
                     >
                       <ListItemText
                         primary={item}
@@ -163,7 +184,6 @@ export default function ScenarioSidebar({ onSelect, collapsed, setCollapsed }) {
               </List>
             </Collapse>
 
-            {/* Input Data 그룹 */}
             <ListItemButton onClick={() => toggleGroup("Input Data")}>
               <ListItemText
                 primary="Input Data"
@@ -171,6 +191,7 @@ export default function ScenarioSidebar({ onSelect, collapsed, setCollapsed }) {
               />
               {openGroup["Input Data"] ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
+
             <Collapse in={openGroup["Input Data"]} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
                 {categoryMap["Input Data"].map(([subGroup, items]) => (
@@ -189,6 +210,7 @@ export default function ScenarioSidebar({ onSelect, collapsed, setCollapsed }) {
                       />
                       {openGroup[subGroup] ? <ExpandLess /> : <ExpandMore />}
                     </ListItemButton>
+
                     <Collapse
                       in={openGroup[subGroup]}
                       timeout="auto"
@@ -198,15 +220,31 @@ export default function ScenarioSidebar({ onSelect, collapsed, setCollapsed }) {
                         {items.map((item, idx) => (
                           <ListItem key={idx} disablePadding>
                             <ListItemButton
-                              sx={{ pl: 4 }}
-                              onClick={() => onSelect?.(item)}
+                              sx={{
+                                pl: 4,
+                                py: 0.5,
+                                my: 0.25,
+                                borderRadius: 1,
+                                ...(selectedItem === item && {
+                                  backgroundColor: "#e0e0e0",
+                                  "& .MuiListItemText-primary": {
+                                    fontWeight: "bold",
+                                    color: "#1a237e",
+                                  },
+                                }),
+                                "&:hover": {
+                                  backgroundColor: "#f5f5f5",
+                                },
+                              }}
+                              onClick={() => {
+                                setSelectedItem(item);
+                                onSelect?.(item);
+                              }}
+                              selected={selectedItem === item}
                             >
                               <ListItemText
                                 primary={item}
-                                primaryTypographyProps={{
-                                  fontSize: "12px",
-                                  color: "#666",
-                                }}
+                                primaryTypographyProps={{ fontSize: "12px" }}
                               />
                             </ListItemButton>
                           </ListItem>
