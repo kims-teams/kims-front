@@ -1,22 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import {
-  Box,
-  Typography,
-  TextField,
-  Button,
-  Paper,
-  FormControlLabel,
-  Checkbox,
-} from "@mui/material";
+import { Box, Typography, TextField, Button, Paper } from "@mui/material";
 import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [autoLogin, setAutoLogin] = useState(false);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -37,9 +28,7 @@ export default function LoginPage() {
       }
 
       const data = await res.json();
-
       localStorage.setItem("token", data.token);
-
       router.push("/user");
     } catch (err) {
       console.error("로그인 실패:", err);
@@ -51,7 +40,7 @@ export default function LoginPage() {
     <Box
       sx={{
         minHeight: "100vh",
-        bgcolor: "#ffffff",
+        bgcolor: "#f5f5f5",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
@@ -63,21 +52,23 @@ export default function LoginPage() {
         sx={{
           p: 4,
           width: "100%",
-          maxWidth: 380,
-          borderRadius: 0,
-          boxShadow: "0px 4px 20px rgba(0,0,0,0.05)",
-          animation: "fadeSlideIn 0.6s ease",
+          maxWidth: 400,
+          borderRadius: "12px",
+          boxShadow: "0px 8px 30px rgba(0,0,0,0.1)",
+          backgroundColor: "#fff",
+          animation: "fadeSlideIn 0.5s ease",
           "@keyframes fadeSlideIn": {
             from: { opacity: 0, transform: "translateY(-20px)" },
             to: { opacity: 1, transform: "translateY(0)" },
           },
         }}
       >
+        {/* 상단 로고 */}
         <Typography
-          variant="h6"
-          sx={{ mb: 0.5, fontWeight: 700, textAlign: "center" }}
+          variant="h5"
+          sx={{ mb: 1, fontWeight: 800, textAlign: "center", color: "#333" }}
         >
-          로그인
+          KIMSTEAMS
         </Typography>
         <Typography
           variant="body2"
@@ -86,64 +77,39 @@ export default function LoginPage() {
           계정 정보를 입력해주세요
         </Typography>
 
+        {/* 이메일 입력 */}
         <TextField
           label="이메일"
           type="email"
           fullWidth
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          sx={{
-            mb: 2,
-            "& .MuiOutlinedInput-root.Mui-focused": {
-              "& fieldset": {
-                borderColor: "#999999",
-              },
-            },
-          }}
+          sx={{ mb: 2 }}
         />
+
+        {/* 비밀번호 입력 */}
         <TextField
           label="비밀번호"
           type="password"
           fullWidth
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          sx={{
-            mb: 1,
-            "& .MuiOutlinedInput-root.Mui-focused": {
-              "& fieldset": {
-                borderColor: "#999999",
-              },
-            },
-          }}
+          sx={{ mb: 3 }}
         />
 
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={autoLogin}
-              onChange={(e) => setAutoLogin(e.target.checked)}
-              size="small"
-              sx={{ color: "#999" }}
-            />
-          }
-          label={
-            <Typography sx={{ fontSize: 13, color: "#555" }}>
-              자동 로그인
-            </Typography>
-          }
-          sx={{ mb: 2 }}
-        />
-
+        {/* 로그인 버튼 */}
         <Button
           variant="contained"
           fullWidth
           onClick={handleLogin}
           sx={{
-            bgcolor: "#333333",
+            bgcolor: "#333",
             color: "#fff",
             fontWeight: 600,
+            py: 1.2,
+            borderRadius: "6px",
             "&:hover": {
-              bgcolor: "#222222",
+              bgcolor: "#222",
               transform: "scale(1.01)",
               transition: "all 0.2s ease-in-out",
             },
