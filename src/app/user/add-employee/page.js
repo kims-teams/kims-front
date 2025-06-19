@@ -26,6 +26,19 @@ export default function AddEmployeePage() {
 
   const [employees, setEmployees] = useState([]);
 
+  const isValidEmail = (email) => {
+    const cleaned = email.trim();
+    if (!cleaned.includes("@")) return false;
+    if (!cleaned.endsWith("@kims.kr")) return false;
+    return true;
+  };
+
+  const isDuplicateEmail = (email) => {
+    return employees.some(
+      (emp) => emp.email.trim().toLowerCase() === email.trim().toLowerCase()
+    );
+  };
+
   const fetchEmployees = async () => {
     try {
       const res = await axios.get("http://localhost:8080/api/user");
@@ -45,10 +58,22 @@ export default function AddEmployeePage() {
   };
 
   const handleAdd = async () => {
+    const email = form.email;
+
+    if (!isValidEmail(email)) {
+      alert("회사 이메일(@kims.kr)만 입력할 수 있습니다.");
+      return;
+    }
+
+    if (isDuplicateEmail(email)) {
+      alert("이미 등록된 이메일입니다.");
+      return;
+    }
+
     try {
       await axios.post("http://localhost:8080/api/user", {
         name: form.name,
-        email: form.email,
+        email: email,
         position: form.position,
         role: form.role,
         hireDate: form.hireDate ? form.hireDate.toISOString() : null,

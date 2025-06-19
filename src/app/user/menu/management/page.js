@@ -17,13 +17,17 @@ import RestartAltIcon from "@mui/icons-material/RestartAlt";
 
 import ModifyUserModal from "app/user/menu/management/ModifyUserModal";
 import AddUserModal from "app/user/menu/management/AddUserModal";
+import DeleteUserModal from "app/user/menu/management/DeleteUserModal";
 
 export default function Management() {
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
+
   const [editModalOpen, setEditModalOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null);
   const [addModalOpen, setAddModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+
+  const [selectedUser, setSelectedUser] = useState(null);
 
   useEffect(() => {
     fetch("http://localhost:8080/api/user")
@@ -50,51 +54,29 @@ export default function Management() {
     setEditModalOpen(true);
   };
 
-  const handleUpdateUser = (updatedUser) => {
+  const handleDelete = (row) => {
+    setSelectedUser(row);
+    setDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = (user) => {
     const token = localStorage.getItem("token");
-    fetch(`http://localhost:8080/api/user/${updatedUser.realId}`, {
-      method: "PUT",
+    fetch(`http://localhost:8080/api/user/${user.realId}`, {
+      method: "DELETE",
       headers: {
-        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(updatedUser),
     })
       .then((res) => {
-        if (!res.ok) throw new Error("수정 실패");
-        setUsers((prev) =>
-          prev.map((user) =>
-            user.id === updatedUser.realId ? { ...user, ...updatedUser } : user
-          )
-        );
-        alert("수정이 완료되었습니다.");
-        setEditModalOpen(false);
+        if (!res.ok) throw new Error("삭제 실패");
+        setUsers((prev) => prev.filter((u) => u.id !== user.realId));
+        alert("삭제가 완료되었습니다.");
+        setDeleteModalOpen(false);
       })
       .catch((err) => {
         console.error(err);
-        alert("수정 중 오류 발생");
+        alert("삭제 중 오류 발생");
       });
-  };
-
-  const handleDelete = (row) => {
-    if (confirm(`${row.name} 사용자를 삭제할까요?`)) {
-      const token = localStorage.getItem("token");
-      fetch(`http://localhost:8080/api/user/${row.realId}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-        .then((res) => {
-          if (!res.ok) throw new Error("삭제 실패");
-          setUsers((prev) => prev.filter((user) => user.id !== row.realId));
-          alert("삭제가 완료되었습니다.");
-        })
-        .catch((err) => {
-          console.error(err);
-          alert("삭제 중 오류 발생");
-        });
-    }
   };
 
   const handleResetPassword = (row) => {
@@ -122,6 +104,32 @@ export default function Management() {
       .catch((err) => {
         console.error(err);
         alert("등록 실패");
+      });
+  };
+
+  const handleUpdateUser = (updatedUser) => {
+    const token = localStorage.getItem("token");
+    fetch(`http://localhost:8080/api/user/${updatedUser.realId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(updatedUser),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("수정 실패");
+        setUsers((prev) =>
+          prev.map((user) =>
+            user.id === updatedUser.realId ? { ...user, ...updatedUser } : user
+          )
+        );
+        alert("수정이 완료되었습니다.");
+        setEditModalOpen(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        alert("수정 중 오류 발생");
       });
   };
 
@@ -189,6 +197,10 @@ export default function Management() {
     status: u.status || "",
   }));
 
+  const emailListForEdit = users
+    .filter((u) => u.id !== selectedUser?.realId)
+    .map((u) => u.email);
+
   return (
     <Box sx={{ p: 2 }}>
       <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
@@ -232,12 +244,21 @@ export default function Management() {
         onClose={() => setEditModalOpen(false)}
         userData={selectedUser}
         onSave={handleUpdateUser}
+        emailList={emailListForEdit}
       />
 
       <AddUserModal
         open={addModalOpen}
         onClose={() => setAddModalOpen(false)}
         onAdd={handleAddUser}
+        emailList={users.map((u) => u.email)}
+      />
+
+      <DeleteUserModal
+        open={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        user={selectedUser}
+        onDelete={handleConfirmDelete}
       />
     </Box>
   );
