@@ -110,7 +110,7 @@ export default function ManufacturingProcessView() {
     body: JSON.stringify({
       scenario_id: scenarioId,
       category: entity,
-      data: rows,
+      data: routingData,
     }),
   });
 
