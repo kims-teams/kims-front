@@ -15,8 +15,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 
-import ModifyUserModal from "components/ModifyUserModal";
-import AddUserModal from "components/AddUserModal";
+import ModifyUserModal from "app/user/menu/management/ModifyUserModal";
+import AddUserModal from "app/user/menu/management/AddUserModal";
 
 export default function Management() {
   const [users, setUsers] = useState([]);

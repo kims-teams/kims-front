@@ -46,8 +46,8 @@ export default function AddUserModal({ open, onClose, onAdd }) {
     if (!isValidEmail(form.email)) return;
     if (!form.name || !form.password || !form.role) return;
 
-    onAdd(form); // 외부에서 처리
-    onClose(); // 닫기
+    onAdd(form); 
+    onClose();
   };
 
   const isFormValid = () =>
