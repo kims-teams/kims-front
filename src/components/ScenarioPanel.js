@@ -172,7 +172,24 @@ export default function ScenarioPanel() {
                   disablePadding
                   button
                   selected={selectedScenario?.scenario?.id === s.id}
-                  onClick={() => setSelectedScenario(s)}
+                  onClick={() => setSelectedScenario({ scenario: s })}
+                  sx={{
+                    px: 1,
+                    mb: 0.5,
+                    borderRadius: 1,
+                    transition: "box-shadow 0.2s ease-in-out",
+                    ...(selectedScenario?.scenario?.id === s.id && {
+                      backgroundColor: "##d6d6d6",
+                      "& .MuiListItemText-primary": {
+                        fontWeight: "bold",
+                        color: "#0a1f44",
+                      },
+                    }),
+                    "&:hover": {
+                      backgroundColor: "#f9f9f9",
+                      boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
+                    },
+                  }}
                 >
                   <ListItemText primary={s.name} />
                   <ListItemSecondaryAction>
