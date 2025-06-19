@@ -17,14 +17,14 @@ import { DataGrid } from "@mui/x-data-grid";
 import { useScenarioStore } from "../../hooks/useScenarioStore";
 
 const columns = [
-  { field: "id", headerName: "순번", width: 80 },
-  { field: "routingId", headerName: "Routing코드", width: 130 },
-  { field: "partId", headerName: "품목코드", width: 120 },
-  { field: "operationId", headerName: "공정 코드", width: 120 },
-  { field: "routing_group", headerName: "Routing그룹", width: 120 },
-  { field: "workcenterId", headerName: "작업장코드", width: 130 },
-  { field: "tactTime", headerName: "생산 간격", width: 120 },
-  { field: "tactTimeUom", headerName: "생산 간격 단위", width: 130 },
+  { field: "id", headerName: "순번", width: 100 },
+  { field: "routingId", headerName: "Routing코드", width: 140 },
+  { field: "partId", headerName: "품목코드", width: 140 },
+  { field: "operationId", headerName: "공정 코드", width: 140 },
+  { field: "routing_group", headerName: "Routing그룹", width: 140 },
+  { field: "workcenterId", headerName: "작업장코드", width: 140 },
+  { field: "tactTime", headerName: "생산 간격", width: 140 },
+  { field: "tactTimeUom", headerName: "생산 간격 단위", width: 140 },
 ];
 
 export default function WorkcenterMapView() {
@@ -47,10 +47,10 @@ export default function WorkcenterMapView() {
         if (!res.ok) throw new Error("불러오기 실패");
 
         const data = await res.json();
-                const numberedRows = data.map((row, index) => ({
-        ...row,
-        id: index + 1,
-      }));
+        const numberedRows = data.map((row, index) => ({
+          ...row,
+          id: index + 1,
+        }));
         setRows(numberedRows);
       } catch (err) {
         console.error("불러오기 오류:", err);
@@ -79,29 +79,29 @@ export default function WorkcenterMapView() {
     const formData = new FormData();
     formData.append("file", selectedFile);
 
-   try {
-  const res = await fetch(`http://127.0.0.1:8080/api/input/${entity}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      scenario_id: scenarioId,
-      category: entity,
-      data: rows,
-    }),
-  });
+    try {
+      const res = await fetch(`http://127.0.0.1:8080/api/input/${entity}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          scenario_id: scenarioId,
+          category: entity,
+          data: rows,
+        }),
+      });
 
-  if (!res.ok) {
-    const errorText = await res.text();
-    throw new Error(`서버 오류: ${res.status} - ${errorText}`);
-  }
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(`서버 오류: ${res.status} - ${errorText}`);
+      }
 
-  setMessage("저장 완료!");
-  setMessageType("success");
-} catch (err) {
-  console.error("❌ 저장 실패", err);
-  setMessage("저장 중 오류가 발생했습니다.");
-  setMessageType("error");
-}
+      setMessage("저장 완료!");
+      setMessageType("success");
+    } catch (err) {
+      console.error("❌ 저장 실패", err);
+      setMessage("저장 중 오류가 발생했습니다.");
+      setMessageType("error");
+    }
   };
 
   const handleSave = async () => {
@@ -175,19 +175,28 @@ export default function WorkcenterMapView() {
         </DialogActions>
       </Dialog>
 
-      <DataGrid
-        autoHeight
-        rows={rows}
-        columns={columns}
-        getRowId={(row) => row.id || Math.random()}
-        pageSize={10}
-        rowHeight={40}
-        disableRowSelectionOnClick
+      <Box
         sx={{
-          backgroundColor: "#fff",
-          border: "1px solid #ccc",
+          height: "calc(100vh - 150px)",
+          width: "100%",
+          overflow: "auto",
+          overflowY: "hidden",
         }}
-      />
+      >
+        <DataGrid
+          rows={[]}
+          columns={columns}
+          getRowId={(row) => row.id}
+          pageSize={10}
+          rowHeight={40}
+          disableRowSelectionOnClick
+          sx={{
+            width: "100%",
+            height: "100%",
+            border: "1px solid #ccc",
+          }}
+        />
+      </Box>
     </Box>
   );
 }

@@ -71,7 +71,7 @@ export default function ScenarioLayout({ children }) {
           sx={{
             flex: 1,
             p: 2,
-            overflowY: "auto",
+            overflowY: "hidden",
             marginRight: isRightSidebarCollapsed ? "24px" : "260px",
             transition: "margin 0.2s ease",
           }}
