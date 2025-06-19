@@ -107,6 +107,7 @@ export default function PriorityView() {
     }
 
     try {
+      console.log(rows)
   const res = await fetch(`http://127.0.0.1:8080/api/input/${entity}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
