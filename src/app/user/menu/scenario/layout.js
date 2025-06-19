@@ -8,7 +8,9 @@ import HeaderBar from "../../../../components/HeaderBar";
 import Sidebar from "../../../../components/Sidebar";
 import ScenarioPanel from "../../../../components/ScenarioPanel";
 import ScenarioSidebar from "../../../../components/ScenarioSidebar";
+import useAuthRedirect from "../../../../hooks/useAuthRedirect";
 
+// ✅ 함수 밖으로 뺀 컴포넌트 맵
 const viewComponentMap = {
   우선순위: dynamic(
     () => import("../../../../components/scenarioViews/PriorityView")
@@ -50,7 +52,10 @@ const viewComponentMap = {
   ),
   BOM: dynamic(() => import("../../../../components/scenarioViews/BomView")),
 };
+
 export default function ScenarioLayout({ children }) {
+  useAuthRedirect(); 
+
   const [selectedInput, setSelectedInput] = useState("우선순위");
   const [isRightSidebarCollapsed, setIsRightSidebarCollapsed] = useState(false);
 
@@ -66,7 +71,7 @@ export default function ScenarioLayout({ children }) {
           sx={{
             flex: 1,
             p: 2,
-            overflowY: "auto",
+            overflowY: "hidden",
             marginRight: isRightSidebarCollapsed ? "24px" : "260px",
             transition: "margin 0.2s ease",
           }}

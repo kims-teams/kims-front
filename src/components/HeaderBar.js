@@ -1,17 +1,25 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { AppBar, Box, Toolbar, Button } from "@mui/material";
+import { AppBar, Box, Toolbar, Button, Typography } from "@mui/material";
 
 export default function HeaderBar() {
   const router = useRouter();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const handleAddEmployee = () => {
-    router.push("/user/add-employee");
-  };
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token);
+  }, []);
 
   const handleLogin = () => {
+    router.push("/user/login");
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsLoggedIn(false);
     router.push("/user/login");
   };
 
@@ -29,39 +37,44 @@ export default function HeaderBar() {
       }}
     >
       <Toolbar disableGutters sx={{ minHeight: "50px !important", px: 2 }}>
+        <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+          KIMSTEAMS
+        </Typography>
         <Box sx={{ flexGrow: 1 }} />
-        <Button
-          variant="outlined"
-          size="small"
-          sx={{
-            mr: 1,
-            borderColor: "black",
-            color: "black",
-            "&:hover": {
-              borderColor: "black",
-              backgroundColor: "#f0f0f0",
-            },
-          }}
-          onClick={handleAddEmployee}
-        >
-          사원추가
-        </Button>
 
-        <Button
-          variant="outlined"
-          size="small"
-          sx={{
-            borderColor: "black",
-            color: "black",
-            "&:hover": {
+        {isLoggedIn ? (
+          <Button
+            variant="outlined"
+            size="small"
+            sx={{
               borderColor: "black",
-              backgroundColor: "#f0f0f0",
-            },
-          }}
-          onClick={handleLogin}
-        >
-          로그인
-        </Button>
+              color: "black",
+              "&:hover": {
+                borderColor: "black",
+                backgroundColor: "#f0f0f0",
+              },
+            }}
+            onClick={handleLogout}
+          >
+            로그아웃
+          </Button>
+        ) : (
+          <Button
+            variant="outlined"
+            size="small"
+            sx={{
+              borderColor: "black",
+              color: "black",
+              "&:hover": {
+                borderColor: "black",
+                backgroundColor: "#f0f0f0",
+              },
+            }}
+            onClick={handleLogin}
+          >
+            로그인
+          </Button>
+        )}
       </Toolbar>
     </AppBar>
   );

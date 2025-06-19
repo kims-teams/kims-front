@@ -11,12 +11,18 @@ export default function RootLayout({ children }) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>RVCS</title>
       </head>
-      <body>
-        {/* 항상 고정되는 헤더 */}
+      <body
+        style={{ margin: 0, padding: 0, height: "100vh", overflow: "hidden" }}
+      >
         <HeaderBar />
 
-        {/* 페이지 본문 */}
-        <Box sx={{ pt: "50px", height: "100vh", overflow: "hidden" }}>
+        <Box
+          sx={{
+            pt: "50px",
+            height: "calc(100vh - 50px)",
+            overflow: "hidden",
+          }}
+        >
           {children}
         </Box>
       </body>

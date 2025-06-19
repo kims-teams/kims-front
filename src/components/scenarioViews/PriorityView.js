@@ -21,7 +21,7 @@ const columns = [
   { field: "priorityId", headerName: "우선순위 그룹", width: 150 },
   { field: "factorId", headerName: "우선순위", width: 150 },
   { field: "sequence", headerName: "우선순위 순서", width: 150 },
-  { field: "description", headerName: "설명", width: 200 },
+  { field: "description", headerName: "설명", width: 150 },
 ];
 
 export default function PriorityView() {
@@ -44,9 +44,9 @@ export default function PriorityView() {
         if (!res.ok) throw new Error("우선순위 데이터 불러오기 실패");
         const data = await res.json();
         const numberedRows = data.map((row, index) => ({
-        ...row,
-        id: index + 1,
-      }));
+          ...row,
+          id: index + 1,
+        }));
         setRows(numberedRows);
       } catch (err) {
         console.error("불러오기 실패:", err);
@@ -130,6 +130,7 @@ export default function PriorityView() {
   setMessage("저장 중 오류가 발생했습니다.");
   setMessageType("error");
 }
+
   };
 
   return (
@@ -175,19 +176,28 @@ export default function PriorityView() {
         </DialogActions>
       </Dialog>
 
-      <DataGrid
-        autoHeight
-        rows={rows || []}
-        columns={columns}
-        getRowId={(row) => row.id || Math.random()}
-        pageSize={10}
-        rowHeight={40}
-        disableRowSelectionOnClick
+      <Box
         sx={{
-          backgroundColor: "#fff",
-          border: "1px solid #ccc",
+          height: "calc(100vh - 150px)",
+          width: "100%",
+          overflow: "auto",
+          overflowY: "hidden",
         }}
-      />
+      >
+        <DataGrid
+          rows={[]}
+          columns={columns}
+          getRowId={(row) => row.id}
+          pageSize={10}
+          rowHeight={40}
+          disableRowSelectionOnClick
+          sx={{
+            width: "100%",
+            height: "100%",
+            border: "1px solid #ccc",
+          }}
+        />
+      </Box>
     </Box>
   );
 }
