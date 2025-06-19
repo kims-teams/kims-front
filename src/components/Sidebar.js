@@ -6,7 +6,6 @@ import {
   Drawer,
   IconButton,
   TextField,
-  Typography,
   List,
   ListItemButton,
   ListItemText,
@@ -15,12 +14,11 @@ import {
 } from "@mui/material";
 
 import SearchIcon from "@mui/icons-material/Search";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import EngineeringIcon from "@mui/icons-material/Engineering";
 import BarChartIcon from "@mui/icons-material/BarChart";
-import ExpandLess from "@mui/icons-material/ExpandLess";
-import ExpandMore from "@mui/icons-material/ExpandMore";
 
 import { useRouter } from "next/navigation";
 
@@ -69,17 +67,6 @@ export default function Sidebar() {
         },
       }}
     >
-      {/* 로고 + 뒤로가기 */}
-      <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-        <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-          RVCS
-        </Typography>
-        <Box sx={{ flexGrow: 1 }} />
-        <IconButton size="small">
-          <ArrowBackIosNewIcon fontSize="small" />
-        </IconButton>
-      </Box>
-
       {/* 검색창 */}
       <TextField
         placeholder="검색"
@@ -103,7 +90,7 @@ export default function Sidebar() {
           <ListItemText primary="즐겨찾기" />
           {open.fav ? <ExpandLess /> : <ExpandMore />}
         </ListItemButton>
-        <Collapse in={open.fav}>{/* 비워두거나 즐겨찾기 추가 가능 */}</Collapse>
+        <Collapse in={open.fav} />
 
         {/* 엔진 */}
         <ListItemButton onClick={() => toggle("engine")}>

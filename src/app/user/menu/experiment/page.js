@@ -2,6 +2,7 @@
 
 import { Box } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
+import useAuthRedirect from "../../../../hooks/useAuthRedirect";
 
 const columns = [
   { field: "version", headerName: "버전", flex: 1 },
@@ -19,6 +20,8 @@ const columns = [
 const rows = [];
 
 export default function ExperimentPage() {
+  useAuthRedirect();
+
   return (
     <Box sx={{ width: "100%", overflow: "auto" }}>
       <DataGrid

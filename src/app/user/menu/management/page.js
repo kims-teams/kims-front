@@ -18,8 +18,11 @@ import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import ModifyUserModal from "app/user/menu/management/ModifyUserModal";
 import AddUserModal from "app/user/menu/management/AddUserModal";
 import DeleteUserModal from "app/user/menu/management/DeleteUserModal";
+import useAuthRedirect from "../../../../hooks/useAuthRedirect";
 
 export default function Management() {
+  useAuthRedirect();
+
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
 
