@@ -10,7 +10,6 @@ import ScenarioPanel from "../../../../components/ScenarioPanel";
 import ScenarioSidebar from "../../../../components/ScenarioSidebar";
 import useAuthRedirect from "../../../../hooks/useAuthRedirect";
 
-// ✅ 함수 밖으로 뺀 컴포넌트 맵
 const viewComponentMap = {
   우선순위: dynamic(
     () => import("../../../../components/scenarioViews/PriorityView")
