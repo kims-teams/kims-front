@@ -107,28 +107,30 @@ export default function PriorityView() {
     }
 
     try {
-      const res = await fetch(`http://127.0.0.1:8080/api/input/${entity}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          scenario_id: scenarioId,
-          category: entity,
-          data: rows,
-        }),
-      });
+      console.log(rows)
+  const res = await fetch(`http://127.0.0.1:8080/api/input/${entity}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      scenario_id: scenarioId,
+      category: entity,
+      data: rows,
+    }),
+  });
 
-      if (!res.ok) {
-        const errorText = await res.text();
-        throw new Error(`서버 오류: ${res.status} - ${errorText}`);
-      }
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(`서버 오류: ${res.status} - ${errorText}`);
+  }
 
-      setMessage("저장 완료!");
-      setMessageType("success");
-    } catch (err) {
-      console.error("❌ 저장 실패", err);
-      setMessage("저장 중 오류가 발생했습니다.");
-      setMessageType("error");
-    }
+  setMessage("저장 완료!");
+  setMessageType("success");
+} catch (err) {
+  console.error("❌ 저장 실패", err);
+  setMessage("저장 중 오류가 발생했습니다.");
+  setMessageType("error");
+}
+
   };
 
   return (

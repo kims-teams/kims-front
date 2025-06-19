@@ -17,13 +17,11 @@ import { useState, useEffect } from "react";
 import { useScenarioStore } from "../../hooks/useScenarioStore";
 
 const columns = [
-  { field: "id", headerName: "순번", width: 100 },
-  { field: "part_id", headerName: "품목코드", width: 140 },
-  { field: "part_type", headerName: "Part유형", width: 140 },
-  { field: "routing_id", headerName: "라우팅 코드", width: 140 },
-  { field: "part_name", headerName: "품목명", width: 140 },
-  { field: "scenario_id", headerName: "시나리오", width: 140 },
-  { field: "bop_id", headerName: "Bop 아이디", width: 140 },
+  { field: "id", headerName: "순번", width: 80 },
+  { field: "partId", headerName: "품목코드", width: 130 },
+  { field: "partType", headerName: "Part유형", width: 130 },
+  { field: "routingId", headerName: "라우팅 코드", width: 130 },
+  { field: "partName", headerName: "품목명", width: 150 },
 ];
 
 export default function MaterialMasterView() {
