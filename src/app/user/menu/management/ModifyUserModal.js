@@ -8,6 +8,7 @@ import {
   Button,
   TextField,
   Typography,
+  MenuItem,
 } from "@mui/material";
 import { useState, useEffect } from "react";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -26,10 +27,14 @@ export default function ModifyUserModal({
     email: "",
     name: "",
     position: "",
+    phone: "",
     hireDate: null,
+    role: "",
+    status: "",
   });
 
   const [error, setError] = useState("");
+  const [successOpen, setSuccessOpen] = useState(false);
 
   useEffect(() => {
     if (userData) {
@@ -37,7 +42,10 @@ export default function ModifyUserModal({
         email: userData.email || "",
         name: userData.name || "",
         position: userData.position || "",
+        phone: userData.phone || "",
         hireDate: userData.hireDate ? dayjs(userData.hireDate) : null,
+        role: userData.role || "",
+        status: userData.status || "",
       });
       setError("");
     }
@@ -49,12 +57,12 @@ export default function ModifyUserModal({
 
     if (name === "email") {
       const trimmed = value.trim().toLowerCase();
-      const originalEmail = userData.email.trim().toLowerCase();
+      const original = userData?.email?.trim().toLowerCase();
 
       if (!trimmed.includes("@")) {
         setError("유효한 이메일을 입력하세요.");
       } else if (
-        trimmed !== originalEmail &&
+        trimmed !== original &&
         emailList?.some((e) => e.trim().toLowerCase() === trimmed)
       ) {
         setError("이미 등록된 이메일입니다.");
@@ -64,12 +72,15 @@ export default function ModifyUserModal({
     }
   };
 
-  const handleSubmit = () => {
-    const trimmedEmail = form.email.trim();
+  const handleSubmit = async () => {
+    const token = localStorage.getItem("token");
+    const userId = userData.id ?? userData.realId;
 
+    if (!userId) return alert("수정할 사용자 ID가 없습니다.");
+
+    const trimmedEmail = form.email.trim();
     if (!trimmedEmail.includes("@")) {
-      alert("유효한 이메일을 입력하세요.");
-      return;
+      return alert("유효한 이메일을 입력하세요.");
     }
 
     const isDuplicate =
@@ -78,67 +89,162 @@ export default function ModifyUserModal({
         (e) => e.trim().toLowerCase() === trimmedEmail.toLowerCase()
       );
 
-    if (isDuplicate) {
-      alert("이미 등록된 이메일입니다.");
-      return;
-    }
+    if (isDuplicate) return alert("이미 등록된 이메일입니다.");
 
     const updatedUser = {
-      ...userData,
-      ...form,
-      hireDate: form.hireDate?.toISOString(),
+      email: trimmedEmail,
+      name: form.name,
+      position: form.position,
+      phone: form.phone,
+      hireDate: form.hireDate?.isValid?.()
+        ? form.hireDate.format("YYYY-MM-DDTHH:mm:ss")
+        : null,
+      role: form.role,
+      status: form.status,
     };
 
-    onSave(updatedUser);
+    try {
+      const res = await fetch(`http://localhost:8080/api/user/${userId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(updatedUser),
+      });
+
+      if (!res.ok) {
+        let errorMessage = "수정 실패";
+        try {
+          const contentType = res.headers.get("content-type");
+          if (contentType?.includes("application/json")) {
+            const errorJson = await res.json();
+            errorMessage = errorJson.message || JSON.stringify(errorJson);
+          } else {
+            errorMessage = await res.text();
+          }
+        } catch {
+          errorMessage = "알 수 없는 오류 발생";
+        }
+        return alert(`❌ 수정 실패: ${errorMessage}`);
+      }
+
+      const saved = await res.json();
+      onSave(saved);
+      setSuccessOpen(true);
+    } catch (err) {
+      console.error("❌ 수정 예외:", err);
+      alert(`❌ 수정 중 예외가 발생했습니다.\n${err.message}`);
+    }
+  };
+
+  const handleSuccessClose = () => {
+    setSuccessOpen(false);
+    onClose();
   };
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <Dialog open={open} onClose={onClose}>
-        <DialogTitle>사용자 수정</DialogTitle>
-        <DialogContent>
-          <TextField
-            label="이메일"
-            name="email"
-            value={form.email}
-            onChange={handleChange}
-            fullWidth
-            margin="dense"
-            error={!!error}
-          />
-          <TextField
-            label="이름"
-            name="name"
-            value={form.name}
-            onChange={handleChange}
-            fullWidth
-            margin="dense"
-          />
-          <TextField
-            label="직급"
-            name="position"
-            value={form.position}
-            onChange={handleChange}
-            fullWidth
-            margin="dense"
-          />
-          <DatePicker
-            label="입사일"
-            value={form.hireDate}
-            onChange={(newDate) =>
-              setForm((prev) => ({ ...prev, hireDate: newDate }))
-            }
-            slotProps={{ textField: { fullWidth: true, margin: "dense" } }}
-          />
-          {error && <Typography color="error">{error}</Typography>}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleSubmit} variant="contained" disabled={!!error}>
-            저장
-          </Button>
-          <Button onClick={onClose}>취소</Button>
-        </DialogActions>
-      </Dialog>
+      <>
+        <Dialog open={open} onClose={onClose}>
+          <DialogTitle>사용자 수정</DialogTitle>
+          <DialogContent>
+            <TextField
+              label="이메일"
+              name="email"
+              value={form.email}
+              onChange={handleChange}
+              fullWidth
+              margin="dense"
+              error={!!error}
+            />
+            <TextField
+              label="이름"
+              name="name"
+              value={form.name}
+              onChange={handleChange}
+              fullWidth
+              margin="dense"
+            />
+            <TextField
+              label="직급"
+              name="position"
+              value={form.position}
+              onChange={handleChange}
+              fullWidth
+              margin="dense"
+            />
+            <TextField
+              label="연락처"
+              name="phone"
+              value={form.phone}
+              onChange={handleChange}
+              fullWidth
+              margin="dense"
+            />
+            <DatePicker
+              label="입사일"
+              value={form.hireDate}
+              onChange={(newDate) =>
+                setForm((prev) => ({ ...prev, hireDate: newDate }))
+              }
+              slotProps={{ textField: { fullWidth: true, margin: "dense" } }}
+            />
+            <TextField
+              select
+              label="권한"
+              name="role"
+              value={form.role}
+              onChange={handleChange}
+              fullWidth
+              margin="dense"
+            >
+              <MenuItem value="ADMIN">ADMIN</MenuItem>
+              <MenuItem value="USER">USER</MenuItem>
+            </TextField>
+            <TextField
+              select
+              label="상태"
+              name="status"
+              value={form.status}
+              onChange={handleChange}
+              fullWidth
+              margin="dense"
+            >
+              <MenuItem value="재직중">재직중</MenuItem>
+              <MenuItem value="퇴사">퇴사</MenuItem>
+              <MenuItem value="휴직">휴직</MenuItem>
+            </TextField>
+            {error && (
+              <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+                {error}
+              </Typography>
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={handleSubmit}
+              variant="contained"
+              disabled={!!error}
+            >
+              저장
+            </Button>
+            <Button onClick={onClose}>취소</Button>
+          </DialogActions>
+        </Dialog>
+
+        <Dialog open={successOpen} onClose={handleSuccessClose}>
+          <DialogTitle>수정 완료</DialogTitle>
+          <DialogContent>
+            <Typography>사용자 정보가 성공적으로 수정되었습니다.</Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleSuccessClose} autoFocus variant="contained">
+              확인
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </>
     </LocalizationProvider>
   );
 }
