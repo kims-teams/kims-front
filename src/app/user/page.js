@@ -15,12 +15,11 @@ export default function UserDashboard() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
-      router.replace("/user/login"); 
+      router.replace("/user/login");
     } else {
       setIsAuthenticated(true);
     }
   }, [router]);
-
 
   if (!isAuthenticated) return null;
 
@@ -32,7 +31,7 @@ export default function UserDashboard() {
   const showRightSidebar = pathname === "/user/result";
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
+    <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <HeaderBar />
 
       <div style={{ display: "flex", flex: 1 }}>

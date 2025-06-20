@@ -98,7 +98,7 @@ export default function ScenarioPanel() {
     <Box
       sx={{
         width: collapsed ? 24 : 260,
-        minHeight: "100vh",
+        minHeight: "100%",
         borderRight: "1px solid #ddd",
         bgcolor: "#f5f5f5",
         display: "flex",

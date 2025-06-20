@@ -8,7 +8,7 @@ import HeaderBar from "../../../../components/HeaderBar";
 import Sidebar from "../../../../components/Sidebar";
 import ScenarioPanel from "../../../../components/ScenarioPanel";
 import ResultSidebar from "../../../../components/ResultSidebar";
-import useAuthRedirect from "../../../../hooks/useAuthRedirect"; 
+import useAuthRedirect from "../../../../hooks/useAuthRedirect";
 
 const ResultviewComponentMap = {
   "작업도구 사용 내역": dynamic(
@@ -49,8 +49,7 @@ export default function ResultLayout({ children }) {
   const ResultComponent = ResultviewComponentMap[selectedResult];
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", height: "100vh" }}>
-      <HeaderBar />
+    <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <Box sx={{ display: "flex", flex: 1, position: "relative" }}>
         <Sidebar />
         <ScenarioPanel />
