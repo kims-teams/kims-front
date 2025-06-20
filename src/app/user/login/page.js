@@ -9,7 +9,9 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = async () => {
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
     if (!email || !password) {
       window.alert("이메일과 비밀번호를 모두 입력해주세요.");
       return;
@@ -28,7 +30,11 @@ export default function LoginPage() {
       }
 
       const data = await res.json();
+      console.log("로그인 응답:", JSON.stringify(data, null, 2));
+
       localStorage.setItem("token", data.token);
+      localStorage.setItem("role", data.user.role);
+
       router.push("/user");
     } catch (err) {
       console.error("로그인 실패:", err);
@@ -38,6 +44,8 @@ export default function LoginPage() {
 
   return (
     <Box
+      component="form"
+      onSubmit={handleLogin}
       sx={{
         minHeight: "100%",
         bgcolor: "#f5f5f5",
@@ -63,7 +71,6 @@ export default function LoginPage() {
           },
         }}
       >
-        {/* 상단 로고 */}
         <Typography
           variant="h5"
           sx={{ mb: 1, fontWeight: 800, textAlign: "center", color: "#333" }}
@@ -77,7 +84,6 @@ export default function LoginPage() {
           계정 정보를 입력해주세요
         </Typography>
 
-        {/* 이메일 입력 */}
         <TextField
           label="이메일"
           type="email"
@@ -87,7 +93,6 @@ export default function LoginPage() {
           sx={{ mb: 2 }}
         />
 
-        {/* 비밀번호 입력 */}
         <TextField
           label="비밀번호"
           type="password"
@@ -97,11 +102,10 @@ export default function LoginPage() {
           sx={{ mb: 3 }}
         />
 
-        {/* 로그인 버튼 */}
         <Button
           variant="contained"
           fullWidth
-          onClick={handleLogin}
+          type="submit"
           sx={{
             bgcolor: "#333",
             color: "#fff",

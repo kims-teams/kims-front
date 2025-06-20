@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import {
   Box,
   Drawer,
-  IconButton,
   TextField,
   List,
   ListItemButton,
@@ -29,12 +28,15 @@ export default function Sidebar() {
     fav: true,
     engine: true,
     analysis: true,
-    admin: true,
     community: true,
+    ADMIN: true,
   });
 
   const router = useRouter();
   const { setSelectedCommunityView } = useCommunityViewStore();
+
+  const role =
+    typeof window !== "undefined" ? localStorage.getItem("role") : null;
 
   const toggle = (key) => {
     setOpen((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -70,7 +72,6 @@ export default function Sidebar() {
         },
       }}
     >
-      {/* 검색창 */}
       <TextField
         placeholder="검색"
         size="small"
@@ -85,9 +86,7 @@ export default function Sidebar() {
         }}
       />
 
-      {/* 메뉴 리스트 */}
       <List disablePadding>
-        {/* 즐겨찾기 */}
         <ListItemButton onClick={() => toggle("fav")}>
           <StarBorderIcon fontSize="small" sx={{ mr: 1 }} />
           <ListItemText primary="즐겨찾기" />
@@ -95,7 +94,6 @@ export default function Sidebar() {
         </ListItemButton>
         <Collapse in={open.fav} />
 
-        {/* 엔진 */}
         <ListItemButton onClick={() => toggle("engine")}>
           <EngineeringIcon fontSize="small" sx={{ mr: 1 }} />
           <ListItemText primary="엔진" />
@@ -117,7 +115,6 @@ export default function Sidebar() {
           </Box>
         </Collapse>
 
-        {/* 결과 분석 */}
         <ListItemButton onClick={() => toggle("analysis")}>
           <BarChartIcon fontSize="small" sx={{ mr: 1 }} />
           <ListItemText primary="결과 분석" />
@@ -135,37 +132,39 @@ export default function Sidebar() {
             </List>
           </Box>
         </Collapse>
-
-        {/* 관리 */}
-        <ListItemButton onClick={() => toggle("admin")}>
-          <BarChartIcon fontSize="small" sx={{ mr: 1 }} />
-          <ListItemText primary="관리" />
-          {open.admin ? <ExpandLess /> : <ExpandMore />}
-        </ListItemButton>
-        <Collapse in={open.admin}>
-          <Box sx={{ pl: 2, borderLeft: "2px solid #ccc", ml: 1 }}>
-            <List disablePadding>
-              <ListItemButton onClick={() => handleNav("사용자 관리")}>
-                <ListItemText primary="사용자 관리" />
-              </ListItemButton>
-            </List>
-          </Box>
-        </Collapse>
-        {/* 게시판 */}
-        <ListItemButton onClick={() => toggle("community")}>
-          <ForumIcon fontSize="small" sx={{ mr: 1 }} />
-          <ListItemText primary="게시판" />
-          {open.community ? <ExpandLess /> : <ExpandMore />}
-        </ListItemButton>
-        <Collapse in={open.community}>
-          <Box sx={{ pl: 2, borderLeft: "2px solid #ccc", ml: 1 }}>
-            <List disablePadding>
-              <ListItemButton onClick={() => handleNav("사내 게시판")}>
-                <ListItemText primary="사내 게시판" />
-              </ListItemButton>
-            </List>
-          </Box>
-        </Collapse>
+        {role === "ADMIN" && (
+          <>
+            <ListItemButton onClick={() => toggle("ADMIN")}>
+              <BarChartIcon fontSize="small" sx={{ mr: 1 }} />
+              <ListItemText primary="관리" />
+              {open.ADMIN ? <ExpandLess /> : <ExpandMore />}
+            </ListItemButton>
+            <Collapse in={open.ADMIN}>
+              <Box sx={{ pl: 2, borderLeft: "2px solid #ccc", ml: 1 }}>
+                <List disablePadding>
+                  <ListItemButton onClick={() => handleNav("사용자 관리")}>
+                    <ListItemText primary="사용자 관리" />
+                  </ListItemButton>
+                </List>
+              </Box>
+            </Collapse>
+            {/* 게시판 */}
+            <ListItemButton onClick={() => toggle("community")}>
+              <ForumIcon fontSize="small" sx={{ mr: 1 }} />
+              <ListItemText primary="게시판" />
+              {open.community ? <ExpandLess /> : <ExpandMore />}
+            </ListItemButton>
+            <Collapse in={open.community}>
+              <Box sx={{ pl: 2, borderLeft: "2px solid #ccc", ml: 1 }}>
+                <List disablePadding>
+                  <ListItemButton onClick={() => handleNav("사내 게시판")}>
+                    <ListItemText primary="사내 게시판" />
+                  </ListItemButton>
+                </List>
+              </Box>
+            </Collapse>
+          </>
+        )}
       </List>
     </Drawer>
   );
