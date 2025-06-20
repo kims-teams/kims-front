@@ -35,6 +35,7 @@ export default function ModifyUserModal({
 
   const [error, setError] = useState("");
   const [successOpen, setSuccessOpen] = useState(false);
+  const [phoneErrorOpen, setPhoneErrorOpen] = useState(false);
 
   useEffect(() => {
     if (userData) {
@@ -91,6 +92,12 @@ export default function ModifyUserModal({
 
     if (isDuplicate) return alert("이미 등록된 이메일입니다.");
 
+    const phonePattern = /^01[016-9]-\d{3,4}-\d{4}$/;
+    if (!phonePattern.test(form.phone)) {
+      setPhoneErrorOpen(true);
+      return;
+    }
+
     const updatedUser = {
       email: trimmedEmail,
       name: form.name,
@@ -126,15 +133,14 @@ export default function ModifyUserModal({
         } catch {
           errorMessage = "알 수 없는 오류 발생";
         }
-        return alert(`❌ 수정 실패: ${errorMessage}`);
+        return alert(`수정 실패: ${errorMessage}`);
       }
 
       const saved = await res.json();
       onSave(saved);
       setSuccessOpen(true);
     } catch (err) {
-      console.error("❌ 수정 예외:", err);
-      alert(`❌ 수정 중 예외가 발생했습니다.\n${err.message}`);
+      console.error("수정 중 오류:", err);
     }
   };
 
@@ -179,6 +185,7 @@ export default function ModifyUserModal({
               name="phone"
               value={form.phone}
               onChange={handleChange}
+              placeholder="예: 010-1234-5678"
               fullWidth
               margin="dense"
             />
@@ -240,6 +247,23 @@ export default function ModifyUserModal({
           </DialogContent>
           <DialogActions>
             <Button onClick={handleSuccessClose} autoFocus variant="contained">
+              확인
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        <Dialog open={phoneErrorOpen} onClose={() => setPhoneErrorOpen(false)}>
+          <DialogTitle>연락처 입력 오류</DialogTitle>
+          <DialogContent>
+            <Typography>
+              연락처는 010-0000-0000 형식으로 입력해주세요.
+            </Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={() => setPhoneErrorOpen(false)}
+              variant="contained"
+            >
               확인
             </Button>
           </DialogActions>
