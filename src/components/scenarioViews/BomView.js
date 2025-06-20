@@ -79,7 +79,7 @@ export default function BomView() {
       return;
     }
 
-    const formData = new FormData();
+   const formData = new FormData();
     formData.append("file", selectedFile);
 
     try {
@@ -91,13 +91,9 @@ export default function BomView() {
         }
       );
 
-      if (!res.ok) throw new Error("업로드 실패");
+     if (!res.ok) throw new Error("업로드 실패");
       const data = await res.json();
-      const numberedRows = data.map((row, index) => ({
-        ...row,
-        id: index + 1,
-      }));
-      setBomData(numberedRows);
+      setBomData(data);
       setMessage("파일 업로드 성공!");
       setMessageType("success");
       handleCloseDialog();
@@ -107,6 +103,7 @@ export default function BomView() {
       setMessageType("error");
     }
   };
+
 
   const handleSave = async () => {
     const scenarioId = selectedScenario?.id;

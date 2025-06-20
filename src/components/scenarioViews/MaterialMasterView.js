@@ -182,7 +182,7 @@ export default function MaterialMasterView() {
         }}
       >
         <DataGrid
-          rows={[]}
+          rows={rows}
           columns={columns}
           getRowId={(row) => row.id}
           pageSize={10}

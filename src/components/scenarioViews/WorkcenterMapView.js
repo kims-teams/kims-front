@@ -80,29 +80,27 @@ export default function WorkcenterMapView() {
     formData.append("file", selectedFile);
 
     try {
-      const res = await fetch(`http://127.0.0.1:8080/api/input/${entity}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          scenario_id: scenarioId,
-          category: entity,
-          data: rows,
-        }),
-      });
+      const res = await fetch(
+        `http://127.0.0.1:5000/api/input-file/${entity}`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
-      if (!res.ok) {
-        const errorText = await res.text();
-        throw new Error(`서버 오류: ${res.status} - ${errorText}`);
-      }
-
-      setMessage("저장 완료!");
+      if (!res.ok) throw new Error("업로드 실패");
+      const data = await res.json();
+      setRows(data);
+      setMessage("파일 업로드 성공!");
       setMessageType("success");
+      handleCloseDialog();
     } catch (err) {
-      console.error("❌ 저장 실패", err);
-      setMessage("저장 중 오류가 발생했습니다.");
+      console.error("파일 업로드 실패", err);
+      setMessage("업로드 중 문제가 발생했습니다.");
       setMessageType("error");
     }
   };
+
 
   const handleSave = async () => {
     const scenarioId = selectedScenario?.id;
@@ -184,7 +182,7 @@ export default function WorkcenterMapView() {
         }}
       >
         <DataGrid
-          rows={[]}
+          rows={rows}
           columns={columns}
           getRowId={(row) => row.id}
           pageSize={10}
