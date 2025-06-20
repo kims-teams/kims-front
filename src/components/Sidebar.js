@@ -18,8 +18,8 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import EngineeringIcon from "@mui/icons-material/Engineering";
 import BarChartIcon from "@mui/icons-material/BarChart";
-import ForumIcon from "@mui/icons-material/Forum"; // ← 게시판 아이콘
-import useCommunityViewStore from "../hooks/useCommunityViewStore"; // ✅ 상대경로
+import ForumIcon from "@mui/icons-material/Forum";
+import useCommunityViewStore from "../hooks/useCommunityViewStore"; 
 
 import { useRouter } from "next/navigation";
 
@@ -148,7 +148,7 @@ export default function Sidebar() {
                 </List>
               </Box>
             </Collapse>
-            {/* 게시판 */}
+          
             <ListItemButton onClick={() => toggle("community")}>
               <ForumIcon fontSize="small" sx={{ mr: 1 }} />
               <ListItemText primary="게시판" />

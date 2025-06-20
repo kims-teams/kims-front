@@ -121,26 +121,14 @@ export default function ModifyUserModal({
       });
 
       if (!res.ok) {
-        let errorMessage = "수정 실패";
-        try {
-          const contentType = res.headers.get("content-type");
-          if (contentType?.includes("application/json")) {
-            const errorJson = await res.json();
-            errorMessage = errorJson.message || JSON.stringify(errorJson);
-          } else {
-            errorMessage = await res.text();
-          }
-        } catch {
-          errorMessage = "알 수 없는 오류 발생";
-        }
-        return alert(`수정 실패: ${errorMessage}`);
+        return alert("사용자 정보 수정에 실패했습니다.");
       }
 
       const saved = await res.json();
       onSave(saved);
       setSuccessOpen(true);
-    } catch (err) {
-      console.error("수정 중 오류:", err);
+    } catch {
+      alert("수정 중 오류가 발생했습니다.");
     }
   };
 

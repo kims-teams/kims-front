@@ -1,17 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import {
-  Box,
-  Typography,
-  TextField,
-  Button,
-  Paper,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-} from "@mui/material";
+import { Box, Typography, TextField, Button, Paper } from "@mui/material";
 import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
@@ -19,14 +9,12 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [errorOpen, setErrorOpen] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
     if (!email || !password) {
       setErrorMessage("이메일과 비밀번호를 모두 입력해주세요.");
-      setErrorOpen(true);
       return;
     }
 
@@ -38,23 +26,16 @@ export default function LoginPage() {
       });
 
       if (!res.ok) {
-        throw new Error("로그인을 실패했습니다.");
+        throw new Error("이메일 혹은 비밀번호가 일치하지 않습니다.");
       }
 
       const data = await res.json();
-
       localStorage.setItem("token", data.token);
       localStorage.setItem("role", data.user.role);
-
       router.push("/user");
     } catch (err) {
-      setErrorMessage("로그인을 실패했습니다.");
-      setErrorOpen(true);
+      setErrorMessage(err.message);
     }
-  };
-
-  const handleCloseError = () => {
-    setErrorOpen(false);
   };
 
   return (
@@ -62,7 +43,7 @@ export default function LoginPage() {
       component="form"
       onSubmit={handleLogin}
       sx={{
-        minHeight: "100%",
+        minHeight: "100vh",
         bgcolor: "#f5f5f5",
         display: "flex",
         justifyContent: "center",
@@ -114,8 +95,14 @@ export default function LoginPage() {
           fullWidth
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          sx={{ mb: 3 }}
+          sx={{ mb: 1 }}
         />
+
+        {errorMessage && (
+          <Typography color="error" sx={{ mb: 2, fontSize: "0.85rem" }}>
+            {errorMessage}
+          </Typography>
+        )}
 
         <Button
           variant="contained"
@@ -137,17 +124,6 @@ export default function LoginPage() {
           로그인
         </Button>
       </Paper>
-
-      <Dialog open={errorOpen} onClose={handleCloseError}>
-        <DialogContent>
-          <Typography>로그인을 실패했습니다.</Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseError} autoFocus>
-            확인
-          </Button>
-        </DialogActions>
-      </Dialog>
     </Box>
   );
 }
