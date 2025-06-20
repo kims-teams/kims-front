@@ -18,11 +18,9 @@ import { useScenarioStore } from "../../hooks/useScenarioStore";
 
 const columns = [
   { field: "id", headerName: "순번", width: 100 },
-  { field: "scenarioId", headerName: "시나리오", width: 140 },
   { field: "partId", headerName: "품목코드", width: 140 },
   { field: "toolId", headerName: "Tool Id", width: 140 },
   { field: "partName", headerName: "품목명", width: 140 },
-  { field: "resourceId", headerName: "Resource 아이디", width: 140 },
 ];
 
 export default function ToolMapView() {
@@ -184,7 +182,7 @@ export default function ToolMapView() {
         }}
       >
         <DataGrid
-          rows={[]}
+          rows={rows}
           columns={columns}
           getRowId={(row) => row.id}
           pageSize={10}

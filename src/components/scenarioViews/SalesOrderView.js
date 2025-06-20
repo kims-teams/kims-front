@@ -185,7 +185,7 @@ export default function SalesOrderView() {
         }}
       >
         <DataGrid
-          rows={[]}
+          rows={rows}
           columns={columns}
           getRowId={(row) => row.id}
           pageSize={10}

@@ -184,7 +184,7 @@ export default function ToolMasterView() {
         }}
       >
         <DataGrid
-          rows={[]}
+          rows={rows}
           columns={columns}
           getRowId={(row) => row.id}
           pageSize={10}

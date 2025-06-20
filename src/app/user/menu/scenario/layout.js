@@ -15,8 +15,7 @@ const viewComponentMap = {
     () => import("../../../../components/scenarioViews/PriorityView")
   ),
   "생산 라우팅": dynamic(
-    () =>
-      import("../../../../components/scenarioViews/Manufacturing_processView")
+    () => import("../../../../components/scenarioViews/WorkcenterMapView.js")
   ),
   "작업장-도구 매핑관리": dynamic(
     () => import("../../../../components/scenarioViews/ToolMapView")

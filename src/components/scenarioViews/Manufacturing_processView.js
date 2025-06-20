@@ -110,7 +110,7 @@ export default function ManufacturingProcessView() {
         body: JSON.stringify({
           scenario_id: scenarioId,
           category: entity,
-          data: rows,
+          data: routingData,
         }),
       });
 
@@ -180,7 +180,7 @@ export default function ManufacturingProcessView() {
         }}
       >
         <DataGrid
-          rows={[]}
+          rows={routingData}
           columns={columns}
           getRowId={(row) => row.id}
           pageSize={10}
