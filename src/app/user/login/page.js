@@ -1,19 +1,32 @@
 "use client";
 
 import { useState } from "react";
-import { Box, Typography, TextField, Button, Paper } from "@mui/material";
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Paper,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from "@mui/material";
 import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [errorOpen, setErrorOpen] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
     if (!email || !password) {
-      window.alert("이메일과 비밀번호를 모두 입력해주세요.");
+      setErrorMessage("이메일과 비밀번호를 모두 입력해주세요.");
+      setErrorOpen(true);
       return;
     }
 
@@ -25,21 +38,23 @@ export default function LoginPage() {
       });
 
       if (!res.ok) {
-        const error = await res.json();
-        throw new Error(error.message || "로그인 실패");
+        throw new Error("로그인을 실패했습니다.");
       }
 
       const data = await res.json();
-      console.log("로그인 응답:", JSON.stringify(data, null, 2));
 
       localStorage.setItem("token", data.token);
       localStorage.setItem("role", data.user.role);
 
       router.push("/user");
     } catch (err) {
-      console.error("로그인 실패:", err);
-      window.alert(err.message || "로그인 중 오류 발생");
+      setErrorMessage("로그인을 실패했습니다.");
+      setErrorOpen(true);
     }
+  };
+
+  const handleCloseError = () => {
+    setErrorOpen(false);
   };
 
   return (
@@ -122,6 +137,17 @@ export default function LoginPage() {
           로그인
         </Button>
       </Paper>
+
+      <Dialog open={errorOpen} onClose={handleCloseError}>
+        <DialogContent>
+          <Typography>로그인을 실패했습니다.</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseError} autoFocus>
+            확인
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }
