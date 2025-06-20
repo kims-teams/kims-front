@@ -40,7 +40,6 @@ const inputSubGroups = {
 };
 
 const categoryMap = {
-  Configurations: ["엔진 실행 옵션"],
   "Input Data": Object.entries(inputSubGroups),
 };
 
@@ -49,10 +48,8 @@ export default function ScenarioSidebar({ onSelect, collapsed, setCollapsed }) {
   const [selectedItem, setSelectedItem] = useState("");
   const [openGroup, setOpenGroup] = useState(
     Object.fromEntries(
-      Object.keys(categoryMap)
-        .flatMap((key) =>
-          key === "Input Data" ? [key, ...Object.keys(inputSubGroups)] : [key]
-        )
+      Object.keys(inputSubGroups)
+        .concat("Input Data")
         .map((k) => [k, true])
     )
   );
@@ -135,55 +132,6 @@ export default function ScenarioSidebar({ onSelect, collapsed, setCollapsed }) {
           <Divider />
 
           <List dense disablePadding sx={{ flex: 1 }}>
-            <ListItemButton onClick={() => toggleGroup("Configurations")}>
-              <ListItemText
-                primary="Configurations"
-                primaryTypographyProps={{ fontSize: "13px" }}
-              />
-              {openGroup.Configurations ? <ExpandLess /> : <ExpandMore />}
-            </ListItemButton>
-
-            <Collapse
-              in={openGroup.Configurations}
-              timeout="auto"
-              unmountOnExit
-            >
-              <List component="div" disablePadding>
-                {categoryMap.Configurations.map((item, idx) => (
-                  <ListItem key={idx} disablePadding>
-                    <ListItemButton
-                      sx={{
-                        pl: 4,
-                        py: 0.5,
-                        my: 0.25,
-                        borderRadius: 1,
-                        ...(selectedItem === item && {
-                          backgroundColor: "#e0e0e0",
-                          "& .MuiListItemText-primary": {
-                            fontWeight: "bold",
-                            color: "#1a237e",
-                          },
-                        }),
-                        "&:hover": {
-                          backgroundColor: "#f5f5f5",
-                        },
-                      }}
-                      onClick={() => {
-                        setSelectedItem(item);
-                        onSelect?.(item);
-                      }}
-                      selected={selectedItem === item}
-                    >
-                      <ListItemText
-                        primary={item}
-                        primaryTypographyProps={{ fontSize: "12px" }}
-                      />
-                    </ListItemButton>
-                  </ListItem>
-                ))}
-              </List>
-            </Collapse>
-
             <ListItemButton onClick={() => toggleGroup("Input Data")}>
               <ListItemText
                 primary="Input Data"
