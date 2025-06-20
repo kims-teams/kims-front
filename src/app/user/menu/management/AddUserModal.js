@@ -65,7 +65,7 @@ export default function AddUserModal({ open, onClose, onAdd, emailList }) {
 
     const userToAdd = {
       ...form,
-      hireDate: form.hireDate.toISOString(), // 서버로 보낼 땐 ISO 문자열로
+      hireDate: form.hireDate.toISOString(), 
     };
 
     onAdd(userToAdd);

@@ -47,39 +47,18 @@ export default function Management() {
     return (
       u.name?.toLowerCase().includes(query) ||
       u.email?.toLowerCase().includes(query) ||
-      u.position?.toLowerCase().includes(query) ||
-      u.department?.toLowerCase().includes(query)
+      u.position?.toLowerCase().includes(query)
     );
   });
 
   const handleEdit = (row) => {
-    setSelectedUser(row);
+    setSelectedUser({ ...row, id: row.realId });
     setEditModalOpen(true);
   };
 
   const handleDelete = (row) => {
-    setSelectedUser(row);
+    setSelectedUser({ ...row, id: row.realId });
     setDeleteModalOpen(true);
-  };
-
-  const handleConfirmDelete = (user) => {
-    const token = localStorage.getItem("token");
-    fetch(`http://localhost:8080/api/user/${user.realId}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("삭제 실패");
-        setUsers((prev) => prev.filter((u) => u.id !== user.realId));
-        alert("삭제가 완료되었습니다.");
-        setDeleteModalOpen(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        alert("삭제 중 오류 발생");
-      });
   };
 
   const handleResetPassword = (row) => {
@@ -109,38 +88,19 @@ export default function Management() {
         alert("등록 실패");
       });
   };
-
-  const handleUpdateUser = (updatedUser) => {
-    const token = localStorage.getItem("token");
-    fetch(`http://localhost:8080/api/user/${updatedUser.realId}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(updatedUser),
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("수정 실패");
-        setUsers((prev) =>
-          prev.map((user) =>
-            user.id === updatedUser.realId ? { ...user, ...updatedUser } : user
-          )
-        );
-        alert("수정이 완료되었습니다.");
-        setEditModalOpen(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        alert("수정 중 오류 발생");
-      });
+  const handleUpdateUser = (savedUser) => {
+    setUsers((prev) =>
+      prev.map((user) =>
+        user.id === savedUser.id ? { ...user, ...savedUser } : user
+      )
+    );
+    setEditModalOpen(false);
   };
 
   const columns = [
     { field: "id", headerName: "순번", width: 80 },
     { field: "name", headerName: "이름", flex: 1 },
     { field: "email", headerName: "이메일", flex: 1.5 },
-    { field: "department", headerName: "부서", flex: 1 },
     { field: "position", headerName: "직급", flex: 1 },
     { field: "phone", headerName: "연락처", flex: 1.2 },
     { field: "hireDate", headerName: "입사일", flex: 1 },
@@ -192,7 +152,6 @@ export default function Management() {
     realId: u.id,
     name: u.name || "",
     email: u.email || "",
-    department: u.department || "",
     position: u.position || "",
     phone: u.phone || "",
     hireDate: u.hireDate ? u.hireDate.split("T")[0] : "",
@@ -261,7 +220,9 @@ export default function Management() {
         open={deleteModalOpen}
         onClose={() => setDeleteModalOpen(false)}
         user={selectedUser}
-        onDelete={handleConfirmDelete}
+        onDelete={(user) => {
+          setUsers((prev) => prev.filter((u) => u.id !== user.id));
+        }}
       />
     </Box>
   );

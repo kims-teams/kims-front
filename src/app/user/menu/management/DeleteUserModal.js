@@ -8,12 +8,38 @@ import {
   DialogActions,
   Button,
 } from "@mui/material";
+import { useState } from "react";
 
 export default function DeleteUserModal({ open, onClose, user, onDelete }) {
+  const [isDeleting, setIsDeleting] = useState(false);
+
   if (!user) return null;
 
-  const handleDelete = () => {
-    onDelete(user);
+  const handleDelete = async () => {
+    if (isDeleting || !user?.id) return;
+
+    setIsDeleting(true);
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`http://localhost:8080/api/user/${user.id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!res.ok) {
+        const msg = await res.text();
+        throw new Error(msg || "삭제 실패");
+      }
+
+      alert("✅ 사용자 삭제 완료");
+      onDelete(user);
+      onClose();
+    } catch (err) {
+      console.error("❌ 삭제 실패:", err);
+      alert(`❌ 삭제 실패: ${err.message}`);
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   return (
@@ -25,11 +51,11 @@ export default function DeleteUserModal({ open, onClose, user, onDelete }) {
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} color="inherit">
+        <Button onClick={onClose} color="inherit" disabled={isDeleting}>
           취소
         </Button>
-        <Button onClick={handleDelete} color="error">
-          삭제
+        <Button onClick={handleDelete} color="error" disabled={isDeleting}>
+          {isDeleting ? "삭제 중..." : "삭제"}
         </Button>
       </DialogActions>
     </Dialog>

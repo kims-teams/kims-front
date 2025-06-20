@@ -1,123 +1,265 @@
 "use client";
 
-import { useState } from "react";
-import { Box, Typography, TextField, Button, Paper } from "@mui/material";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import {
+  Box,
+  Button,
+  IconButton,
+  TextField,
+  InputAdornment,
+  Tooltip,
+} from "@mui/material";
+import { DataGrid } from "@mui/x-data-grid";
+import SearchIcon from "@mui/icons-material/Search";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import RestartAltIcon from "@mui/icons-material/RestartAlt";
 
-export default function LoginPage() {
-  const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+import ModifyUserModal from "app/user/menu/management/ModifyUserModal";
+import AddUserModal from "app/user/menu/management/AddUserModal";
+import DeleteUserModal from "app/user/menu/management/DeleteUserModal";
+import useAuthRedirect from "../../../../hooks/useAuthRedirect";
 
-  const handleLogin = async () => {
-    if (!email || !password) {
-      window.alert("이메일과 비밀번호를 모두 입력해주세요.");
-      return;
-    }
+export default function Management() {
+  useAuthRedirect();
 
-    try {
-      const res = await fetch("http://127.0.0.1:8080/api/user/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+  const [users, setUsers] = useState([]);
+  const [search, setSearch] = useState("");
+
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [addModalOpen, setAddModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+
+  const [selectedUser, setSelectedUser] = useState(null);
+
+  useEffect(() => {
+    fetch("http://localhost:8080/api/user")
+      .then((res) => res.json())
+      .then((data) => setUsers(data))
+      .catch((err) => {
+        console.error("사용자 목록 불러오기 실패:", err);
+        alert("사용자 목록을 불러오지 못했습니다.");
       });
+  }, []);
 
-      if (!res.ok) {
-        const error = await res.json();
-        throw new Error(error.message || "로그인 실패");
-      }
+  const filtered = users.filter((u) => {
+    const query = search.toLowerCase();
+    return (
+      u.name?.toLowerCase().includes(query) ||
+      u.email?.toLowerCase().includes(query) ||
+      u.position?.toLowerCase().includes(query)
+    );
+  });
 
-      const data = await res.json();
-      console.log("로그인 응답:", JSON.stringify(data, null, 2));
-
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("role", data.user.role);
-
-      router.push("/user");
-    } catch (err) {
-      console.error("로그인 실패:", err);
-      window.alert(err.message || "로그인 중 오류 발생");
-    }
+  const handleEdit = (row) => {
+    setSelectedUser(row);
+    setEditModalOpen(true);
   };
 
+  const handleDelete = (row) => {
+    setSelectedUser(row);
+    setDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = (user) => {
+    const token = localStorage.getItem("token");
+    fetch(`http://localhost:8080/api/user/${user.realId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("삭제 실패");
+        setUsers((prev) => prev.filter((u) => u.id !== user.realId));
+        alert("삭제가 완료되었습니다.");
+        setDeleteModalOpen(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        alert("삭제 중 오류 발생");
+      });
+  };
+
+  const handleResetPassword = (row) => {
+    alert(`${row.email}의 비밀번호 초기화 기능은 아직 구현되지 않았습니다.`);
+  };
+
+  const handleAddUser = (newUser) => {
+    const token = localStorage.getItem("token");
+    fetch("http://localhost:8080/api/user", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(newUser),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("등록 실패");
+        return res.json();
+      })
+      .then((data) => {
+        alert("사용자 등록 완료");
+        setUsers((prev) => [...prev, data]);
+      })
+      .catch((err) => {
+        console.error(err);
+        alert("등록 실패");
+      });
+  };
+
+  const handleUpdateUser = (updatedUser) => {
+    const token = localStorage.getItem("token");
+    fetch(`http://localhost:8080/api/user/${updatedUser.realId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(updatedUser),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("수정 실패");
+        setUsers((prev) =>
+          prev.map((user) =>
+            user.id === updatedUser.realId ? { ...user, ...updatedUser } : user
+          )
+        );
+        alert("수정이 완료되었습니다.");
+        setEditModalOpen(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        alert("수정 중 오류 발생");
+      });
+  };
+
+  const columns = [
+    { field: "id", headerName: "순번", width: 80 },
+    { field: "name", headerName: "이름", flex: 1 },
+    { field: "email", headerName: "이메일", flex: 1.5 },
+    { field: "position", headerName: "직급", flex: 1 },
+    { field: "phone", headerName: "연락처", flex: 1.2 },
+    { field: "hireDate", headerName: "입사일", flex: 1 },
+    { field: "role", headerName: "권한", flex: 0.8 },
+    { field: "status", headerName: "상태", flex: 0.8 },
+    {
+      field: "edit",
+      headerName: "수정",
+      width: 80,
+      renderCell: (params) => (
+        <Tooltip title="수정">
+          <IconButton onClick={() => handleEdit(params.row)} size="small">
+            <EditIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+      ),
+    },
+    {
+      field: "delete",
+      headerName: "삭제",
+      width: 80,
+      renderCell: (params) => (
+        <Tooltip title="삭제">
+          <IconButton onClick={() => handleDelete(params.row)} size="small">
+            <DeleteIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+      ),
+    },
+    {
+      field: "reset",
+      headerName: "비밀번호 초기화",
+      width: 130,
+      renderCell: (params) => (
+        <Tooltip title="비밀번호 초기화">
+          <IconButton
+            onClick={() => handleResetPassword(params.row)}
+            size="small"
+          >
+            <RestartAltIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+      ),
+    },
+  ];
+
+  const rows = filtered.map((u, idx) => ({
+    id: idx + 1,
+    realId: u.id,
+    name: u.name || "",
+    email: u.email || "",
+    position: u.position || "",
+    phone: u.phone || "",
+    hireDate: u.hireDate ? u.hireDate.split("T")[0] : "",
+    role: u.role || "",
+    status: u.status || "",
+  }));
+
+  const emailListForEdit = users
+    .filter((u) => u.id !== selectedUser?.realId)
+    .map((u) => u.email);
+
   return (
-    <Box
-      sx={{
-        minHeight: "100vh",
-        bgcolor: "#f5f5f5",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        px: 2,
-      }}
-    >
-      <Paper
-        elevation={4}
-        sx={{
-          p: 4,
-          width: "100%",
-          maxWidth: 400,
-          borderRadius: "12px",
-          boxShadow: "0px 8px 30px rgba(0,0,0,0.1)",
-          backgroundColor: "#fff",
-          animation: "fadeSlideIn 0.5s ease",
-          "@keyframes fadeSlideIn": {
-            from: { opacity: 0, transform: "translateY(-20px)" },
-            to: { opacity: 1, transform: "translateY(0)" },
-          },
-        }}
-      >
-        <Typography
-          variant="h5"
-          sx={{ mb: 1, fontWeight: 800, textAlign: "center", color: "#333" }}
-        >
-          KIMSTEAMS
-        </Typography>
-        <Typography
-          variant="body2"
-          sx={{ mb: 3, color: "#777", textAlign: "center" }}
-        >
-          계정 정보를 입력해주세요
-        </Typography>
-
+    <Box sx={{ p: 2 }}>
+      <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
         <TextField
-          label="이메일"
-          type="email"
-          fullWidth
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          sx={{ mb: 2 }}
+          variant="outlined"
+          size="small"
+          placeholder="사용자 검색"
+          sx={{ width: 300 }}
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon fontSize="small" />
+              </InputAdornment>
+            ),
+          }}
         />
-
-        <TextField
-          label="비밀번호"
-          type="password"
-          fullWidth
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          sx={{ mb: 3 }}
-        />
-
         <Button
           variant="contained"
-          fullWidth
-          onClick={handleLogin}
-          sx={{
-            bgcolor: "#333",
-            color: "#fff",
-            fontWeight: 600,
-            py: 1.2,
-            borderRadius: "6px",
-            "&:hover": {
-              bgcolor: "#222",
-              transform: "scale(1.01)",
-              transition: "all 0.2s ease-in-out",
-            },
-          }}
+          size="small"
+          onClick={() => setAddModalOpen(true)}
         >
-          로그인
+          + 사원 추가
         </Button>
-      </Paper>
+      </Box>
+
+      <Box sx={{ height: 550 }}>
+        <DataGrid
+          rows={rows}
+          columns={columns}
+          pageSize={10}
+          rowsPerPageOptions={[5, 10, 20]}
+          disableRowSelectionOnClick
+          getRowId={(row) => row.id}
+        />
+      </Box>
+
+      <ModifyUserModal
+        open={editModalOpen}
+        onClose={() => setEditModalOpen(false)}
+        userData={selectedUser}
+        onSave={handleUpdateUser}
+        emailList={emailListForEdit}
+      />
+
+      <AddUserModal
+        open={addModalOpen}
+        onClose={() => setAddModalOpen(false)}
+        onAdd={handleAddUser}
+        emailList={users.map((u) => u.email)}
+      />
+
+      <DeleteUserModal
+        open={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        user={selectedUser}
+        onDelete={handleConfirmDelete}
+      />
     </Box>
   );
 }
