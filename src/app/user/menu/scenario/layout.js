@@ -53,7 +53,7 @@ const viewComponentMap = {
 };
 
 export default function ScenarioLayout({ children }) {
-  useAuthRedirect(); 
+  useAuthRedirect();
 
   const [selectedInput, setSelectedInput] = useState("우선순위");
   const [isRightSidebarCollapsed, setIsRightSidebarCollapsed] = useState(false);
@@ -61,8 +61,7 @@ export default function ScenarioLayout({ children }) {
   const InputComponent = selectedInput ? viewComponentMap[selectedInput] : null;
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", height: "100vh" }}>
-      <HeaderBar />
+    <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <Box sx={{ display: "flex", flex: 1, position: "relative" }}>
         <Sidebar />
         <ScenarioPanel />

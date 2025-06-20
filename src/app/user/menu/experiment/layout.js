@@ -10,8 +10,7 @@ export default function ScenarioLayout({ children }) {
   useAuthRedirect();
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", height: "100vh" }}>
-      <HeaderBar />
+    <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <Box sx={{ display: "flex", flex: 1 }}>
         <Sidebar />
         <ScenarioPanel />

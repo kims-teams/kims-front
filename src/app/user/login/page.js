@@ -47,7 +47,7 @@ export default function LoginPage() {
       component="form"
       onSubmit={handleLogin}
       sx={{
-        minHeight: "100vh",
+        minHeight: "100%",
         bgcolor: "#f5f5f5",
         display: "flex",
         justifyContent: "center",
