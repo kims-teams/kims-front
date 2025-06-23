@@ -9,74 +9,107 @@ import {
   Stack,
   IconButton,
 } from "@mui/material";
-import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useState } from "react";
+import { useParams } from "next/navigation";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { useEffect } from "react";
+import useAuthRedirect from "hooks/useAuthRedirect";
 
 export default function PostDetailView() {
   const { id } = useParams();
-  const router = useRouter();
+  useAuthRedirect();
 
-  const [post, setPost] = useState({
-    title: "더미 제목입니다.",
-    content: "이곳은 더미 게시글 내용입니다.",
-    writerName: "홍길동",
-    writerId: "1",
-  });
-
-  const [comments, setComments] = useState([
-    {
-      id: 1,
-      content: "첫 번째 더미 댓글입니다.",
-      writerName: "김철수",
-      writerId: "1",
-    },
-    {
-      id: 2,
-      content: "두 번째 더미 댓글입니다.",
-      writerName: "이영희",
-      writerId: "2",
-    },
-  ]);
-
+  const [post, setPost] = useState(null);
+  const [comments, setComments] = useState([]);
   const [commentInput, setCommentInput] = useState("");
   const [editingCommentId, setEditingCommentId] = useState(null);
   const [editingContent, setEditingContent] = useState("");
 
-  const userId = "1";
-  const token = "dummy-token";
+  const userId =
+    typeof window !== "undefined" ? localStorage.getItem("userId") : null;
 
   useEffect(() => {
-    if (!token) {
-      alert("로그인이 필요합니다.");
-      router.push("/login");
-    }
+    fetchPost();
+    fetchComments();
   }, []);
 
-  const handleAddComment = () => {
+  const fetchPost = async () => {
+    try {
+      const res = await fetch(`http://localhost:8080/api/post/${id}`);
+      const data = await res.json();
+      setPost(data);
+    } catch (err) {
+      console.error("게시글 로딩 실패", err);
+    }
+  };
+
+  const fetchComments = async () => {
+    try {
+      const res = await fetch(`http://localhost:8080/api/comment/post/${id}`);
+      const data = await res.json();
+      setComments(data);
+    } catch (err) {
+      console.error("댓글 로딩 실패", err);
+    }
+  };
+
+  const handleAddComment = async () => {
     if (!commentInput.trim()) return;
-    const newComment = {
-      id: comments.length + 1,
-      content: commentInput,
-      writerName: "내 이름",
-      writerId: userId,
-    };
-    setComments([...comments, newComment]);
-    setCommentInput("");
+    try {
+      const res = await fetch(`http://localhost:8080/api/comment`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          content: commentInput,
+          postId: parseInt(id),
+          userId: parseInt(userId),
+        }),
+      });
+      if (!res.ok) throw new Error("댓글 등록 실패");
+      setCommentInput("");
+      fetchComments();
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  const handleEditComment = (commentId) => {
-    const updatedComments = comments.map((c) =>
-      c.id === commentId ? { ...c, content: editingContent } : c
-    );
-    setComments(updatedComments);
-    setEditingCommentId(null);
-    setEditingContent("");
+  const handleEditComment = async (commentId) => {
+    try {
+      const res = await fetch(
+        `http://localhost:8080/api/comment/${commentId}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            content: editingContent,
+            postId: parseInt(id),
+            userId: parseInt(userId),
+          }),
+        }
+      );
+      if (!res.ok) throw new Error("댓글 수정 실패");
+      setEditingCommentId(null);
+      setEditingContent("");
+      fetchComments();
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  const handleDeleteComment = (commentId) => {
-    setComments(comments.filter((c) => c.id !== commentId));
+  const handleDeleteComment = async (commentId) => {
+    try {
+      const res = await fetch(
+        `http://localhost:8080/api/comment/${commentId}`,
+        {
+          method: "DELETE",
+        }
+      );
+      if (!res.ok) throw new Error("댓글 삭제 실패");
+      fetchComments();
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
