@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Box, Typography, TextField, Button, Paper } from "@mui/material";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -32,7 +33,10 @@ export default function LoginPage() {
       const data = await res.json();
       localStorage.setItem("token", data.token);
       localStorage.setItem("role", data.user.role);
-      router.push("/user");
+
+      setTimeout(() => {
+        router.push("/user");
+      }, 0);
     } catch (err) {
       setErrorMessage(err.message);
     }
@@ -67,18 +71,15 @@ export default function LoginPage() {
           },
         }}
       >
-        <Typography
-          variant="h5"
-          sx={{ mb: 1, fontWeight: 800, textAlign: "center", color: "#333" }}
-        >
-          KIMSTEAMS
-        </Typography>
-        <Typography
-          variant="body2"
-          sx={{ mb: 3, color: "#777", textAlign: "center" }}
-        >
-          계정 정보를 입력해주세요
-        </Typography>
+        <Box sx={{ display: "flex", justifyContent: "center", mb: 3 }}>
+          <Image
+            src="/logo.png"
+            alt="KIMSTEAMS Logo"
+            width={280}
+            height={170}
+            priority
+          />
+        </Box>
 
         <TextField
           label="이메일"
