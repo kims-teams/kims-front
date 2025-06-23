@@ -83,7 +83,7 @@ export default function ScenarioSidebar({ onSelect, collapsed, setCollapsed }) {
         sx={{
           position: "absolute",
           top: 6,
-          left: collapsed ? 2 : 230,
+          left: 6, 
           zIndex: 2000,
           backgroundColor: "white",
           border: "1px solid #ccc",
@@ -93,9 +93,9 @@ export default function ScenarioSidebar({ onSelect, collapsed, setCollapsed }) {
         }}
       >
         {collapsed ? (
-          <ChevronLeftIcon fontSize="small" />
-        ) : (
           <ChevronRightIcon fontSize="small" />
+        ) : (
+          <ChevronLeftIcon fontSize="small" />
         )}
       </IconButton>
 
@@ -133,11 +133,15 @@ export default function ScenarioSidebar({ onSelect, collapsed, setCollapsed }) {
 
           <List dense disablePadding sx={{ flex: 1 }}>
             <ListItemButton onClick={() => toggleGroup("Input Data")}>
+              {openGroup["Input Data"] ? (
+                <ExpandLess sx={{ mr: 1 }} />
+              ) : (
+                <ExpandMore sx={{ mr: 1 }} />
+              )}
               <ListItemText
                 primary="Input Data"
                 primaryTypographyProps={{ fontSize: "13px" }}
               />
-              {openGroup["Input Data"] ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
 
             <Collapse in={openGroup["Input Data"]} timeout="auto" unmountOnExit>
@@ -148,15 +152,18 @@ export default function ScenarioSidebar({ onSelect, collapsed, setCollapsed }) {
                       onClick={() => toggleGroup(subGroup)}
                       sx={{ pl: 2 }}
                     >
+                      {openGroup[subGroup] ? (
+                        <ExpandLess sx={{ mr: 1 }} />
+                      ) : (
+                        <ExpandMore sx={{ mr: 1 }} />
+                      )}
                       <ListItemText
                         primary={subGroup}
                         primaryTypographyProps={{
                           fontSize: "12px",
                           fontWeight: "bold",
                         }}
-                        sx={{ pl: 2 }}
                       />
-                      {openGroup[subGroup] ? <ExpandLess /> : <ExpandMore />}
                     </ListItemButton>
 
                     <Collapse
