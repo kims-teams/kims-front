@@ -1,17 +1,24 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { AppBar, Box, Toolbar, Button, Typography } from "@mui/material";
+import { useRouter, usePathname } from "next/navigation";
+import { AppBar, Box, Toolbar, Button } from "@mui/material";
+import Image from "next/image";
 
 export default function HeaderBar() {
   const router = useRouter();
+  const pathname = usePathname();
+  const [isClient, setIsClient] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     setIsLoggedIn(!!token);
-  }, []);
+  }, [pathname]);
 
   const handleLogin = () => {
     router.push("/user/login");
@@ -23,6 +30,8 @@ export default function HeaderBar() {
     router.push("/user/login");
   };
 
+  if (!isClient) return null;
+
   return (
     <AppBar
       position="fixed"
@@ -30,31 +39,39 @@ export default function HeaderBar() {
       color="default"
       sx={{
         height: 50,
-        bgcolor: "#e0e0e0",
+        bgcolor: "#E8E8E8",
         justifyContent: "center",
         px: 2,
         zIndex: 1300,
       }}
     >
       <Toolbar disableGutters sx={{ minHeight: "50px !important", px: 2 }}>
-        <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-          KIMSTEAMS
-        </Typography>
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          <Image
+            src="/logo.png"
+            alt="KIMSTEAMS 로고"
+            width={110}
+            height={50}
+            priority
+          />
+        </Box>
+
         <Box sx={{ flexGrow: 1 }} />
 
         {isLoggedIn ? (
           <Button
             variant="outlined"
             size="small"
+            onClick={handleLogout}
             sx={{
-              borderColor: "black",
-              color: "black",
+              borderColor: "#FFF0C1",
+              color: "#222",
+              backgroundColor: "#FFF9E6",
               "&:hover": {
-                borderColor: "black",
-                backgroundColor: "#f0f0f0",
+                borderColor: "#FFEBB5",
+                backgroundColor: "#FFF4CC",
               },
             }}
-            onClick={handleLogout}
           >
             로그아웃
           </Button>
@@ -62,15 +79,16 @@ export default function HeaderBar() {
           <Button
             variant="outlined"
             size="small"
+            onClick={handleLogin}
             sx={{
-              borderColor: "black",
-              color: "black",
+              borderColor: "#FFF0C1",
+              color: "#222",
+              backgroundColor: "#FFF9E6",
               "&:hover": {
-                borderColor: "black",
-                backgroundColor: "#f0f0f0",
+                borderColor: "#FFEBB5",
+                backgroundColor: "#FFF4CC",
               },
             }}
-            onClick={handleLogin}
           >
             로그인
           </Button>
