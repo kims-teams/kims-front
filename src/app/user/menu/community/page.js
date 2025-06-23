@@ -2,16 +2,7 @@
 
 import { useState } from "react";
 import dynamic from "next/dynamic";
-import {
-  Box,
-  Typography,
-  List,
-  ListItemButton,
-  Stack,
-  TextField,
-  InputAdornment,
-} from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
+import { Box, Typography } from "@mui/material";
 import CommunityPanel from "components/CommunityPanel";
 
 const viewComponentMap = {
@@ -28,7 +19,6 @@ const viewComponentMap = {
 };
 
 export default function ({ categories = [] }) {
-  const [searchKeyword, setSearchKeyword] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("기본");
   const CurrentView = viewComponentMap[selectedCategory] || null;
 
@@ -40,25 +30,8 @@ export default function ({ categories = [] }) {
       />
 
       <Box sx={{ flex: 1, p: 4 }}>
-        <Box sx={{ mb: 2 }}>
-          <TextField
-            fullWidth
-            size="small"
-            placeholder="게시글 검색"
-            value={searchKeyword}
-            onChange={(e) => setSearchKeyword(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon fontSize="small" />
-                </InputAdornment>
-              ),
-            }}
-          />
-        </Box>
-
         {CurrentView ? (
-          <CurrentView keyword={searchKeyword} category={selectedCategory} />
+          <CurrentView category={selectedCategory} />
         ) : (
           <Typography>게시판 컴포넌트를 불러올 수 없습니다.</Typography>
         )}
