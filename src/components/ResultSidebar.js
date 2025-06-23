@@ -71,7 +71,7 @@ export default function RightSidebar({ onSelect, collapsed, setCollapsed }) {
         sx={{
           position: "absolute",
           top: 6,
-          left: collapsed ? 2 : 230,
+          left: 6,
           zIndex: 2000,
           backgroundColor: "white",
           border: "1px solid #ccc",
