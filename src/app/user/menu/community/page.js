@@ -25,12 +25,6 @@ const viewComponentMap = {
     () => import("../../../../components/communityViews/FreeBoardView")
   ),
   "Q&A": dynamic(() => import("../../../../components/communityViews/QnaView")),
-  자료실: dynamic(
-    () => import("../../../../components/communityViews/ArchiveView")
-  ),
-  사내이벤트: dynamic(
-    () => import("../../../../components/communityViews/EventView")
-  ),
 };
 
 export default function ({ categories = [] }) {

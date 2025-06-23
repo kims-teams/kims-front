@@ -13,8 +13,6 @@ const categories = [
   { label: "사내공지", icon: <CampaignIcon /> },
   { label: "자유게시판", icon: <ForumIcon /> },
   { label: "Q&A", icon: <HelpOutlineIcon /> },
-  { label: "자료실", icon: <ArticleIcon /> },
-  { label: "사내이벤트", icon: <CelebrationIcon /> },
 ];
 
 export default function CommunityPanel({
