@@ -12,7 +12,6 @@ import { useEffect, useState } from "react";
 const categories = [
   { label: "사내공지", icon: <CampaignIcon /> },
   { label: "자유게시판", icon: <ForumIcon /> },
-  { label: "Q&A", icon: <HelpOutlineIcon /> },
 ];
 
 export default function CommunityPanel({

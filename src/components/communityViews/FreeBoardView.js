@@ -71,7 +71,7 @@ export default function FreeBoardView() {
         body: JSON.stringify({
           title: form.title,
           content: form.content,
-          userId: userId,
+          userId: parseInt(userId, 10),
           categoryName: form.categoryName,
         }),
       });
@@ -102,9 +102,7 @@ export default function FreeBoardView() {
             size="small"
             sx={{ width: "300px" }}
           />
-          <Button variant="contained" onClick={() => {}}>
-            검색
-          </Button>
+          <Button variant="contained">검색</Button>
           <Button
             variant="contained"
             onClick={() => setOpenDialog(true)}
@@ -121,6 +119,7 @@ export default function FreeBoardView() {
             <TableRow>
               <TableCell>번호</TableCell>
               <TableCell>제목</TableCell>
+              <TableCell>카테고리</TableCell>
               <TableCell>이름</TableCell>
               <TableCell>아이디</TableCell>
               <TableCell>작성일</TableCell>
@@ -138,21 +137,24 @@ export default function FreeBoardView() {
                     <TableCell>{post.id}</TableCell>
                     <TableCell
                       sx={{ color: "#1e88e5", cursor: "pointer" }}
-                      onClick={() => router.push(`/community/post/${post.id}`)}
+                      onClick={() =>
+                        router.push(`/user/menu/community/post/${post.id}`)
+                      }
                     >
                       {post.title}
                     </TableCell>
+                    <TableCell>{post.category?.name || "-"}</TableCell>
                     <TableCell>{post.user?.name || "-"}</TableCell>
                     <TableCell>{post.user?.email || "-"}</TableCell>
                     <TableCell>
-                      {post.createdAt ? post.createdAt.split("T")[0] : "-"}
+                      {post.createdAt?.split("T")[0] || "-"}
                     </TableCell>
                     <TableCell>{post.views ?? 0}</TableCell>
                   </TableRow>
                 ))
             ) : (
               <TableRow>
-                <TableCell colSpan={6} align="center">
+                <TableCell colSpan={7} align="center">
                   게시글이 없습니다.
                 </TableCell>
               </TableRow>
