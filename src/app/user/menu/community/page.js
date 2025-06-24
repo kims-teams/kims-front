@@ -15,7 +15,6 @@ const viewComponentMap = {
   자유게시판: dynamic(
     () => import("../../../../components/communityViews/FreeBoardView")
   ),
-  "Q&A": dynamic(() => import("../../../../components/communityViews/QnaView")),
 };
 
 export default function ({ categories = [] }) {
