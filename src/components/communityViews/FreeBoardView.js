@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-
 import {
   Box,
   Typography,
@@ -21,18 +20,22 @@ import {
   DialogContent,
   DialogActions,
 } from "@mui/material";
+import useAuthRedirect from "hooks/useAuthRedirect";
 
 export default function FreeBoardView() {
+  useAuthRedirect();
+
   const [search, setSearch] = useState("");
   const [posts, setPosts] = useState([]);
+  const [selectedPost, setSelectedPost] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
-  const [form, setForm] = useState({
-    title: "",
-    content: "",
-    categoryName: "",
-  });
+  const [form, setForm] = useState({ title: "", content: "" });
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [targetPost, setTargetPost] = useState(null);
 
   const router = useRouter();
+  const token =
+    typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
   const fetchPosts = async () => {
     try {
@@ -45,25 +48,54 @@ export default function FreeBoardView() {
   };
 
   useEffect(() => {
-    fetchPosts();
-  }, []);
+    if (token) {
+      fetchPosts();
+    }
+  }, [token]);
+
+  const formatCreatedAt = (dateString) => {
+    if (!dateString) return "-";
+    const created = new Date(dateString);
+    const now = new Date();
+    const isToday =
+      created.getFullYear() === now.getFullYear() &&
+      created.getMonth() === now.getMonth() &&
+      created.getDate() === now.getDate();
+
+    return isToday
+      ? created.toLocaleTimeString("ko-KR", {
+          hour: "2-digit",
+          minute: "2-digit",
+        })
+      : created.toISOString().split("T")[0];
+  };
 
   const handleCreate = async () => {
-    const token = localStorage.getItem("token");
-    const userId = localStorage.getItem("userId");
-
-    if (
-      !form.title.trim() ||
-      !form.content.trim() ||
-      !form.categoryName.trim()
-    ) {
-      alert("제목, 내용, 카테고리를 모두 입력해주세요.");
-      return;
+    const res = await fetch("http://localhost:8080/api/post", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        title: form.title,
+        content: form.content,
+      }),
+    });
+    if (res.ok) {
+      setForm({ title: "", content: "" });
+      setOpenDialog(false);
+      fetchPosts();
     }
+  };
 
-    try {
-      const res = await fetch("http://localhost:8080/api/post", {
-        method: "POST",
+  const handleUpdate = async () => {
+    if (!selectedPost) return;
+
+    const res = await fetch(
+      `http://localhost:8080/api/post/${selectedPost.id}`,
+      {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -71,20 +103,36 @@ export default function FreeBoardView() {
         body: JSON.stringify({
           title: form.title,
           content: form.content,
-          userId: parseInt(userId, 10),
-          categoryName: form.categoryName,
         }),
-      });
-
-      if (res.ok) {
-        setForm({ title: "", content: "", categoryName: "" });
-        setOpenDialog(false);
-        fetchPosts();
-      } else {
-        alert("게시글 등록에 실패했습니다.");
       }
-    } catch (err) {
-      console.error("게시글 등록 오류", err);
+    );
+
+    if (res.ok) {
+      setForm({ title: "", content: "" });
+      setSelectedPost(null);
+      setOpenDialog(false);
+      fetchPosts();
+    } else {
+      alert("수정에 실패했습니다.");
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!targetPost) return;
+
+    const res = await fetch(`http://localhost:8080/api/post/${targetPost.id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (res.ok) {
+      fetchPosts();
+      setOpenDeleteDialog(false);
+      setTargetPost(null);
+    } else {
+      alert("삭제에 실패했습니다.");
     }
   };
 
@@ -102,11 +150,30 @@ export default function FreeBoardView() {
             size="small"
             sx={{ width: "300px" }}
           />
-          <Button variant="contained">검색</Button>
           <Button
             variant="contained"
-            onClick={() => setOpenDialog(true)}
-            sx={{ height: "40px" }}
+            sx={{
+              backgroundColor: "#4a4a4a",
+              color: "#f8f8f0",
+              "&:hover": { backgroundColor: "#3a3a3a" },
+            }}
+          >
+            검색
+          </Button>
+
+          <Button
+            variant="contained"
+            sx={{
+              backgroundColor: "#4a4a4a",
+              color: "#f8f8f0",
+              "&:hover": { backgroundColor: "#3a3a3a" },
+              height: "40px",
+            }}
+            onClick={() => {
+              setForm({ title: "", content: "" });
+              setSelectedPost(null);
+              setOpenDialog(true);
+            }}
           >
             글쓰기
           </Button>
@@ -115,41 +182,86 @@ export default function FreeBoardView() {
 
       <TableContainer component={Paper} sx={{ mt: 4 }}>
         <Table>
-          <TableHead sx={{ backgroundColor: "#f5f5f5" }}>
+          <TableHead sx={{ backgroundColor: "#4a4a4a" }}>
             <TableRow>
-              <TableCell>번호</TableCell>
-              <TableCell>제목</TableCell>
-              <TableCell>카테고리</TableCell>
-              <TableCell>이름</TableCell>
-              <TableCell>아이디</TableCell>
-              <TableCell>작성일</TableCell>
-              <TableCell>조회수</TableCell>
+              <TableCell align="center" sx={{ width: 50, color: "#f8f8f0" }}>
+                번호
+              </TableCell>
+              <TableCell align="left" sx={{ width: 220, color: "#f8f8f0" }}>
+                제목
+              </TableCell>
+              <TableCell align="center" sx={{ width: 100, color: "#f8f8f0" }}>
+                사원이름
+              </TableCell>
+              <TableCell align="center" sx={{ width: 180, color: "#f8f8f0" }}>
+                이메일
+              </TableCell>
+              <TableCell align="center" sx={{ width: 100, color: "#f8f8f0" }}>
+                작성일
+              </TableCell>
+              <TableCell align="center" sx={{ width: 80, color: "#f8f8f0" }}>
+                수정
+              </TableCell>
+              <TableCell align="center" sx={{ width: 60, color: "#f8f8f0" }}>
+                {/* 삭제 버튼 */}
+              </TableCell>
             </TableRow>
           </TableHead>
+
           <TableBody>
             {posts.length > 0 ? (
               posts
                 .filter((post) =>
                   post.title.toLowerCase().includes(search.toLowerCase())
                 )
-                .map((post) => (
+                .map((post, index) => (
                   <TableRow key={post.id}>
-                    <TableCell>{post.id}</TableCell>
+                    <TableCell align="center">{index + 1}</TableCell>
                     <TableCell
-                      sx={{ color: "#1e88e5", cursor: "pointer" }}
-                      onClick={() =>
-                        router.push(`/user/menu/community/post/${post.id}`)
-                      }
+                      align="left"
+                      sx={{
+                        color: "#1e88e5",
+                        cursor: "pointer",
+                        textDecoration: "underline",
+                        "&:hover": { textDecoration: "underline" },
+                      }}
                     >
                       {post.title}
                     </TableCell>
-                    <TableCell>{post.category?.name || "-"}</TableCell>
-                    <TableCell>{post.user?.name || "-"}</TableCell>
-                    <TableCell>{post.user?.email || "-"}</TableCell>
-                    <TableCell>
-                      {post.createdAt?.split("T")[0] || "-"}
+                    <TableCell align="center">
+                      {post.writerName || "-"}
                     </TableCell>
-                    <TableCell>{post.views ?? 0}</TableCell>
+                    <TableCell align="center">
+                      {post.user?.email || "-"}
+                    </TableCell>
+                    <TableCell align="center">
+                      {formatCreatedAt(post.createdAt)}
+                    </TableCell>
+                    <TableCell align="center">
+                      <Button
+                        size="small"
+                        color="primary"
+                        onClick={() => {
+                          setSelectedPost(post);
+                          setForm({ title: post.title, content: post.content });
+                          setOpenDialog(true);
+                        }}
+                      >
+                        수정
+                      </Button>
+                    </TableCell>
+                    <TableCell align="center">
+                      <Button
+                        size="small"
+                        color="error"
+                        onClick={() => {
+                          setTargetPost(post);
+                          setOpenDeleteDialog(true);
+                        }}
+                      >
+                        삭제
+                      </Button>
+                    </TableCell>
                   </TableRow>
                 ))
             ) : (
@@ -173,8 +285,8 @@ export default function FreeBoardView() {
         </Button>
       </Stack>
 
-      <Dialog open={openDialog} onClose={() => setOpenDialog(false)} fullWidth>
-        <DialogTitle>새 글 작성</DialogTitle>
+      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+        <DialogTitle>{selectedPost ? "게시글 수정" : "새 글 작성"}</DialogTitle>
         <DialogContent>
           <TextField
             fullWidth
@@ -192,18 +304,52 @@ export default function FreeBoardView() {
             onChange={(e) => setForm({ ...form, content: e.target.value })}
             margin="normal"
           />
-          <TextField
-            fullWidth
-            label="카테고리"
-            value={form.categoryName}
-            onChange={(e) => setForm({ ...form, categoryName: e.target.value })}
-            margin="normal"
-          />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenDialog(false)}>취소</Button>
-          <Button variant="contained" onClick={handleCreate}>
-            등록
+          <Button
+            onClick={() => {
+              setOpenDialog(false);
+              setSelectedPost(null);
+              setForm({ title: "", content: "" });
+            }}
+          >
+            취소
+          </Button>
+          <Button
+            variant="contained"
+            onClick={selectedPost ? handleUpdate : handleCreate}
+          >
+            {selectedPost ? "수정" : "등록"}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={openDeleteDialog}
+        onClose={() => {
+          setOpenDeleteDialog(false);
+          setTargetPost(null);
+        }}
+      >
+        <DialogTitle>게시글 삭제</DialogTitle>
+        <DialogContent>
+          <Typography>
+            다음 게시글을 삭제하시겠습니까?
+            <br />
+            <strong>{targetPost?.title || "제목 없음"}</strong>
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              setOpenDeleteDialog(false);
+              setTargetPost(null);
+            }}
+          >
+            취소
+          </Button>
+          <Button variant="contained" color="error" onClick={handleDelete}>
+            삭제
           </Button>
         </DialogActions>
       </Dialog>
