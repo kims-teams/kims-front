@@ -207,9 +207,10 @@ export default function FreeBoardView() {
               <TableCell align="center" sx={{ width: 80, color: "#f8f8f0" }}>
                 수정
               </TableCell>
-              <TableCell align="center" sx={{ width: 60, color: "#f8f8f0" }}>
-                {/* 삭제 버튼 */}
-              </TableCell>
+              <TableCell
+                align="center"
+                sx={{ width: 60, color: "#f8f8f0" }}
+              ></TableCell>
             </TableRow>
           </TableHead>
 
@@ -230,6 +231,9 @@ export default function FreeBoardView() {
                         textDecoration: "underline",
                         "&:hover": { textDecoration: "underline" },
                       }}
+                      onClick={() =>
+                        router.push(`/user/menu/community/${post.id}`)
+                      }
                     >
                       {post.title}
                     </TableCell>
