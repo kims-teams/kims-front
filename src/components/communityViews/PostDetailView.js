@@ -9,27 +9,34 @@ import {
   Stack,
   IconButton,
 } from "@mui/material";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useEffect } from "react";
 import useAuthRedirect from "hooks/useAuthRedirect";
 
 export default function PostDetailView() {
   const { id } = useParams();
   useAuthRedirect();
-  
+
   const [post, setPost] = useState(null);
   const [comments, setComments] = useState([]);
   const [commentInput, setCommentInput] = useState("");
   const [editingCommentId, setEditingCommentId] = useState(null);
   const [editingContent, setEditingContent] = useState("");
-
-  const userId =
-    typeof window !== "undefined" ? localStorage.getItem("userId") : null;
+  const [userId, setUserId] = useState(null);
+  const [token, setToken] = useState(null);
 
   useEffect(() => {
+    const storedUserId = localStorage.getItem("userId");
+    const storedToken = localStorage.getItem("token");
+
+    console.log("userId:", storedUserId);
+    console.log("token:", storedToken);
+
+    setUserId(storedUserId);
+    setToken(storedToken);
+
     fetchPost();
     fetchComments();
   }, []);
@@ -56,21 +63,31 @@ export default function PostDetailView() {
 
   const handleAddComment = async () => {
     if (!commentInput.trim()) return;
+
     try {
       const res = await fetch(`http://localhost:8080/api/comment`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({
           content: commentInput,
-          postId: parseInt(id),
-          userId: parseInt(userId),
+          postId: id,
+          userId: localStorage.getItem("userId"),
         }),
       });
-      if (!res.ok) throw new Error("댓글 등록 실패");
+
+      if (!res.ok) {
+        const errorMsg = await res.text();
+        console.error("댓글 등록 실패:", errorMsg);
+        return;
+      }
+
       setCommentInput("");
       fetchComments();
     } catch (err) {
-      console.error(err);
+      console.error("댓글 등록 중 에러:", err);
     }
   };
 
@@ -80,7 +97,10 @@ export default function PostDetailView() {
         `http://localhost:8080/api/comment/${commentId}`,
         {
           method: "PUT",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
           body: JSON.stringify({
             content: editingContent,
             postId: parseInt(id),
@@ -103,6 +123,9 @@ export default function PostDetailView() {
         `http://localhost:8080/api/comment/${commentId}`,
         {
           method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
       if (!res.ok) throw new Error("댓글 삭제 실패");
