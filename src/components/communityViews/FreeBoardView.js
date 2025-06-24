@@ -72,18 +72,21 @@ export default function FreeBoardView() {
   };
 
   const handleCreate = async () => {
-    const res = await fetch("http://localhost:8080/api/post?email=" + localStorage.getItem("email"), {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        title: form.title,
-        content: form.content,
-        categoryName: categoryName,
-      }),
-    });
+    const res = await fetch(
+      "http://localhost:8080/api/post?email=" + localStorage.getItem("email"),
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          title: form.title,
+          content: form.content,
+          categoryName: categoryName,
+        }),
+      }
+    );
     if (res.ok) {
       setForm({ title: "", content: "" });
       setOpenDialog(false);

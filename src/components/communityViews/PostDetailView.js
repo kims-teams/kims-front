@@ -19,7 +19,7 @@ import useAuthRedirect from "hooks/useAuthRedirect";
 export default function PostDetailView() {
   const { id } = useParams();
   useAuthRedirect();
-
+  
   const [post, setPost] = useState(null);
   const [comments, setComments] = useState([]);
   const [commentInput, setCommentInput] = useState("");
