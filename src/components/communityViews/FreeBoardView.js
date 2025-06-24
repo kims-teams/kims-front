@@ -21,20 +21,18 @@ import {
   DialogContent,
   DialogActions,
 } from "@mui/material";
-import useAuthRedirect from "hooks/useAuthRedirect";
 
 export default function FreeBoardView() {
-  useAuthRedirect();
-
   const [search, setSearch] = useState("");
   const [posts, setPosts] = useState([]);
-  const [selectedPost, setSelectedPost] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
-  const [form, setForm] = useState({ title: "", content: "" });
+  const [form, setForm] = useState({
+    title: "",
+    content: "",
+    categoryName: "",
+  });
 
   const router = useRouter();
-  const token =
-    typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
   const fetchPosts = async () => {
     try {
@@ -47,28 +45,46 @@ export default function FreeBoardView() {
   };
 
   useEffect(() => {
-    if (token) {
-      fetchPosts();
-    }
-  }, [token]);
+    fetchPosts();
+  }, []);
 
   const handleCreate = async () => {
-    const res = await fetch("http://localhost:8080/api/post", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        title: form.title,
-        content: form.content,
-        userId: localStorage.getItem("userId"),
-      }),
-    });
-    if (res.ok) {
-      setForm({ title: "", content: "" });
-      setOpenDialog(false);
-      fetchPosts();
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
+
+    if (
+      !form.title.trim() ||
+      !form.content.trim() ||
+      !form.categoryName.trim()
+    ) {
+      alert("제목, 내용, 카테고리를 모두 입력해주세요.");
+      return;
+    }
+
+    try {
+      const res = await fetch("http://localhost:8080/api/post", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          title: form.title,
+          content: form.content,
+          userId: userId,
+          categoryName: form.categoryName,
+        }),
+      });
+
+      if (res.ok) {
+        setForm({ title: "", content: "", categoryName: "" });
+        setOpenDialog(false);
+        fetchPosts();
+      } else {
+        alert("게시글 등록에 실패했습니다.");
+      }
+    } catch (err) {
+      console.error("게시글 등록 오류", err);
     }
   };
 
@@ -120,15 +136,18 @@ export default function FreeBoardView() {
                 .map((post) => (
                   <TableRow key={post.id}>
                     <TableCell>{post.id}</TableCell>
-                    <TableCell sx={{ color: "#1e88e5", cursor: "pointer" }}>
+                    <TableCell
+                      sx={{ color: "#1e88e5", cursor: "pointer" }}
+                      onClick={() => router.push(`/community/post/${post.id}`)}
+                    >
                       {post.title}
                     </TableCell>
-                    <TableCell>{post.writerName || "-"}</TableCell>
-                    <TableCell>{post.writerId || "-"}</TableCell>
+                    <TableCell>{post.user?.name || "-"}</TableCell>
+                    <TableCell>{post.user?.email || "-"}</TableCell>
                     <TableCell>
                       {post.createdAt ? post.createdAt.split("T")[0] : "-"}
                     </TableCell>
-                    <TableCell>{post.views || 0}</TableCell>
+                    <TableCell>{post.views ?? 0}</TableCell>
                   </TableRow>
                 ))
             ) : (
@@ -152,8 +171,8 @@ export default function FreeBoardView() {
         </Button>
       </Stack>
 
-      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-        <DialogTitle>{selectedPost ? "게시글 수정" : "새 글 작성"}</DialogTitle>
+      <Dialog open={openDialog} onClose={() => setOpenDialog(false)} fullWidth>
+        <DialogTitle>새 글 작성</DialogTitle>
         <DialogContent>
           <TextField
             fullWidth
@@ -165,9 +184,17 @@ export default function FreeBoardView() {
           <TextField
             fullWidth
             multiline
+            rows={6}
             label="내용"
             value={form.content}
             onChange={(e) => setForm({ ...form, content: e.target.value })}
+            margin="normal"
+          />
+          <TextField
+            fullWidth
+            label="카테고리"
+            value={form.categoryName}
+            onChange={(e) => setForm({ ...form, categoryName: e.target.value })}
             margin="normal"
           />
         </DialogContent>
