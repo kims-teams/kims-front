@@ -32,6 +32,7 @@ export default function FreeBoardView() {
   const [form, setForm] = useState({ title: "", content: "" });
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [targetPost, setTargetPost] = useState(null);
+  const categoryName = "자유게시판";
 
   const router = useRouter();
   const token =
@@ -71,7 +72,7 @@ export default function FreeBoardView() {
   };
 
   const handleCreate = async () => {
-    const res = await fetch("http://localhost:8080/api/post", {
+    const res = await fetch("http://localhost:8080/api/post?email=" + localStorage.getItem("email"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -80,6 +81,7 @@ export default function FreeBoardView() {
       body: JSON.stringify({
         title: form.title,
         content: form.content,
+        categoryName: categoryName,
       }),
     });
     if (res.ok) {

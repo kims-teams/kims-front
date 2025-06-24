@@ -33,6 +33,8 @@ export default function LoginPage() {
       const data = await res.json();
       localStorage.setItem("token", data.token);
       localStorage.setItem("role", data.user.role);
+      localStorage.setItem("email", data.user.email);
+    
 
       setTimeout(() => {
         router.push("/user");
