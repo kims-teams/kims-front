@@ -4,6 +4,7 @@ import { useState } from "react";
 import dynamic from "next/dynamic";
 import { Box, Typography } from "@mui/material";
 import CommunityPanel from "components/CommunityPanel";
+import useAuthRedirect from "hooks/useAuthRedirect";
 
 const viewComponentMap = {
   기본: dynamic(
@@ -21,7 +22,7 @@ const viewComponentMap = {
 export default function ({ categories = [] }) {
   const [selectedCategory, setSelectedCategory] = useState("기본");
   const CurrentView = viewComponentMap[selectedCategory] || null;
-
+  useAuthRedirect();
   return (
     <Box sx={{ display: "flex", height: "100%", bgcolor: "#f5f6f7" }}>
       <CommunityPanel
