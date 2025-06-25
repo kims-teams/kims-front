@@ -38,7 +38,6 @@ export default function Management() {
       .then((data) => setUsers(data))
       .catch((err) => {
         console.error("사용자 목록 불러오기 실패:", err);
-        alert("사용자 목록을 불러오지 못했습니다.");
       });
   }, []);
 
