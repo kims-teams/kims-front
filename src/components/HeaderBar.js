@@ -13,8 +13,9 @@ export default function HeaderBar() {
 
   useEffect(() => {
     setIsClient(true);
+    if (localStorage.getItem("token")) router.push("/user/login");
   }, []);
-
+  
   useEffect(() => {
     const token = localStorage.getItem("token");
     setIsLoggedIn(!!token);
@@ -51,7 +52,7 @@ export default function HeaderBar() {
             src="/logo.png"
             alt="KIMSTEAMS 로고"
             width={110}
-            height={50}
+            height={73}
             priority
           />
         </Box>
