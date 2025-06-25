@@ -13,7 +13,9 @@ export default function HeaderBar() {
 
   useEffect(() => {
     setIsClient(true);
+
     if (!localStorage.getItem("token")) router.push("/user/login");
+
   }, []);
   
   useEffect(() => {
