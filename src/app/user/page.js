@@ -37,13 +37,10 @@ export default function UserDashboard() {
       <div style={{ display: "flex", flex: 1 }}>
         <Sidebar />
 
-        {/* 가운데 시나리오 패널 */}
         {showScenarioPanel && <ScenarioPanel />}
 
-        {/* 중앙 콘텐츠 */}
         <Box sx={{ flex: 1, padding: 2 }}></Box>
 
-        {/* 오른쪽 결과 데이터 패널 */}
         {showRightSidebar && <RightSidebar />}
       </div>
     </div>

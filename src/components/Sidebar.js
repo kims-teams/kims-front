@@ -19,7 +19,7 @@ import StarBorderIcon from "@mui/icons-material/StarBorder";
 import EngineeringIcon from "@mui/icons-material/Engineering";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import ForumIcon from "@mui/icons-material/Forum";
-import useCommunityViewStore from "../hooks/useCommunityViewStore"; 
+import useCommunityViewStore from "../hooks/useCommunityViewStore";
 
 import { useRouter } from "next/navigation";
 
@@ -132,6 +132,20 @@ export default function Sidebar() {
             </List>
           </Box>
         </Collapse>
+        <ListItemButton onClick={() => toggle("community")}>
+          <ForumIcon fontSize="small" sx={{ mr: 1 }} />
+          <ListItemText primary="게시판" />
+          {open.community ? <ExpandLess /> : <ExpandMore />}
+        </ListItemButton>
+        <Collapse in={open.community}>
+          <Box sx={{ pl: 2, borderLeft: "2px solid #ccc", ml: 1 }}>
+            <List disablePadding>
+              <ListItemButton onClick={() => handleNav("사내 게시판")}>
+                <ListItemText primary="사내 게시판" />
+              </ListItemButton>
+            </List>
+          </Box>
+        </Collapse>
         {role === "ADMIN" && (
           <>
             <ListItemButton onClick={() => toggle("ADMIN")}>
@@ -144,21 +158,6 @@ export default function Sidebar() {
                 <List disablePadding>
                   <ListItemButton onClick={() => handleNav("사용자 관리")}>
                     <ListItemText primary="사용자 관리" />
-                  </ListItemButton>
-                </List>
-              </Box>
-            </Collapse>
-          
-            <ListItemButton onClick={() => toggle("community")}>
-              <ForumIcon fontSize="small" sx={{ mr: 1 }} />
-              <ListItemText primary="게시판" />
-              {open.community ? <ExpandLess /> : <ExpandMore />}
-            </ListItemButton>
-            <Collapse in={open.community}>
-              <Box sx={{ pl: 2, borderLeft: "2px solid #ccc", ml: 1 }}>
-                <List disablePadding>
-                  <ListItemButton onClick={() => handleNav("사내 게시판")}>
-                    <ListItemText primary="사내 게시판" />
                   </ListItemButton>
                 </List>
               </Box>
