@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Drawer,
@@ -32,11 +32,16 @@ export default function Sidebar() {
     ADMIN: true,
   });
 
+  const [role, setRole] = useState(null);
   const router = useRouter();
   const { setSelectedCommunityView } = useCommunityViewStore();
 
-  const role =
-    typeof window !== "undefined" ? localStorage.getItem("role") : null;
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedRole = localStorage.getItem("role");
+      setRole(storedRole);
+    }
+  }, []);
 
   const toggle = (key) => {
     setOpen((prev) => ({ ...prev, [key]: !prev[key] }));
