@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { Box, Typography } from "@mui/material";
 import CommunityPanel from "components/CommunityPanel";
@@ -18,10 +18,16 @@ const viewComponentMap = {
   ),
 };
 
-export default function ({ categories = [] }) {
+export default function CommunityPage({ categories = [] }) {
   const [selectedCategory, setSelectedCategory] = useState("기본");
   const CurrentView = viewComponentMap[selectedCategory] || null;
+
   useAuthRedirect();
+
+  useEffect(() => {
+    console.log("✅ selectedCategory:", selectedCategory);
+  }, [selectedCategory]);
+
   return (
     <Box sx={{ display: "flex", height: "100%", bgcolor: "#f5f6f7" }}>
       <CommunityPanel

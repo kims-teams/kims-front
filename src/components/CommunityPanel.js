@@ -1,11 +1,6 @@
 import CampaignIcon from "@mui/icons-material/Campaign";
 import ForumIcon from "@mui/icons-material/Forum";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import ArticleIcon from "@mui/icons-material/Article";
-import CelebrationIcon from "@mui/icons-material/Celebration";
-
-import useCommunityViewStore from "../hooks/useCommunityViewStore";
-import InternalBoard from "./communityViews/InternalBoard";
 import { Box, List, ListItemButton, Stack, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 
@@ -32,7 +27,28 @@ export default function CommunityPanel({
       <Typography variant="subtitle1" fontWeight="bold" sx={{ px: 2, mb: 1 }}>
         사내 게시판
       </Typography>
+
       <List disablePadding>
+        <ListItemButton
+          key="기본"
+          selected={selectedCategory === "기본"}
+          onClick={() => setSelectedCategory("기본")}
+          sx={{
+            mb: 1,
+            pl: 2,
+            pr: 1,
+            borderRadius: 2,
+            bgcolor: selectedCategory === "기본" ? "#e6f4ea" : "inherit",
+            color: selectedCategory === "기본" ? "#1e8f4d" : "inherit",
+            fontWeight: selectedCategory === "기본" ? "bold" : "normal",
+          }}
+        >
+          <Stack direction="row" alignItems="center" spacing={1}>
+            <HelpOutlineIcon />
+            <Typography variant="body2">전체 게시글</Typography>
+          </Stack>
+        </ListItemButton>
+
         {categories.map(({ label, icon }) => (
           <ListItemButton
             key={label}

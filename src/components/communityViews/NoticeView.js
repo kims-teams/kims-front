@@ -13,6 +13,9 @@ import {
   Stack,
   IconButton,
   Divider,
+  List,
+  ListItem,
+  ListItemText,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import DeleteIcon from "@mui/icons-material/DeleteOutline";
@@ -45,108 +48,6 @@ export default function NoticeView() {
   useEffect(() => {
     loadNotices();
   }, []);
-
-  const handleCreatePost = async () => {
-    if (role === "USER") return;
-
-    try {
-      const res = await fetch(`http://localhost:8080/api/post?email=${email}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          title: form.title,
-          content: form.content,
-          categoryName: "사내공지",
-        }),
-      });
-
-      if (!res.ok) {
-        const msg = await res.text();
-        alert("작성 실패: " + msg);
-        return;
-      }
-
-      setSuccessDialogOpen(true);
-      setOpenDialog(false);
-      setForm({ title: "", content: "" });
-      loadNotices();
-    } catch (err) {
-      console.error("요청 중 오류 발생", err);
-    }
-  };
-
-  const requestDelete = (id) => {
-    setTargetPostId(id);
-    setConfirmDialogOpen(true);
-  };
-
-  const confirmDelete = async () => {
-    if (role === "USER" || !targetPostId) return;
-
-    try {
-      const res = await fetch(
-        `http://localhost:8080/api/post/${targetPostId}`,
-        {
-          method: "DELETE",
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      if (!res.ok) {
-        const msg = await res.text();
-        alert("삭제 실패: " + msg);
-        return;
-      }
-
-      setConfirmDialogOpen(false);
-      setTargetPostId(null);
-      loadNotices();
-    } catch (err) {
-      console.error("삭제 오류", err);
-    }
-  };
-
-  const handleEdit = (post) => {
-    setTargetPost(post);
-    setForm({ title: post.title, content: post.content });
-    setEditDialogOpen(true);
-  };
-
-  const handleUpdatePost = async () => {
-    if (!targetPost) return;
-
-    try {
-      const res = await fetch(
-        `http://localhost:8080/api/post/${targetPost.id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            title: form.title,
-            content: form.content,
-          }),
-        }
-      );
-
-      if (!res.ok) {
-        const msg = await res.text();
-        alert("수정 실패: " + msg);
-        return;
-      }
-
-      setEditDialogOpen(false);
-      setForm({ title: "", content: "" });
-      loadNotices();
-    } catch (err) {
-      console.error("수정 오류", err);
-    }
-  };
 
   const renderDialog = ({
     open,
@@ -191,14 +92,14 @@ export default function NoticeView() {
   );
 
   return (
-    <Box sx={{ p: 4, maxWidth: 800, mx: "auto" }}>
+    <Box p={4}>
       <Stack
         direction="row"
         justifyContent="space-between"
         alignItems="center"
         mb={3}
       >
-        <Typography variant="h4" fontWeight="bold">
+        <Typography variant="h5" fontWeight="bold">
           📌 공지 게시판
         </Typography>
         {role !== "USER" && (
@@ -216,49 +117,91 @@ export default function NoticeView() {
       {notices.length === 0 ? (
         <Typography color="text.secondary">등록된 공지가 없습니다.</Typography>
       ) : (
-        notices.map((post) => (
-          <Paper
-            key={post.id}
-            elevation={1}
-            sx={{ p: 3, mb: 2, borderRadius: 2, backgroundColor: "#fafafa" }}
-          >
-            <Stack
-              direction="row"
-              justifyContent="space-between"
-              alignItems="center"
-            >
-              <Box>
-                <Typography variant="h6" fontWeight={600}>
-                  {post.title}
-                </Typography>
-                <Typography variant="caption" color="text.secondary">
-                  {post.writerName} · {post.createdAt}
-                </Typography>
+        <Paper elevation={2}>
+          <List>
+            {notices.map((post, idx) => (
+              <Box key={post.id}>
+                <ListItem
+                  secondaryAction={
+                    role !== "USER" && (
+                      <Stack direction="row" spacing={1}>
+                        <IconButton
+                          onClick={() => {
+                            setTargetPost(post);
+                            setForm({
+                              title: post.title,
+                              content: post.content,
+                            });
+                            setEditDialogOpen(true);
+                          }}
+                        >
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton
+                          onClick={() => {
+                            setTargetPostId(post.id);
+                            setConfirmDialogOpen(true);
+                          }}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </Stack>
+                    )
+                  }
+                >
+                  <ListItemText
+                    primary={
+                      <Typography variant="body1" fontWeight="bold">
+                        {post.title}
+                      </Typography>
+                    }
+                    secondary={`${post.writerName} · ${new Date(post.createdAt).toLocaleString()}`}
+                  />
+                </ListItem>
+                {idx !== notices.length - 1 && <Divider />}
               </Box>
-              {role !== "USER" && (
-                <Stack direction="row" spacing={1}>
-                  <IconButton onClick={() => handleEdit(post)}>
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton onClick={() => requestDelete(post.id)}>
-                    <DeleteIcon />
-                  </IconButton>
-                </Stack>
-              )}
-            </Stack>
-            <Divider sx={{ my: 1 }} />
-            <Typography sx={{ whiteSpace: "pre-wrap" }}>
-              {post.content}
-            </Typography>
-          </Paper>
-        ))
+            ))}
+          </List>
+        </Paper>
       )}
+
+      {/* 생략된 모달: 새 공지 작성, 수정, 삭제 확인은 기존 renderDialog 그대로 유지 */}
 
       {renderDialog({
         open: openDialog,
         title: "📝 새 공지 작성",
         onClose: () => setOpenDialog(false),
-        onConfirm: handleCreatePost,
+        onConfirm: async () => {
+          if (role === "USER") return;
+          try {
+            const res = await fetch(
+              `http://localhost:8080/api/post?email=${email}`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                  title: form.title,
+                  content: form.content,
+                  categoryName: "사내공지",
+                }),
+              }
+            );
+            if (!res.ok) {
+              const msg = await res.text();
+              alert("작성 실패: " + msg);
+              return;
+            }
+            setSuccessDialogOpen(true);
+            setOpenDialog(false);
+            setForm({ title: "", content: "" });
+            loadNotices();
+          } catch (err) {
+            console.error("작성 오류", err);
+          }
+        },
         confirmText: "등록",
         children: (
           <Stack spacing={2} mt={1}>
@@ -295,7 +238,35 @@ export default function NoticeView() {
         open: editDialogOpen,
         title: "✏️ 공지 수정",
         onClose: () => setEditDialogOpen(false),
-        onConfirm: handleUpdatePost,
+        onConfirm: async () => {
+          if (!targetPost) return;
+          try {
+            const res = await fetch(
+              `http://localhost:8080/api/post/${targetPost.id}`,
+              {
+                method: "PUT",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                  title: form.title,
+                  content: form.content,
+                }),
+              }
+            );
+            if (!res.ok) {
+              const msg = await res.text();
+              alert("수정 실패: " + msg);
+              return;
+            }
+            setEditDialogOpen(false);
+            setForm({ title: "", content: "" });
+            loadNotices();
+          } catch (err) {
+            console.error("수정 오류", err);
+          }
+        },
         confirmText: "저장",
         children: (
           <Stack spacing={2} mt={1}>
@@ -321,7 +292,28 @@ export default function NoticeView() {
         open: confirmDialogOpen,
         title: "⚠️ 삭제 확인",
         onClose: () => setConfirmDialogOpen(false),
-        onConfirm: confirmDelete,
+        onConfirm: async () => {
+          if (role === "USER" || !targetPostId) return;
+          try {
+            const res = await fetch(
+              `http://localhost:8080/api/post/${targetPostId}`,
+              {
+                method: "DELETE",
+                headers: { Authorization: `Bearer ${token}` },
+              }
+            );
+            if (!res.ok) {
+              const msg = await res.text();
+              alert("삭제 실패: " + msg);
+              return;
+            }
+            setConfirmDialogOpen(false);
+            setTargetPostId(null);
+            loadNotices();
+          } catch (err) {
+            console.error("삭제 오류", err);
+          }
+        },
         confirmText: "삭제",
         dialogType: "confirm",
         children: (

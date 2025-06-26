@@ -346,7 +346,7 @@ export default function FreeBoardView() {
         open={openDeleteDialog}
         onClose={() => {
           setOpenDeleteDialog(false);
-          // setTargetPost(null); ← 여기서 바로 null로 초기화하지 않음
+          
         }}
         fullWidth
         maxWidth="xs"
