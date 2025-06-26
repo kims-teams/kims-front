@@ -35,9 +35,13 @@ export default function NoticeView() {
   const email = localStorage.getItem("email");
 
   const loadNotices = async () => {
+<<<<<<< rlayss-30
     const res = await fetch(
       "http://localhost:8080/api/post/post-category/사내공지"
     );
+=======
+    const res = await fetch("http://localhost:8080/api/post/post-category/사내공지");
+>>>>>>> master
     const data = await res.json();
     setNotices(data);
   };
