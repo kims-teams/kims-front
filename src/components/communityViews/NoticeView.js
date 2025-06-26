@@ -35,7 +35,7 @@ export default function NoticeView() {
   const email = localStorage.getItem("email");
 
   const loadNotices = async () => {
-    const res = await fetch("http://localhost:8080/api/post?category=notice");
+    const res = await fetch("http://localhost:8080/api/post/post-category/사내공지");
     const data = await res.json();
     setNotices(data);
   };
