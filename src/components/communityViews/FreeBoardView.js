@@ -41,7 +41,7 @@ export default function FreeBoardView() {
     typeof window !== "undefined" ? localStorage.getItem("userId") : null;
   const fetchPosts = async () => {
     try {
-      const res = await fetch("http://localhost:8080/api/post");
+      const res = await fetch(`http://localhost:8080/api/post/post-category/자유게시판`);
       const data = await res.json();
       setPosts(data);
     } catch (err) {
