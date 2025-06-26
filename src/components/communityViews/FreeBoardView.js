@@ -44,6 +44,7 @@ export default function FreeBoardView() {
       const res = await fetch(`http://localhost:8080/api/post/post-category/자유게시판`);
       const data = await res.json();
       setPosts(data);
+      console.log("data:", data);
     } catch (err) {
       console.error("게시글 불러오기 실패", err);
     }
@@ -125,7 +126,7 @@ export default function FreeBoardView() {
 
   const handleDelete = async () => {
     if (!targetPost) return;
-
+    console.log(targetPost.id);
     const res = await fetch(`http://localhost:8080/api/post/${targetPost.id}`, {
       method: "DELETE",
       headers: {
@@ -242,13 +243,13 @@ export default function FreeBoardView() {
                       {post.writerName || "-"}
                     </TableCell>
                     <TableCell align="center">
-                      {post.user?.email || "-"}
+                      {post.writerEmail || "-"}
                     </TableCell>
                     <TableCell align="center">
                       {formatCreatedAt(post.createdAt)}
                     </TableCell>
                     <TableCell align="center">
-                      {post.writerId === userId && (
+                      {Number(post.writerId) === Number(userId) && (
                         <Button
                           size="small"
                           color="primary"
@@ -266,7 +267,7 @@ export default function FreeBoardView() {
                       )}
                     </TableCell>
                     <TableCell align="center">
-                      {post.writerId === userId && (
+                      {Number(post.writerId) === Number(userId) && (
                         <Button
                           size="small"
                           color="error"
