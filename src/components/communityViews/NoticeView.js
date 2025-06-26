@@ -35,7 +35,13 @@ export default function NoticeView() {
   const email = localStorage.getItem("email");
 
   const loadNotices = async () => {
+<<<<<<< rlayss-30
+    const res = await fetch(
+      "http://localhost:8080/api/post/post-category/사내공지"
+    );
+=======
     const res = await fetch("http://localhost:8080/api/post/post-category/사내공지");
+>>>>>>> master
     const data = await res.json();
     setNotices(data);
   };
@@ -252,7 +258,6 @@ export default function NoticeView() {
         ))
       )}
 
-      
       {renderDialog({
         open: openDialog,
         title: "📝 새 공지 작성",
@@ -279,7 +284,6 @@ export default function NoticeView() {
         ),
       })}
 
-      
       {renderDialog({
         open: successDialogOpen,
         title: "작성 완료",
@@ -291,7 +295,6 @@ export default function NoticeView() {
         children: <Typography>공지글이 성공적으로 등록되었습니다.</Typography>,
       })}
 
-     
       {renderDialog({
         open: editDialogOpen,
         title: "✏️ 공지 수정",
@@ -318,7 +321,6 @@ export default function NoticeView() {
         ),
       })}
 
-      
       {renderDialog({
         open: confirmDialogOpen,
         title: "⚠️ 삭제 확인",
