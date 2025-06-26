@@ -1,16 +1,25 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Gantt, ViewMode } from "@rsagiev/gantt-task-react-19";
-import "@rsagiev/gantt-task-react-19/dist/index.css";
+import React, { useEffect, useState } from "react";
+import { GanttComponent, Inject, Selection } from "@syncfusion/ej2-react-gantt";
+import { registerLicense } from "@syncfusion/ej2-base";
+import "@syncfusion/ej2-react-gantt/styles/material.css";
+
+registerLicense(
+  "Ngo9BigBOggjHTQxAR8/V1NNaF1cWWhOYVFpR2Nbek5zflZCallZVAciSV9jS3tTcEdmWXxddHFdR2ZdUk90Vg=="
+);
+
+const parseDate = (str) => new Date(str);
+
+const startView = new Date("2025-06-23T08:45:00");
+const endView = new Date("2025-06-23T12:00:00");
 
 export default function ProductionGanttPage() {
-  const [tasks, setTasks] = useState([]);
+  const [taskData, setTaskData] = useState([]);
 
   useEffect(() => {
     const scenarioId = 9;
     const token = localStorage.getItem("token");
-
     if (!token) {
       console.error("🚨 토큰 없음. 로그인 필요.");
       return;
@@ -24,104 +33,62 @@ export default function ProductionGanttPage() {
         },
       }
     )
-      .then((res) => {
-        if (!res.ok) throw new Error("데이터 요청 실패");
-        return res.json();
-      })
+      .then((res) => res.json())
       .then((data) => {
-        console.log("✅ 응답 데이터:", data);
-
-        const filtered = data.filter(
-          (item) => !item.remarks?.startsWith("작업장 ")
-        );
-
-        const grouped = filtered.reduce((acc, item) => {
-          const key = item.workcenterId || item.workcenter_id;
-          if (!acc[key]) acc[key] = [];
-          acc[key].push(item);
-          return acc;
-        }, {});
-
-        const formatted = [];
-
-        Object.entries(grouped).forEach(([_, items], groupIdx) => {
-          items.forEach((item, i) => {
-            const start = item?.startTime ? new Date(item.startTime) : null;
-            const end = item?.endTime ? new Date(item.endTime) : null;
-
-            if (
-              !(start instanceof Date && !isNaN(start.getTime())) ||
-              !(end instanceof Date && !isNaN(end.getTime()))
-            ) {
-              console.warn("⚠️ 유효하지 않은 날짜 있음:", item);
-              return;
-            }
-
-            formatted.push({
-              id: `Task-${groupIdx}-${i}`,
-              name: item.toolId
-                ? `${item.remarks} (${item.toolId})`
-                : `${item.remarks}`,
-              start,
-              end,
-              type: "task",
-              progress: 100,
-              isDisabled: false,
-            });
-          });
-        });
-
-        const safeTasks = formatted.filter((task) => {
-          const isValid =
-            task &&
-            task.start instanceof Date &&
-            !isNaN(task.start.getTime()) &&
-            task.end instanceof Date &&
-            !isNaN(task.end.getTime()) &&
-            typeof task.id === "string" &&
-            typeof task.name === "string" &&
-            typeof task.type === "string";
-
-          if (!isValid) {
-            console.warn("⛔️ 필터에서 제거된 task:", task);
-          }
-
-          return isValid;
-        });
-
-        console.log("🎯 변환된 safeTasks:", safeTasks);
-        setTasks(safeTasks);
+        const formatted = data.map((item, i) => ({
+          TaskID: i + 1,
+          TaskName: item.remarks,
+          StartDate: parseDate(item.startTime),
+          EndDate: parseDate(item.endTime),
+        }));
+        setTaskData(formatted);
       })
       .catch((err) => {
         console.error("🚨 간트 데이터 불러오기 실패:", err);
       });
   }, []);
 
-  const viewStart = new Date("2025-06-23T09:00:00");
-  const viewEnd = new Date("2025-06-23T12:00:00");
-
   return (
-    <div style={{ height: "600px", overflowX: "auto" }}>
-      {tasks.length > 0 &&
-      tasks.every(
-        (t) =>
-          t?.start instanceof Date &&
-          !isNaN(t.start?.getTime?.()) &&
-          t?.end instanceof Date &&
-          !isNaN(t.end?.getTime?.())
-      ) ? (
-        <Gantt
-          tasks={tasks}
-          viewMode={ViewMode.Hour}
-          startDate={viewStart}
-          endDate={viewEnd}
-          listCellWidth=""
-          columnWidth={120}
-          preStepsCount={0}
-        />
-      ) : (
-        <p style={{ padding: "1rem" }}>⏳ 간트 데이터를 불러오는 중입니다...</p>
-      )}
+    <div style={{ height: "600px", width: "100%" }}>
+      <GanttComponent
+        dataSource={taskData}
+        taskFields={{
+          id: "TaskID",
+          name: "TaskName",
+          startDate: "StartDate",
+          endDate: "EndDate",
+        }}
+        height="100%"
+        rowHeight={40}
+        allowSelection={true}
+        highlightWeekends={true}
+        projectStartDate={startView}
+        projectEndDate={endView}
+        timelineSettings={{
+          timelineUnitSize: 40,
+          topTier: { unit: "Hour", format: "HH:mm" },
+          bottomTier: { unit: "Minutes", count: 5, format: "mm" },
+        }}
+        treeColumnIndex={0}
+        splitterSettings={{ position: "180px" }}
+        columns={[
+          {
+            field: "TaskID",
+            headerText: "ID",
+            width: 50,
+            textAlign: "Center",
+          },
+          {
+            field: "TaskName",
+            headerText: "작업 이름",
+            width: 120,
+            clipMode: "EllipsisWithTooltip",
+          },
+        ]}
+        gridLines="None"
+      >
+        <Inject services={[Selection]} />
+      </GanttComponent>
     </div>
   );
 }
