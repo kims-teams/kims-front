@@ -37,7 +37,8 @@ export default function FreeBoardView() {
   const router = useRouter();
   const token =
     typeof window !== "undefined" ? localStorage.getItem("token") : null;
-
+  const userId =
+    typeof window !== "undefined" ? localStorage.getItem("userId") : null;
   const fetchPosts = async () => {
     try {
       const res = await fetch("http://localhost:8080/api/post");
@@ -247,29 +248,36 @@ export default function FreeBoardView() {
                       {formatCreatedAt(post.createdAt)}
                     </TableCell>
                     <TableCell align="center">
-                      <Button
-                        size="small"
-                        color="primary"
-                        onClick={() => {
-                          setSelectedPost(post);
-                          setForm({ title: post.title, content: post.content });
-                          setOpenDialog(true);
-                        }}
-                      >
-                        수정
-                      </Button>
+                      {post.writerId === userId && (
+                        <Button
+                          size="small"
+                          color="primary"
+                          onClick={() => {
+                            setSelectedPost(post);
+                            setForm({
+                              title: post.title,
+                              content: post.content,
+                            });
+                            setOpenDialog(true);
+                          }}
+                        >
+                          수정
+                        </Button>
+                      )}
                     </TableCell>
                     <TableCell align="center">
-                      <Button
-                        size="small"
-                        color="error"
-                        onClick={() => {
-                          setTargetPost(post);
-                          setOpenDeleteDialog(true);
-                        }}
-                      >
-                        삭제
-                      </Button>
+                      {post.writerId === userId && (
+                        <Button
+                          size="small"
+                          color="error"
+                          onClick={() => {
+                            setTargetPost(post);
+                            setOpenDeleteDialog(true);
+                          }}
+                        >
+                          삭제
+                        </Button>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))
@@ -337,27 +345,73 @@ export default function FreeBoardView() {
         open={openDeleteDialog}
         onClose={() => {
           setOpenDeleteDialog(false);
-          setTargetPost(null);
+          // setTargetPost(null); ← 여기서 바로 null로 초기화하지 않음
+        }}
+        fullWidth
+        maxWidth="xs"
+        PaperProps={{
+          sx: {
+            borderRadius: 2,
+            p: 2,
+          },
         }}
       >
-        <DialogTitle>게시글 삭제</DialogTitle>
-        <DialogContent>
-          <Typography>
+        <DialogTitle
+          sx={{
+            fontWeight: "bold",
+            fontSize: "1.2rem",
+            pb: 1,
+          }}
+        >
+          🗑️ 게시글 삭제 확인
+        </DialogTitle>
+        <DialogContent dividers>
+          <Typography variant="body1" sx={{ mb: 1 }}>
             다음 게시글을 삭제하시겠습니까?
-            <br />
-            <strong>{targetPost?.title || "제목 없음"}</strong>
+          </Typography>
+          <Typography
+            variant="subtitle1"
+            sx={{
+              fontWeight: "bold",
+              backgroundColor: "#f5f5f5",
+              p: 1.5,
+              borderRadius: 1,
+              color: "#333",
+            }}
+          >
+            {targetPost?.title || "(제목 없음)"}
+          </Typography>
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            mt={1}
+            display="block"
+          >
+            삭제된 게시글은 복구할 수 없습니다.
           </Typography>
         </DialogContent>
-        <DialogActions>
+        <DialogActions sx={{ justifyContent: "flex-end", pt: 2 }}>
           <Button
             onClick={() => {
               setOpenDeleteDialog(false);
-              setTargetPost(null);
+              setTimeout(() => setTargetPost(null), 300);
             }}
+            variant="outlined"
+            sx={{ textTransform: "none" }}
           >
             취소
           </Button>
-          <Button variant="contained" color="error" onClick={handleDelete}>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() => {
+              handleDelete();
+            }}
+            sx={{
+              textTransform: "none",
+              fontWeight: "bold",
+            }}
+          >
             삭제
           </Button>
         </DialogActions>
