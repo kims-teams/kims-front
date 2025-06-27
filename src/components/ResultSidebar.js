@@ -22,14 +22,7 @@ import { useState } from "react";
 
 const simulationItems = [
   "작업도구 사용 내역",
-  "공정 별 생산 수량 조회",
-  "LOT 병합 이력",
-  "계획오더 조회",
-  "작업장별 Dispatch 내역",
-  "투입 재공 내역",
   "작업장별 생산 계획",
-  "일별 투입 계획",
-  "작업장 가동 현황",
 ];
 
 export default function RightSidebar({ onSelect, collapsed, setCollapsed }) {
