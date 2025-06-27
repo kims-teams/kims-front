@@ -1,201 +1,117 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
-import { GanttComponent, Inject, Selection } from "@syncfusion/ej2-react-gantt";
-import { registerLicense } from "@syncfusion/ej2-base";
-import "@syncfusion/ej2-react-gantt/styles/bootstrap5.css";
+import { useEffect, useState } from "react";
+import { Box } from "@mui/material";
+import "dhtmlx-gantt/codebase/dhtmlxgantt.css";
+import gantt from "dhtmlx-gantt";
 
-registerLicense(
-  "Ngo9BigBOggjHTQxAR8/V1cWWhOYVFpR2Nbek5zflZCallZVAciSV9jS3tTcEdmWXxddHFdR2ZdUk90Vg=="
-);
+// 🧩 툴팁 기능 활성화
+gantt.plugins({ tooltip: true });
 
-const startView = new Date("2025-06-23T09:00:00");
-const endView = new Date("2025-06-23T12:00:00");
-const rowHeight = 40;
+// 🧮 기간 계산: 분 단위
+const calculateDurationInMinutes = (start, end) => {
+  const durationMs = new Date(end) - new Date(start);
+  const minutes = durationMs / (1000 * 60);
+  return Math.round(minutes);
+};
+
+// ⏱️ 시간만 포맷 (09:05)
+const formatHourMinute = (date) => {
+  const d = new Date(date);
+  const hh = String(d.getHours()).padStart(2, "0");
+  const mm = String(d.getMinutes()).padStart(2, "0");
+  return `${hh}:${mm}`;
+};
+
+// 🕒 툴팁 전용 포맷 (yyyy-MM-dd HH:mm)
+const formatFullDateTime = (date) => {
+  const d = new Date(date);
+  const yyyy = d.getFullYear();
+  const MM = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  const hh = String(d.getHours()).padStart(2, "0");
+  const mm = String(d.getMinutes()).padStart(2, "0");
+  return `${yyyy}-${MM}-${dd} ${hh}:${mm}`;
+};
 
 export default function ProductionGanttPage() {
-  const [taskData, setTaskData] = useState([]);
-  const ganttRef = useRef(null);
-  const leftScrollRef = useRef(null);
+  const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
-    const scenarioId = 9;
-    const token = localStorage.getItem("token");
-    if (!token) return;
-
-    fetch(
-      `http://localhost:8080/api/simulation/production-gantt/${scenarioId}`,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    )
+    fetch("http://localhost:8080/api/simulation/production-gantt/9")
       .then((res) => res.json())
       .then((data) => {
-        const withLinks = data.map((item, idx) => ({
-          ...item,
-          Predecessor: idx === 0 ? null : `${data[idx - 1].TaskID}FS`,
-        }));
-        setTaskData(withLinks);
+        const formatted = data
+          .filter((item) => item.StartDate && item.EndDate)
+          .map((item) => ({
+            id: item.TaskID,
+            text: item.TaskName,
+            start_date: new Date(item.StartDate),
+            end_date: new Date(item.EndDate),
+            scenarioId: "S010000",
+          }));
+
+        setTasks(formatted);
+      })
+      .catch((err) => {
+        console.error("간트 데이터 로딩 실패:", err);
       });
   }, []);
 
-  const syncScroll = (e) => {
-    if (ganttRef.current) {
-      ganttRef.current.ganttChartModule.scrollObject.setScrollTop(
-        e.target.scrollTop
-      );
+  useEffect(() => {
+    gantt.clearAll();
+
+    // 🧾 툴팁 정의
+    gantt.templates.tooltip_text = function (start, end, task) {
+      const duration = calculateDurationInMinutes(start, end);
+      return `
+        ${formatFullDateTime(start)} ~ ${formatFullDateTime(end)} (${duration}분)<br/>
+        <b>시나리오</b>: ${task.scenarioId || "-"}
+      `;
+    };
+
+    // 📅 축 단위 설정
+    gantt.config.scales = [
+      { unit: "hour", step: 1, format: "%H:%i" },
+      { unit: "minute", step: 5, format: "%H:%i" },
+    ];
+
+    // ✅ 왼쪽 목록 열 포맷 수정 (시간만 표시)
+    gantt.config.columns = [
+      { name: "text", label: "작업명", tree: true, width: "*" },
+      {
+        name: "start_date",
+        label: "시작",
+        align: "center",
+        template: function (task) {
+          return formatHourMinute(task.start_date);
+        },
+      },
+      {
+        name: "end_date",
+        label: "종료",
+        align: "center",
+        template: function (task) {
+          return formatHourMinute(task.end_date);
+        },
+      },
+    ];
+
+    // 📅 전체 날짜 포맷
+    gantt.config.date_format = "%Y-%m-%d %H:%i";
+    gantt.config.start_date = new Date("2025-06-23T09:00:00");
+    gantt.config.end_date = new Date("2025-06-23T12:00:00");
+
+    gantt.init("gantt_here");
+
+    if (tasks.length > 0) {
+      gantt.parse({ data: tasks });
     }
-  };
+  }, [tasks]);
 
   return (
-    <div style={{ padding: 20 }}>
-      <style>{`
-        .e-gantt .e-grid {
-          display: none !important;
-        }
-        .e-gantt .e-timeline-gantt-chart {
-          background-color: #ffffff !important;
-        }
-        .e-gantt .e-chart-row-border {
-          stroke: #dcdcdc !important;
-          stroke-width: 1px;
-        }
-        .e-gantt .e-chart-vertical-line {
-          stroke: #f1f1f1 !important;
-          stroke-width: 1px;
-        }
-        .e-gantt .e-task-label {
-          fill: #000 !important;
-        }
-        .e-gantt .e-timeline-single-header-cell,
-        .e-gantt .e-timeline-top-header-cell,
-        .e-gantt .e-timeline-bottom-header-cell {
-          padding: 0 !important;
-        }
-        .e-gantt-tooltip {
-          background-color: #2e2e2e !important;
-          color: #fff !important;
-          border-radius: 6px;
-          font-size: 13px;
-          padding: 8px 12px;
-        }
-      `}</style>
-
-      <div
-        style={{
-          height: 40,
-          display: "flex",
-          alignItems: "center",
-          paddingLeft: 10,
-          backgroundColor: "#eee",
-          fontWeight: "bold",
-          borderRadius: 4,
-          marginBottom: 6,
-          border: "1px solid #ccc",
-        }}
-      >
-        작업 스케줄 간트 차트
-      </div>
-
-      <div style={{ display: "flex", overflowX: "auto" }}>
-        <div
-          style={{ width: 200, overflowY: "auto" }}
-          onScroll={syncScroll}
-          ref={leftScrollRef}
-        >
-          <div style={{ height: rowHeight, boxSizing: "border-box" }} />
-          <div
-            style={{
-              height: rowHeight,
-              fontWeight: "bold",
-              borderBottom: "1px solid #ddd",
-              display: "flex",
-              alignItems: "center",
-              backgroundColor: "#f8f8f8",
-              boxSizing: "border-box",
-              paddingLeft: 8,
-              fontSize: 14,
-            }}
-          >
-            ID / 작업명
-          </div>
-
-          {taskData.map((item) => (
-            <div
-              key={item.TaskID}
-              style={{
-                height: rowHeight,
-                display: "flex",
-                alignItems: "center",
-                boxSizing: "border-box",
-                paddingLeft: 8,
-                fontSize: 14,
-                borderBottom: "1px solid #f0f0f0",
-              }}
-            >
-              {item.TaskID}. {item.TaskName}
-            </div>
-          ))}
-        </div>
-
-        <div style={{ flex: 1 }}>
-          <div
-            style={{
-              height: rowHeight,
-              display: "flex",
-              alignItems: "center",
-              fontWeight: "bold",
-              fontSize: 16,
-              paddingLeft: 10,
-              backgroundColor: "#fff",
-              borderBottom: "1px solid #ddd",
-              boxSizing: "border-box",
-            }}
-          >
-            Date: 2025-06-23
-          </div>
-
-          <GanttComponent
-            ref={ganttRef}
-            dataSource={taskData}
-            taskFields={{
-              id: "TaskID",
-              name: "TaskName",
-              startDate: "StartDate",
-              endDate: "EndDate",
-              dependency: "Predecessor",
-            }}
-            height="700px"
-            rowHeight={rowHeight}
-            allowSelection={true}
-            highlightWeekends={true}
-            projectStartDate={startView}
-            projectEndDate={endView}
-            timelineSettings={{
-              timelineUnitSize: 50,
-              topTier: { unit: "Hour", format: "HH:mm" },
-              bottomTier: { unit: "Minutes", count: 5, format: "mm" },
-              timelineViewMode: "Timeline",
-            }}
-            labelSettings={{ leftLabel: "TaskName" }}
-            treeColumnIndex={-1}
-            splitterSettings={{ position: "0%" }}
-            columns={[]}
-            gridLines="Both"
-            tooltipSettings={{
-              showTooltip: true,
-              tooltipTemplate: (props) => (
-                <div className="e-gantt-tooltip">
-                  <div>Duration: {props.Duration} days</div>
-                  <div>Progress: {props.Progress}%</div>
-                </div>
-              ),
-            }}
-          >
-            <Inject services={[Selection]} />
-          </GanttComponent>
-        </div>
-      </div>
-    </div>
+    <Box sx={{ height: "800px", width: "100%" }}>
+      <div id="gantt_here" style={{ width: "100%", height: "100%" }}></div>
+    </Box>
   );
 }
