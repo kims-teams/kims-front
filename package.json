@@ -26,12 +26,8 @@
     "@syncfusion/ej2-react-gantt": "^29.2.11",
     "@toolpad/core": "^0.15.0",
     "axios": "^1.9.0",
-<<<<<<< HEAD
     "dhtmlx-gantt": "^9.0.13",
     "install": "^0.13.0",
-=======
-    "date-fns": "^4.1.0",
->>>>>>> deba3bc1ac89332fafdddfc01681480df06a76fc
     "next": "^15.3.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
