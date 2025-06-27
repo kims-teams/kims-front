@@ -16,12 +16,14 @@ import {
   List,
   ListItem,
   ListItemText,
+  Pagination,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import DeleteIcon from "@mui/icons-material/DeleteOutline";
 import EditIcon from "@mui/icons-material/EditOutlined";
 import AddIcon from "@mui/icons-material/Add";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import { useRouter } from "next/navigation";
 
 export default function NoticeView() {
   const [notices, setNotices] = useState([]);
@@ -33,6 +35,10 @@ export default function NoticeView() {
   const [targetPost, setTargetPost] = useState(null);
   const [targetPostId, setTargetPostId] = useState(null);
 
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const postsPerPage = 8;
+  const router = useRouter();
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role");
   const email = localStorage.getItem("email");
@@ -48,6 +54,15 @@ export default function NoticeView() {
   useEffect(() => {
     loadNotices();
   }, []);
+
+  const filteredNotices = notices.filter((notice) =>
+    notice.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const indexOfLast = currentPage * postsPerPage;
+  const indexOfFirst = indexOfLast - postsPerPage;
+  const currentNotices = filteredNotices.slice(indexOfFirst, indexOfLast);
+  const totalPages = Math.ceil(filteredNotices.length / postsPerPage);
 
   const renderDialog = ({
     open,
@@ -94,32 +109,46 @@ export default function NoticeView() {
   return (
     <Box p={4}>
       <Stack
-        direction="row"
+        direction={{ xs: "column", sm: "row" }}
         justifyContent="space-between"
-        alignItems="center"
+        alignItems={{ xs: "flex-start", sm: "center" }}
         mb={3}
+        spacing={2}
       >
         <Typography variant="h5" fontWeight="bold">
           📌 공지 게시판
         </Typography>
-        {role !== "USER" && (
-          <Button
-            startIcon={<AddIcon />}
-            variant="contained"
-            onClick={() => setOpenDialog(true)}
-            sx={{ borderRadius: 2 }}
-          >
-            새 공지
+
+        <Stack direction="row" spacing={1}>
+          <TextField
+            size="small"
+            placeholder="제목 검색"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <Button variant="outlined" onClick={() => setCurrentPage(1)}>
+            검색
           </Button>
-        )}
+
+          {role !== "USER" && (
+            <Button
+              startIcon={<AddIcon />}
+              variant="contained"
+              onClick={() => setOpenDialog(true)}
+              sx={{ borderRadius: 2 }}
+            >
+              새 공지
+            </Button>
+          )}
+        </Stack>
       </Stack>
 
-      {notices.length === 0 ? (
+      {filteredNotices.length === 0 ? (
         <Typography color="text.secondary">등록된 공지가 없습니다.</Typography>
       ) : (
         <Paper elevation={2}>
           <List>
-            {notices.map((post, idx) => (
+            {currentNotices.map((post, idx) => (
               <Box key={post.id}>
                 <ListItem
                   secondaryAction={
@@ -150,22 +179,46 @@ export default function NoticeView() {
                   }
                 >
                   <ListItemText
+                    onClick={() =>
+                      router.push(`/user/menu/community/${post.id}`)
+                    }
                     primary={
-                      <Typography variant="body1" fontWeight="bold">
+                      <Typography
+                        variant="body1"
+                        fontWeight="bold"
+                        sx={{
+                          cursor: "pointer",
+                          transition: "color 0.2s ease",
+                          "&:hover": {
+                            color: "primary.main",
+                            textDecoration: "underline",
+                          },
+                        }}
+                      >
                         {post.title}
                       </Typography>
                     }
                     secondary={`${post.writerName} · ${new Date(post.createdAt).toLocaleString()}`}
                   />
                 </ListItem>
-                {idx !== notices.length - 1 && <Divider />}
+                {idx !== currentNotices.length - 1 && <Divider />}
               </Box>
             ))}
           </List>
         </Paper>
       )}
 
-      {/* 생략된 모달: 새 공지 작성, 수정, 삭제 확인은 기존 renderDialog 그대로 유지 */}
+      {filteredNotices.length > postsPerPage && (
+        <Stack mt={4} alignItems="center">
+          <Pagination
+            count={totalPages}
+            page={currentPage}
+            onChange={(_, value) => setCurrentPage(value)}
+            color="primary"
+            shape="rounded"
+          />
+        </Stack>
+      )}
 
       {renderDialog({
         open: openDialog,
