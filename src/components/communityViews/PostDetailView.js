@@ -36,7 +36,6 @@ export default function PostDetailView() {
   const [userId, setUserId] = useState(null);
   const [token, setToken] = useState(null);
 
-
   const [commentIdToDelete, setCommentIdToDelete] = useState(null);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
@@ -153,93 +152,21 @@ export default function PostDetailView() {
       p={3}
       sx={{
         backgroundColor: charcoalBg,
-        minHeight: "100vh",
         maxWidth: 900,
         mx: "auto",
         fontFamily: "'Noto Sans KR', sans-serif",
         color: charcoalLight,
       }}
     >
-      
       {post && (
-        <Paper
-          sx={{
-            p: 4,
-            mb: 5,
-            borderRadius: 3,
-            boxShadow: "0 4px 10px rgb(0 0 0 / 0.1)",
-            backgroundColor: "#fff",
-            color: charcoalLight,
-          }}
-          elevation={0}
-        >
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-            sx={{ mb: 1 }}
-          >
-            <Typography
-              variant="h4"
-              fontWeight="700"
-              sx={{ color: charcoalLight }}
-              gutterBottom
-            >
-              {post.title}
-            </Typography>
-            <Box sx={{ textAlign: "right" }}>
-              <Typography
-                variant="subtitle2"
-                sx={{ color: charcoalLight, fontWeight: "600" }}
-              >
-                작성자: {post.writerName}
-              </Typography>
-              <Typography variant="caption" sx={{ color: charcoalLighter }}>
-                {post.createdAt
-                  ? dayjs(post.createdAt).format("YYYY.MM.DD HH:mm")
-                  : ""}
-              </Typography>
-            </Box>
-          </Stack>
-
-          <Typography
-            variant="body1"
-            sx={{
-              whiteSpace: "pre-line",
-              lineHeight: 1.6,
-              color: charcoalLight,
-            }}
-          >
-            {post.content}
-          </Typography>
-        </Paper>
-      )}
-
-      
-      <Box>
-        <Typography
-          variant="h6"
-          fontWeight="600"
-          sx={{
-            mb: 2,
-            color: charcoalLight,
-            borderBottom: `2px solid ${charcoalLight}`,
-            pb: 1,
-          }}
-        >
-          댓글 ({comments.length})
-        </Typography>
-
-        {comments.map((comment) => (
+        <>
           <Paper
-            key={comment.id}
             sx={{
-              p: 2,
-              mb: 2,
-              borderRadius: 2,
+              p: 4,
+              mb: 5,
+              borderRadius: 3,
+              boxShadow: "0 4px 10px rgb(0 0 0 / 0.1)",
               backgroundColor: "#fff",
-              boxShadow: "0 1px 5px rgb(0 0 0 / 0.08)",
-              position: "relative",
               color: charcoalLight,
             }}
             elevation={0}
@@ -248,62 +175,207 @@ export default function PostDetailView() {
               direction="row"
               justifyContent="space-between"
               alignItems="center"
+              sx={{ mb: 1 }}
             >
               <Typography
-                variant="subtitle2"
-                sx={{ fontWeight: "600", color: charcoalLight }}
+                variant="h4"
+                fontWeight="700"
+                sx={{ color: charcoalLight }}
+                gutterBottom
               >
-                {comment.writerName}
+                {post.title}
               </Typography>
-
-              {parseInt(comment.writerId) === parseInt(userId) && (
-                <Stack direction="row" spacing={1}>
-                  <IconButton
-                    aria-label="댓글 수정"
-                    size="small"
-                    onClick={() => {
-                      setEditingCommentId(comment.id);
-                      setEditingContent(comment.content);
-                    }}
-                    sx={{
-                      color: charcoalLight,
-                      backgroundColor: "transparent",
-                      "&:hover": { backgroundColor: "#e0e0e0" },
-                      transition: "all 0.2s",
-                    }}
-                  >
-                    <EditIcon fontSize="small" />
-                  </IconButton>
-
-                  <IconButton
-                    aria-label="댓글 삭제"
-                    size="small"
-                    onClick={() => {
-                      setCommentIdToDelete(comment.id);
-                      setOpenDeleteDialog(true);
-                    }}
-                    sx={{
-                      color: "#b33a3a",
-                      "&:hover": { backgroundColor: "#fceaea" },
-                      transition: "all 0.2s",
-                    }}
-                  >
-                    <DeleteIcon fontSize="small" />
-                  </IconButton>
-                </Stack>
-              )}
+              <Box sx={{ textAlign: "right" }}>
+                <Typography
+                  variant="subtitle2"
+                  sx={{ color: charcoalLight, fontWeight: "600" }}
+                >
+                  작성자: {post.writerName}
+                </Typography>
+                <Typography variant="caption" sx={{ color: charcoalLighter }}>
+                  {post.createdAt
+                    ? dayjs(post.createdAt).format("YYYY.MM.DD HH:mm")
+                    : ""}
+                </Typography>
+              </Box>
             </Stack>
 
-            {editingCommentId === comment.id ? (
-              <Box mt={1}>
+            <Typography
+              variant="body1"
+              sx={{
+                whiteSpace: "pre-line",
+                lineHeight: 1.6,
+                color: charcoalLight,
+              }}
+            >
+              {post.content}
+            </Typography>
+          </Paper>
+          {post.categoryName === "자유게시판" && (
+            <Box>
+              <Typography
+                variant="h6"
+                fontWeight="600"
+                sx={{
+                  mb: 2,
+                  color: charcoalLight,
+                  borderBottom: `2px solid ${charcoalLight}`,
+                  pb: 1,
+                }}
+              >
+                댓글 ({comments.length})
+              </Typography>
+
+              {comments.map((comment) => (
+                <Paper
+                  key={comment.id}
+                  sx={{
+                    p: 2,
+                    mb: 2,
+                    borderRadius: 2,
+                    backgroundColor: "#fff",
+                    boxShadow: "0 1px 5px rgb(0 0 0 / 0.08)",
+                    position: "relative",
+                    color: charcoalLight,
+                  }}
+                  elevation={0}
+                >
+                  <Stack
+                    direction="row"
+                    justifyContent="space-between"
+                    alignItems="center"
+                  >
+                    <Typography
+                      variant="subtitle2"
+                      sx={{ fontWeight: "600", color: charcoalLight }}
+                    >
+                      {comment.writerName}
+                    </Typography>
+
+                    {parseInt(comment.writerId) === parseInt(userId) && (
+                      <Stack direction="row" spacing={1}>
+                        <IconButton
+                          aria-label="댓글 수정"
+                          size="small"
+                          onClick={() => {
+                            setEditingCommentId(comment.id);
+                            setEditingContent(comment.content);
+                          }}
+                          sx={{
+                            color: charcoalLight,
+                            backgroundColor: "transparent",
+                            "&:hover": { backgroundColor: "#e0e0e0" },
+                            transition: "all 0.2s",
+                          }}
+                        >
+                          <EditIcon fontSize="small" />
+                        </IconButton>
+
+                        <IconButton
+                          aria-label="댓글 삭제"
+                          size="small"
+                          onClick={() => {
+                            setCommentIdToDelete(comment.id);
+                            setOpenDeleteDialog(true);
+                          }}
+                          sx={{
+                            color: "#b33a3a",
+                            "&:hover": { backgroundColor: "#fceaea" },
+                            transition: "all 0.2s",
+                          }}
+                        >
+                          <DeleteIcon fontSize="small" />
+                        </IconButton>
+                      </Stack>
+                    )}
+                  </Stack>
+
+                  {editingCommentId === comment.id ? (
+                    <Box mt={1}>
+                      <TextField
+                        fullWidth
+                        multiline
+                        size="small"
+                        value={editingContent}
+                        onChange={(e) => setEditingContent(e.target.value)}
+                        sx={{
+                          mt: 1,
+                          "& .MuiOutlinedInput-root": {
+                            borderRadius: 2,
+                            backgroundColor: charcoalBg,
+                          },
+                          color: charcoalLight,
+                        }}
+                        inputProps={{ style: { color: charcoalLight } }}
+                      />
+                      <Stack direction="row" spacing={1} mt={1}>
+                        <Button
+                          variant="contained"
+                          sx={{
+                            backgroundColor: charcoalLight,
+                            color: "#fff",
+                            textTransform: "none",
+                            fontWeight: "600",
+                            boxShadow: "none",
+                            "&:hover": {
+                              backgroundColor: charcoalLighter,
+                              boxShadow: "0 4px 12px rgb(74 74 74 / 0.4)",
+                            },
+                          }}
+                          onClick={() => handleEditComment(comment.id)}
+                        >
+                          수정
+                        </Button>
+                        <Button
+                          variant="outlined"
+                          sx={{
+                            color: charcoalLight,
+                            borderColor: charcoalLight,
+                            textTransform: "none",
+                            fontWeight: "600",
+                            "&:hover": {
+                              backgroundColor: charcoalBg,
+                              borderColor: charcoalLighter,
+                            },
+                          }}
+                          onClick={() => setEditingCommentId(null)}
+                        >
+                          취소
+                        </Button>
+                      </Stack>
+                    </Box>
+                  ) : (
+                    <Typography
+                      mt={1}
+                      sx={{
+                        whiteSpace: "pre-line",
+                        color: charcoalLight,
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      {comment.content}
+                    </Typography>
+                  )}
+                </Paper>
+              ))}
+
+              <Box
+                sx={{
+                  mt: 4,
+                  p: 3,
+                  backgroundColor: "#fff",
+                  borderRadius: 3,
+                  boxShadow: "0 4px 14px rgb(0 0 0 / 0.08)",
+                }}
+              >
                 <TextField
                   fullWidth
+                  placeholder="댓글을 입력하세요..."
                   multiline
-                  size="small"
-                  value={editingContent}
-                  onChange={(e) => setEditingContent(e.target.value)}
+                  rows={3}
+                  value={commentInput}
+                  onChange={(e) => setCommentInput(e.target.value)}
                   sx={{
-                    mt: 1,
                     "& .MuiOutlinedInput-root": {
                       borderRadius: 2,
                       backgroundColor: charcoalBg,
@@ -312,104 +384,30 @@ export default function PostDetailView() {
                   }}
                   inputProps={{ style: { color: charcoalLight } }}
                 />
-                <Stack direction="row" spacing={1} mt={1}>
-                  <Button
-                    variant="contained"
-                    sx={{
-                      backgroundColor: charcoalLight,
-                      color: "#fff",
-                      textTransform: "none",
-                      fontWeight: "600",
-                      boxShadow: "none",
-                      "&:hover": {
-                        backgroundColor: charcoalLighter,
-                        boxShadow: "0 4px 12px rgb(74 74 74 / 0.4)",
-                      },
-                    }}
-                    onClick={() => handleEditComment(comment.id)}
-                  >
-                    수정
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    sx={{
-                      color: charcoalLight,
-                      borderColor: charcoalLight,
-                      textTransform: "none",
-                      fontWeight: "600",
-                      "&:hover": {
-                        backgroundColor: charcoalBg,
-                        borderColor: charcoalLighter,
-                      },
-                    }}
-                    onClick={() => setEditingCommentId(null)}
-                  >
-                    취소
-                  </Button>
-                </Stack>
+                <Button
+                  variant="contained"
+                  sx={{
+                    mt: 2,
+                    backgroundColor: charcoalLight,
+                    color: "#fff",
+                    textTransform: "none",
+                    fontWeight: "700",
+                    boxShadow: "none",
+                    "&:hover": {
+                      backgroundColor: charcoalLighter,
+                      boxShadow: "0 6px 18px rgb(74 74 74 / 0.5)",
+                    },
+                  }}
+                  onClick={handleAddComment}
+                >
+                  댓글 등록
+                </Button>
               </Box>
-            ) : (
-              <Typography
-                mt={1}
-                sx={{
-                  whiteSpace: "pre-line",
-                  color: charcoalLight,
-                  lineHeight: 1.5,
-                }}
-              >
-                {comment.content}
-              </Typography>
-            )}
-          </Paper>
-        ))}
+            </Box>
+          )}
+        </>
+      )}
 
-        <Box
-          sx={{
-            mt: 4,
-            p: 3,
-            backgroundColor: "#fff",
-            borderRadius: 3,
-            boxShadow: "0 4px 14px rgb(0 0 0 / 0.08)",
-          }}
-        >
-          <TextField
-            fullWidth
-            placeholder="댓글을 입력하세요..."
-            multiline
-            rows={3}
-            value={commentInput}
-            onChange={(e) => setCommentInput(e.target.value)}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                borderRadius: 2,
-                backgroundColor: charcoalBg,
-              },
-              color: charcoalLight,
-            }}
-            inputProps={{ style: { color: charcoalLight } }}
-          />
-          <Button
-            variant="contained"
-            sx={{
-              mt: 2,
-              backgroundColor: charcoalLight,
-              color: "#fff",
-              textTransform: "none",
-              fontWeight: "700",
-              boxShadow: "none",
-              "&:hover": {
-                backgroundColor: charcoalLighter,
-                boxShadow: "0 6px 18px rgb(74 74 74 / 0.5)",
-              },
-            }}
-            onClick={handleAddComment}
-          >
-            댓글 등록
-          </Button>
-        </Box>
-      </Box>
-
-      
       <Dialog
         open={openDeleteDialog}
         onClose={() => setOpenDeleteDialog(false)}

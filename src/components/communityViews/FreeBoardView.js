@@ -41,7 +41,9 @@ export default function FreeBoardView() {
     typeof window !== "undefined" ? localStorage.getItem("userId") : null;
   const fetchPosts = async () => {
     try {
-      const res = await fetch(`http://localhost:8080/api/post/post-category/자유게시판`);
+      const res = await fetch(
+        `http://localhost:8080/api/post/post-category/자유게시판`
+      );
       const data = await res.json();
       setPosts(data);
       console.log("data:", data);
@@ -228,10 +230,14 @@ export default function FreeBoardView() {
                     <TableCell
                       align="left"
                       sx={{
-                        color: "#1e88e5",
+                        color: "#000",
                         cursor: "pointer",
-                        textDecoration: "underline",
-                        "&:hover": { textDecoration: "underline" },
+                        textDecoration: "none",
+                        transition: "color 0.2s ease",
+                        "&:hover": {
+                          color: "#1e88e5",
+                          textDecoration: "underline",
+                        },
                       }}
                       onClick={() =>
                         router.push(`/user/menu/community/${post.id}`)
@@ -239,6 +245,7 @@ export default function FreeBoardView() {
                     >
                       {post.title}
                     </TableCell>
+
                     <TableCell align="center">
                       {post.writerName || "-"}
                     </TableCell>
@@ -346,7 +353,6 @@ export default function FreeBoardView() {
         open={openDeleteDialog}
         onClose={() => {
           setOpenDeleteDialog(false);
-          
         }}
         fullWidth
         maxWidth="xs"
