@@ -14,29 +14,8 @@ const ResultviewComponentMap = {
   "작업도구 사용 내역": dynamic(
     () => import("../../../../components/resultViews/ToolUsageView")
   ),
-  "공정 별 생산 수량 조회": dynamic(
-    () => import("../../../../components/resultViews/ProductionCountView")
-  ),
-  "LOT 병합 이력": dynamic(
-    () => import("../../../../components/resultViews/LotMergeHistoryView")
-  ),
-  "계획오더 조회": dynamic(
-    () => import("../../../../components/resultViews/OrderPlanView")
-  ),
-  "작업장별 Dispatch 내역": dynamic(
-    () => import("../../../../components/resultViews/DispatchDetailView")
-  ),
-  "투입 재공 내역": dynamic(
-    () => import("../../../../components/resultViews/InputWipView")
-  ),
   "작업장별 생산 계획": dynamic(
     () => import("../../../../components/resultViews/WorkcenterPlanView")
-  ),
-  "일별 투입 계획": dynamic(
-    () => import("../../../../components/resultViews/DailyInputPlanView")
-  ),
-  "작업장 가동 현황": dynamic(
-    () => import("../../../../components/resultViews/WorkcenterStatusView")
   ),
 };
 
