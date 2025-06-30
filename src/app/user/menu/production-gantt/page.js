@@ -3,13 +3,13 @@
 import { useEffect, useState } from "react";
 import {
   Box,
-  Button,
   FormControl,
   InputLabel,
   MenuItem,
   Select,
   Stack,
 } from "@mui/material";
+import { useScenarioStore } from "hooks/useScenarioStore";
 
 const calculateDurationInMinutes = (start, end) => {
   const durationMs = new Date(end) - new Date(start);
@@ -23,33 +23,33 @@ const formatHourMinute = (date) => {
 
 const formatFullDateTime = (date) => {
   const d = new Date(date);
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
-    d.getDate()
-  ).padStart(
-    2,
-    "0"
-  )} ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")} ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
 };
 
 export default function ProductionGanttPage() {
   const [tasks, setTasks] = useState([]);
   const [scenarioList, setScenarioList] = useState([]);
-  const [scenario, setScenario] = useState("");
+
+  const selectedScenario = useScenarioStore((state) => state.selectedScenario);
+  const setSelectedScenario = useScenarioStore(
+    (state) => state.setSelectedScenario
+  );
+  const scenario = selectedScenario?.id || "";
 
   useEffect(() => {
     fetch("http://localhost:8080/api/scenario")
       .then((res) => res.json())
-      .then((data) => {
-        setScenarioList(data);
-        if (data.length > 0) setScenario(data[0].scenarioId); 
-      })
+      .then((data) => setScenarioList(data))
       .catch((err) => console.error("시나리오 목록 로딩 실패:", err));
   }, []);
 
-  const handleSearch = () => {
-    if (!scenario) return;
+  useEffect(() => {
+    if (scenario) fetchGanttData(scenario);
+    else setTasks([]);
+  }, [scenario]);
 
-    fetch(`http://localhost:8080/api/simulation/production-gantt/${scenario}`)
+  const fetchGanttData = (scenarioId) => {
+    fetch(`http://localhost:8080/api/simulation/production-gantt/${scenarioId}`)
       .then((res) => res.json())
       .then((data) => {
         const formatted = data
@@ -59,9 +59,8 @@ export default function ProductionGanttPage() {
             text: item.TaskName ?? `작업-${i + 1}`,
             start_date: new Date(item.StartDate),
             end_date: new Date(item.EndDate),
-            scenarioId: scenario,
+            scenarioId: scenarioId,
           }));
-
         setTasks(formatted);
       })
       .catch((err) => console.error("간트 데이터 로딩 실패:", err));
@@ -134,7 +133,7 @@ export default function ProductionGanttPage() {
       }
     };
 
-    if (typeof window !== "undefined") {
+    if (typeof window !== "undefined" && tasks.length > 0) {
       initGantt();
     }
   }, [tasks]);
@@ -154,26 +153,48 @@ export default function ProductionGanttPage() {
             <InputLabel>시나리오</InputLabel>
             <Select
               value={scenario}
-              onChange={(e) => setScenario(e.target.value)}
+              onChange={(e) => {
+                const selected = scenarioList.find(
+                  (s) => s.id === e.target.value
+                );
+                setSelectedScenario(selected);
+              }}
               label="시나리오"
               sx={{ minWidth: 140 }}
             >
-              {scenarioList.map((item, idx) => (
-                <MenuItem key={idx} value={item.id}>
+              {scenarioList.map((item) => (
+                <MenuItem key={item.id} value={item.id}>
                   {item.name}
                 </MenuItem>
               ))}
             </Select>
           </FormControl>
-
-          <Button variant="contained" onClick={handleSearch}>
-            검색
-          </Button>
         </Stack>
       </Box>
 
-      <Box sx={{ height: "calc(100vh - 128px)", overflow: "hidden" }}>
-        <div id="gantt_here" style={{ width: "100%", height: "100%" }}></div>
+      <Box
+        sx={{
+          height: "calc(100vh - 128px)",
+          overflow: "hidden",
+          position: "relative",
+        }}
+      >
+        {!scenario ? (
+          <Box
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              color: "#999",
+              fontSize: "1.2rem",
+            }}
+          >
+            시나리오를 선택해주세요.
+          </Box>
+        ) : tasks.length > 0 ? (
+          <div id="gantt_here" style={{ width: "100%", height: "100%" }}></div>
+        ) : null}
       </Box>
     </Box>
   );
