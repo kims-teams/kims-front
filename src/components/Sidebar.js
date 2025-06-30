@@ -52,7 +52,6 @@ export default function Sidebar() {
       "시나리오 관리": "/user/menu/scenario",
       "실행 관리": "/user/menu/experiment",
       "실행 결과": "/user/menu/result",
-      "자원 운영 간트": "/user/menu/resource-gantt",
       "생산 계획 간트": "/user/menu/production-gantt",
       "사용자 관리": "/user/menu/management",
       "사내 게시판": "/user/menu/community",
@@ -128,9 +127,6 @@ export default function Sidebar() {
         <Collapse in={open.analysis}>
           <Box sx={{ pl: 2, borderLeft: "2px solid #ccc", ml: 1 }}>
             <List disablePadding>
-              <ListItemButton onClick={() => handleNav("자원 운영 간트")}>
-                <ListItemText primary="자원 운영 간트" />
-              </ListItemButton>
               <ListItemButton onClick={() => handleNav("생산 계획 간트")}>
                 <ListItemText primary="생산 계획 간트" />
               </ListItemButton>

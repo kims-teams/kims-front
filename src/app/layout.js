@@ -3,12 +3,6 @@
 import "./globals.css";
 import HeaderBar from "../components/HeaderBar";
 import { Box } from "@mui/material";
-import { registerLicense } from "@syncfusion/ej2-base";
-
-// Syncfusion 커뮤니티 라이선스 키 등록
-registerLicense(
-  "Ngo9BigBOggjHTQxAR8/V1NNaF1cWWhOYVFpR2Nbek5zflZCallZVAciSV9jS3tTcEdmWXxddHFdR2ZdUk90Vg=="
-);
 
 export default function RootLayout({ children }) {
   return (
