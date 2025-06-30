@@ -1,7 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Box } from "@mui/material";
+import {
+  Box,
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Stack,
+} from "@mui/material";
 
 const calculateDurationInMinutes = (start, end) => {
   const durationMs = new Date(end) - new Date(start);
@@ -25,24 +33,43 @@ const formatFullDateTime = (date) => {
 
 export default function ProductionGanttPage() {
   const [tasks, setTasks] = useState([]);
+  const [scenarioList, setScenarioList] = useState([]);
+  const [scenario, setScenario] = useState("");
 
+  // 시나리오 목록 가져오기
   useEffect(() => {
-    fetch("http://localhost:8080/api/simulation/production-gantt/9")
+    fetch("http://localhost:8080/api/simulation/execution-manage")
       .then((res) => res.json())
       .then((data) => {
+        console.log("시나리오 목록:", data);
+        setScenarioList(data);
+        if (data.length > 0) setScenario(data[0].scenarioId);
+      })
+      .catch((err) => console.error("시나리오 목록 로딩 실패:", err));
+  }, []);
+
+  const handleSearch = () => {
+    if (!scenario) return;
+
+    fetch(`http://localhost:8080/api/simulation/production-gantt/${scenario}`)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("간트 데이터:", data);
+
         const formatted = data
-          .filter((item) => item.StartDate && item.EndDate)
-          .map((item) => ({
-            id: item.TaskID,
-            text: item.TaskName,
-            start_date: new Date(item.StartDate),
-            end_date: new Date(item.EndDate),
-            scenarioId: "S010000",
+          .filter((item) => item.startDate && item.endDate)
+          .map((item, i) => ({
+            id: item.taskId ?? i + 1,
+            text: item.taskName ?? `작업-${i + 1}`,
+            start_date: new Date(item.startDate),
+            end_date: new Date(item.endDate),
+            scenarioId: scenario,
           }));
+
         setTasks(formatted);
       })
       .catch((err) => console.error("간트 데이터 로딩 실패:", err));
-  }, []);
+  };
 
   useEffect(() => {
     const initGantt = async () => {
@@ -65,18 +92,17 @@ export default function ProductionGanttPage() {
       };
 
       gantt.config.scales = [
+        {
+          unit: "day",
+          step: 1,
+          format: (date) => gantt.date.date_to_str("%Y년 %m월 %d일")(date),
+        },
         { unit: "hour", step: 1, format: "%H:%i" },
         { unit: "minute", step: 5, format: "%H:%i" },
       ];
 
       gantt.config.columns = [
-        {
-          name: "text",
-          label: "작업명",
-          tree: true,
-          width: 160,
-          resize: true,
-        },
+        { name: "text", label: "작업명", tree: true, width: 160 },
         {
           name: "start_date",
           label: "시작",
@@ -96,10 +122,11 @@ export default function ProductionGanttPage() {
       gantt.config.row_height = 48;
       gantt.config.bar_height = 38;
       gantt.config.date_format = "%Y-%m-%d %H:%i";
-      gantt.config.start_date = new Date("2025-06-23T09:00:00");
-      gantt.config.end_date = new Date("2025-06-23T12:00:00");
       gantt.config.grid_resize = true;
       gantt.config.autosize = "y";
+
+      gantt.config.start_date = new Date("2025-06-23T09:00:00");
+      gantt.config.end_date = new Date("2025-06-23T11:00:00");
 
       gantt.init("gantt_here");
 
@@ -115,14 +142,41 @@ export default function ProductionGanttPage() {
   }, [tasks]);
 
   return (
-    <Box
-      sx={{
-        flexGrow: 1,
-        height: "calc(100vh - 64px)",
-        overflow: "hidden",
-      }}
-    >
-      <div id="gantt_here" style={{ width: "100%", height: "100%" }}></div>
+    <Box sx={{ flexGrow: 1, height: "100%", overflow: "hidden" }}>
+      <Box
+        sx={{
+          px: 3,
+          py: 2,
+          borderBottom: "1px solid #ddd",
+          backgroundColor: "#f9f9f9",
+        }}
+      >
+        <Stack direction="row" spacing={2} alignItems="center">
+          <FormControl size="small">
+            <InputLabel>시나리오</InputLabel>
+            <Select
+              value={scenario}
+              onChange={(e) => setScenario(e.target.value)}
+              label="시나리오"
+              sx={{ minWidth: 140 }}
+            >
+              {scenarioList.map((item, idx) => (
+                <MenuItem key={idx} value={item.scenarioId}>
+                  {item.scenarioName}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          <Button variant="contained" onClick={handleSearch}>
+            검색
+          </Button>
+        </Stack>
+      </Box>
+
+      <Box sx={{ height: "calc(100vh - 128px)", overflow: "hidden" }}>
+        <div id="gantt_here" style={{ width: "100%", height: "100%" }}></div>
+      </Box>
     </Box>
   );
 }
