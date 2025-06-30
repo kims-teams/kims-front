@@ -38,7 +38,7 @@ export default function ProductionGanttPage() {
 
   // 시나리오 목록 가져오기
   useEffect(() => {
-    fetch("http://localhost:8080/api/simulation/execution-manage")
+    fetch("http://localhost:8080/api/scenario")
       .then((res) => res.json())
       .then((data) => {
         console.log("시나리오 목록:", data);
@@ -51,18 +51,20 @@ export default function ProductionGanttPage() {
   const handleSearch = () => {
     if (!scenario) return;
 
+    console.log(scenario)
+
     fetch(`http://localhost:8080/api/simulation/production-gantt/${scenario}`)
       .then((res) => res.json())
       .then((data) => {
         console.log("간트 데이터:", data);
 
         const formatted = data
-          .filter((item) => item.startDate && item.endDate)
+          .filter((item) => item.StartDate && item.EndDate)
           .map((item, i) => ({
-            id: item.taskId ?? i + 1,
-            text: item.taskName ?? `작업-${i + 1}`,
-            start_date: new Date(item.startDate),
-            end_date: new Date(item.endDate),
+            id: item.TaskId ?? i + 1,
+            text: item.TaskName ?? `작업-${i + 1}`,
+            start_date: new Date(item.StartDate),
+            end_date: new Date(item.EndDate),
             scenarioId: scenario,
           }));
 
@@ -161,8 +163,8 @@ export default function ProductionGanttPage() {
               sx={{ minWidth: 140 }}
             >
               {scenarioList.map((item, idx) => (
-                <MenuItem key={idx} value={item.scenarioId}>
-                  {item.scenarioName}
+                <MenuItem key={idx} value={item.id}>
+                  {item.name}
                 </MenuItem>
               ))}
             </Select>
