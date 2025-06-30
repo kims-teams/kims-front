@@ -50,7 +50,6 @@ export default function Sidebar() {
   const handleNav = (label) => {
     const routeMap = {
       "시나리오 관리": "/user/menu/scenario",
-      "실행 관리": "/user/menu/experiment",
       "실행 결과": "/user/menu/result",
       "생산 계획 간트": "/user/menu/production-gantt",
       "사용자 관리": "/user/menu/management",
@@ -108,9 +107,6 @@ export default function Sidebar() {
             <List disablePadding>
               <ListItemButton onClick={() => handleNav("시나리오 관리")}>
                 <ListItemText primary="시나리오 관리" />
-              </ListItemButton>
-              <ListItemButton onClick={() => handleNav("실행 관리")}>
-                <ListItemText primary="실행 관리" />
               </ListItemButton>
               <ListItemButton onClick={() => handleNav("실행 결과")}>
                 <ListItemText primary="실행 결과" />
