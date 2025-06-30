@@ -41,7 +41,7 @@ export default function ProductionGanttPage() {
       .then((res) => res.json())
       .then((data) => {
         setScenarioList(data);
-        if (data.length > 0) setScenario(data[0].scenarioId); // key가 scenarioId인 경우 유지
+        if (data.length > 0) setScenario(data[0].scenarioId); 
       })
       .catch((err) => console.error("시나리오 목록 로딩 실패:", err));
   }, []);
