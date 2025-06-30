@@ -36,14 +36,12 @@ export default function ProductionGanttPage() {
   const [scenarioList, setScenarioList] = useState([]);
   const [scenario, setScenario] = useState("");
 
-  // 시나리오 목록 가져오기
   useEffect(() => {
     fetch("http://localhost:8080/api/scenario")
       .then((res) => res.json())
       .then((data) => {
-        console.log("시나리오 목록:", data);
         setScenarioList(data);
-        if (data.length > 0) setScenario(data[0].scenarioId);
+        if (data.length > 0) setScenario(data[0].scenarioId); // key가 scenarioId인 경우 유지
       })
       .catch((err) => console.error("시나리오 목록 로딩 실패:", err));
   }, []);
@@ -51,13 +49,9 @@ export default function ProductionGanttPage() {
   const handleSearch = () => {
     if (!scenario) return;
 
-    console.log(scenario)
-
     fetch(`http://localhost:8080/api/simulation/production-gantt/${scenario}`)
       .then((res) => res.json())
       .then((data) => {
-        console.log("간트 데이터:", data);
-
         const formatted = data
           .filter((item) => item.StartDate && item.EndDate)
           .map((item, i) => ({
@@ -77,7 +71,6 @@ export default function ProductionGanttPage() {
     const initGantt = async () => {
       const ganttLib = await import("dhtmlx-gantt");
       await import("dhtmlx-gantt/codebase/dhtmlxgantt.css");
-
       const gantt = ganttLib.default;
 
       gantt.plugins({ tooltip: true });
@@ -127,12 +120,15 @@ export default function ProductionGanttPage() {
       gantt.config.grid_resize = true;
       gantt.config.autosize = "y";
 
-      gantt.config.start_date = new Date("2025-06-23T09:00:00");
-      gantt.config.end_date = new Date("2025-06-23T11:00:00");
-
       gantt.init("gantt_here");
 
       if (tasks.length > 0) {
+        const firstStart = tasks[0].start_date;
+        const lastEnd = tasks[tasks.length - 1].end_date;
+
+        gantt.config.start_date = new Date(firstStart);
+        gantt.config.end_date = new Date(lastEnd);
+
         gantt.parse({ data: tasks });
         setTimeout(() => gantt.setSizes(), 0);
       }
