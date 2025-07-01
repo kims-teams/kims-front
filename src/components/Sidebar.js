@@ -50,12 +50,11 @@ export default function Sidebar() {
   const handleNav = (label) => {
     const routeMap = {
       "시나리오 관리": "/user/menu/scenario",
-      "실행 관리": "/user/menu/experiment",
       "실행 결과": "/user/menu/result",
-      "자원 운영 간트": "/user/menu/resource-gantt",
       "생산 계획 간트": "/user/menu/production-gantt",
       "사용자 관리": "/user/menu/management",
       "사내 게시판": "/user/menu/community",
+      "수요예측" : "/user/menu/forecast",
     };
     if (routeMap[label]) {
       router.push(routeMap[label]);
@@ -110,9 +109,6 @@ export default function Sidebar() {
               <ListItemButton onClick={() => handleNav("시나리오 관리")}>
                 <ListItemText primary="시나리오 관리" />
               </ListItemButton>
-              <ListItemButton onClick={() => handleNav("실행 관리")}>
-                <ListItemText primary="실행 관리" />
-              </ListItemButton>
               <ListItemButton onClick={() => handleNav("실행 결과")}>
                 <ListItemText primary="실행 결과" />
               </ListItemButton>
@@ -128,9 +124,6 @@ export default function Sidebar() {
         <Collapse in={open.analysis}>
           <Box sx={{ pl: 2, borderLeft: "2px solid #ccc", ml: 1 }}>
             <List disablePadding>
-              <ListItemButton onClick={() => handleNav("자원 운영 간트")}>
-                <ListItemText primary="자원 운영 간트" />
-              </ListItemButton>
               <ListItemButton onClick={() => handleNav("생산 계획 간트")}>
                 <ListItemText primary="생산 계획 간트" />
               </ListItemButton>
@@ -147,6 +140,20 @@ export default function Sidebar() {
             <List disablePadding>
               <ListItemButton onClick={() => handleNav("사내 게시판")}>
                 <ListItemText primary="사내 게시판" />
+              </ListItemButton>
+            </List>
+          </Box>
+        </Collapse>
+                <ListItemButton onClick={() => toggle("community")}>
+          <ForumIcon fontSize="small" sx={{ mr: 1 }} />
+          <ListItemText primary="수요예측" />
+          {open.community ? <ExpandLess /> : <ExpandMore />}
+        </ListItemButton>
+        <Collapse in={open.community}>
+          <Box sx={{ pl: 2, borderLeft: "2px solid #ccc", ml: 1 }}>
+            <List disablePadding>
+              <ListItemButton onClick={() => handleNav("수요예측")}>
+                <ListItemText primary="수요예측" />
               </ListItemButton>
             </List>
           </Box>

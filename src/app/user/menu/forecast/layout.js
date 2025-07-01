@@ -4,7 +4,7 @@ import { Box } from "@mui/material";
 import HeaderBar from "../../../../components/HeaderBar";
 import Sidebar from "../../../../components/Sidebar";
 
-export default function ResourceLayout({ children }) {
+export default function ProductionLayout({ children }) {
   return (
     <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <Box sx={{ display: "flex", flex: 1 }}>
