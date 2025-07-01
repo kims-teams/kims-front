@@ -7,40 +7,45 @@ export default function Forecast() {
 
     const [prophetChart, setProphetChart] = useState([]);
     const [arimaChart, setArimaChart] = useState([]);
+    const [file, setFile] = useState(null);
 
-    useEffect(() => {
-        const fetchArima = async () => {
-            try {
-                const response = await fetch("http://127.0.0.1:5000/api/forecast/arima", {
-                    method: "POST",
-                });
-                if (!response.ok) throw new Error("오류 ㅋ");
-                const data = await response.json();
-                setArimaChart(data);
-                console.log("ARIMA:", data);
-            } catch (error) {
-                console.log("arima error:", error.message);
-            }
-        };
-        fetchArima();
-    }, []);
+    const handleFileChange = (e) => {
+        setFile(e.target.files[0]);
+    };
 
-    useEffect(() => {
-        const fetchProphet = async () => {
-            try {
-                const response = await fetch("http://127.0.0.1:5000/api/forecast/prophet", {
-                    method: "POST",
-                });
-                if (!response.ok) throw new Error("오류 ㅋ");
-                const data = await response.json();
-                setProphetChart(data);
-                console.log("PROPHET:", data);
-            } catch (error) {
-                console.log("prophet error:", error.message);
-            }
-        };
-        fetchProphet();
-    }, []);
+    const handleUpload = async () => {
+        if (!file) {
+            alert("파일을 선택해주세요!");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+            const response = await fetch("http://127.0.0.1:5000/api/forecast/arima", {
+                method: "POST",
+                body: formData,
+            });
+            if (!response.ok) throw new Error("ARIMA 오류");
+            const data = await response.json();
+            setArimaChart(data);
+        } catch (error) {
+            alert("ARIMA 에러: " + error.message);
+        }
+
+        try {
+            const response = await fetch("http://127.0.0.1:5000/api/forecast/prophet", {
+                method: "POST",
+                body: formData,
+            });
+            if (!response.ok) throw new Error("PROPHET 오류");
+            const data = await response.json();
+            setProphetChart(data);
+        } catch (error) {
+            alert("PROPHET 에러: " + error.message);
+        }
+    };
 
     function mergeByDate(arr1, arr2, name1, name2) {
         const map = {};
@@ -58,19 +63,23 @@ export default function Forecast() {
     const comparisonData = mergeByDate(arimaChart, prophetChart, "ARIMA", "PROPHET");
 
     return(
-        <>
-        <div>ARIMA & PROPHET</div>
-<ResponsiveContainer width="100%" height={400}>
-  <LineChart data={comparisonData}>
-    <CartesianGrid strokeDasharray="3" />
-    <XAxis dataKey="date" />
-    <YAxis />
-    <Tooltip />
-    <Legend />
-    <Line type="monotone" dataKey="ARIMA" name="ARIMA" stroke="#8884d8" dot={false} />
-    <Line type="monotone" dataKey="PROPHET" name="PROPHET" stroke="#000000" dot={false} />
-  </LineChart>
-</ResponsiveContainer>
-        </>
+        <div style={{maxWidth: 800, margin: "0 auto"}}>
+            <div style={{marginBottom: 16}}>
+                <input type="file" accept=".xlsx,.xls,.csv" onChange={handleFileChange} />
+                <button onClick={handleUpload} style={{marginLeft: 8}}>업로드 및 예측</button>
+            </div>
+            <div style={{marginBottom: 12, fontWeight: 600}}>ARIMA & PROPHET 예측 비교</div>
+            <ResponsiveContainer width="100%" height={400}>
+                <LineChart data={comparisonData}>
+                    <CartesianGrid strokeDasharray="3" />
+                    <XAxis dataKey="date" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Line type="monotone" dataKey="ARIMA" name="ARIMA" stroke="#8884d8" dot={false} />
+                    <Line type="monotone" dataKey="PROPHET" name="PROPHET" stroke="#000000" dot={false} />
+                </LineChart>
+            </ResponsiveContainer>
+        </div>
     );
 };
