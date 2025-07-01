@@ -50,7 +50,7 @@ export default function LoginPage() {
       onSubmit={handleLogin}
       sx={{
         minHeight: "100vh",
-        bgcolor: "#f5f5f5",
+        bgcolor: "#ffffff",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
@@ -64,8 +64,8 @@ export default function LoginPage() {
           width: "100%",
           maxWidth: 400,
           borderRadius: "12px",
-          boxShadow: "0px 8px 30px rgba(0,0,0,0.1)",
-          backgroundColor: "#fff",
+          boxShadow: "0px 8px 30px rgba(0,0,0,0.05)",
+          backgroundColor: "#ffffff",
           animation: "fadeSlideIn 0.5s ease",
           "@keyframes fadeSlideIn": {
             from: { opacity: 0, transform: "translateY(-20px)" },
@@ -89,7 +89,10 @@ export default function LoginPage() {
           fullWidth
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          sx={{ mb: 2 }}
+          sx={{
+            mb: 2,
+            backgroundColor: "#ffffff",
+          }}
         />
 
         <TextField
@@ -98,7 +101,10 @@ export default function LoginPage() {
           fullWidth
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          sx={{ mb: 1 }}
+          sx={{
+            mb: 1,
+            backgroundColor: "#ffffff",
+          }}
         />
 
         {errorMessage && (
@@ -112,13 +118,13 @@ export default function LoginPage() {
           fullWidth
           type="submit"
           sx={{
-            bgcolor: "#333",
+            bgcolor: "#1B2A40",
             color: "#fff",
             fontWeight: 600,
             py: 1.2,
             borderRadius: "6px",
             "&:hover": {
-              bgcolor: "#222",
+              bgcolor: "#243652",
               transform: "scale(1.01)",
               transition: "all 0.2s ease-in-out",
             },
