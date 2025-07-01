@@ -77,8 +77,8 @@ export default function LoginPage() {
           <Image
             src="/logo.png"
             alt="KIMSTEAMS Logo"
-            width={280}
-            height={170}
+            width={320}
+            height={100}
             priority
           />
         </Box>

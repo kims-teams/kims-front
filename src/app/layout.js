@@ -3,6 +3,11 @@
 import "./globals.css";
 import HeaderBar from "../components/HeaderBar";
 import { Box } from "@mui/material";
+import { registerLicense } from "@syncfusion/ej2-base";
+
+registerLicense(
+  "Ngo9BigBOggjHTQxAR8/V1NNaF1cWWhOYVFpR2Nbek5zflZCallZVAciSV9jS3tTcEdmWXxddHFdR2ZdUk90Vg=="
+);
 
 export default function RootLayout({ children }) {
   return (
