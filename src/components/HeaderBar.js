@@ -41,7 +41,7 @@ export default function HeaderBar() {
       color="default"
       sx={{
         height: 50,
-        bgcolor: "#E8E8E8",
+        bgcolor: "#ffffff", 
         justifyContent: "center",
         px: 2,
         zIndex: 1300,
@@ -60,41 +60,22 @@ export default function HeaderBar() {
 
         <Box sx={{ flexGrow: 1 }} />
 
-        {isLoggedIn ? (
-          <Button
-            variant="outlined"
-            size="small"
-            onClick={handleLogout}
-            sx={{
-              borderColor: "#FFF0C1",
-              color: "#222",
-              backgroundColor: "#FFF9E6",
-              "&:hover": {
-                borderColor: "#FFEBB5",
-                backgroundColor: "#FFF4CC",
-              },
-            }}
-          >
-            로그아웃
-          </Button>
-        ) : (
-          <Button
-            variant="outlined"
-            size="small"
-            onClick={handleLogin}
-            sx={{
-              borderColor: "#FFF0C1",
-              color: "#222",
-              backgroundColor: "#FFF9E6",
-              "&:hover": {
-                borderColor: "#FFEBB5",
-                backgroundColor: "#FFF4CC",
-              },
-            }}
-          >
-            로그인
-          </Button>
-        )}
+        <Button
+          variant="outlined"
+          size="small"
+          onClick={isLoggedIn ? handleLogout : handleLogin}
+          sx={{
+            borderColor: "#1B2A40", 
+            color: "#1B2A40", 
+            backgroundColor: "#ffffff", 
+            "&:hover": {
+              borderColor: "#1B2A40",
+              backgroundColor: "#f4f6f9", 
+            },
+          }}
+        >
+          {isLoggedIn ? "로그아웃" : "로그인"}
+        </Button>
       </Toolbar>
     </AppBar>
   );
