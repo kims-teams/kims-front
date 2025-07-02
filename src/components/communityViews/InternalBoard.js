@@ -60,7 +60,10 @@ export default function InternalBoard() {
       <ListItemText
         primary={
           <Box display="flex" gap={1} alignItems="center">
-            <Typography variant="body2" color="secondary">
+            <Typography
+              variant="body2"
+              sx={{ color: "#1a3d7c", fontWeight: 600 }}
+            >
               [{post.categoryName}]
             </Typography>
             <Typography

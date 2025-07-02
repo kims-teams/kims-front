@@ -38,8 +38,8 @@ export default function CommunityPanel({
             pl: 2,
             pr: 1,
             borderRadius: 2,
-            bgcolor: selectedCategory === "기본" ? "#e6f4ea" : "inherit",
-            color: selectedCategory === "기본" ? "#1e8f4d" : "inherit",
+            bgcolor: selectedCategory === "기본" ? "#e6ecf8" : "inherit",
+            color: selectedCategory === "기본" ? "#1a3d7c" : "inherit",
             fontWeight: selectedCategory === "기본" ? "bold" : "normal",
           }}
         >
@@ -59,8 +59,8 @@ export default function CommunityPanel({
               pl: 2,
               pr: 1,
               borderRadius: 2,
-              bgcolor: selectedCategory === label ? "#e6f4ea" : "inherit",
-              color: selectedCategory === label ? "#1e8f4d" : "inherit",
+              bgcolor: selectedCategory === label ? "#e6ecf8" : "inherit",
+              color: selectedCategory === label ? "#1a3d7c" : "inherit",
               fontWeight: selectedCategory === label ? "bold" : "normal",
             }}
           >
