@@ -18,7 +18,6 @@ export default function Forecast() {
             alert("파일을 선택해주세요!");
             return;
         }
-
         const formData = new FormData();
         formData.append('file', file);
 
