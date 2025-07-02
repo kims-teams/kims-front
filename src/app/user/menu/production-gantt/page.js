@@ -23,7 +23,11 @@ const formatHourMinute = (date) => {
 
 const formatFullDateTime = (date) => {
   const d = new Date(date);
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")} ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
+    d.getDate()
+  ).padStart(2, "0")} ${String(d.getHours()).padStart(2, "0")}:${String(
+    d.getMinutes()
+  ).padStart(2, "0")}`;
 };
 
 export default function ProductionGanttPage() {
@@ -59,7 +63,7 @@ export default function ProductionGanttPage() {
             text: item.TaskName ?? `작업-${i + 1}`,
             start_date: new Date(item.StartDate),
             end_date: new Date(item.EndDate),
-            scenarioId: scenarioId,
+            scenarioName: selectedScenario?.name ?? "",
           }));
         setTasks(formatted);
       })
@@ -72,6 +76,16 @@ export default function ProductionGanttPage() {
       await import("dhtmlx-gantt/codebase/dhtmlxgantt.css");
       const gantt = ganttLib.default;
 
+      const style = document.createElement("style");
+      style.innerHTML = `
+        .gantt_task_line {
+          background-color: #1a3d7c !important;
+          border: 1px solid #1a3d7c !important;
+          border-radius: 4px;
+        }
+      `;
+      document.head.appendChild(style);
+
       gantt.plugins({ tooltip: true });
       gantt.clearAll();
 
@@ -81,7 +95,7 @@ export default function ProductionGanttPage() {
           <b>${task.text}</b><br/>
           ${formatFullDateTime(start)} ~ ${formatFullDateTime(end)}<br/>
           (${duration}분)<br/>
-          <b>시나리오:</b> ${task.scenarioId || "-"}
+           <b>시나리오:</b> ${task.scenarioName || "-"}
         `;
       };
 
@@ -113,11 +127,14 @@ export default function ProductionGanttPage() {
         },
       ];
 
-      gantt.config.row_height = 48;
-      gantt.config.bar_height = 38;
+      gantt.config.row_height = 43;
+      gantt.config.bar_height = 33;
       gantt.config.date_format = "%Y-%m-%d %H:%i";
       gantt.config.grid_resize = true;
       gantt.config.autosize = "y";
+
+      gantt.config.min_column_width = 50;
+      gantt.config.scale_height = 47;
 
       gantt.init("gantt_here");
 
@@ -126,10 +143,15 @@ export default function ProductionGanttPage() {
         const lastEnd = tasks[tasks.length - 1].end_date;
 
         gantt.config.start_date = new Date(firstStart);
-        gantt.config.end_date = new Date(lastEnd);
+        gantt.config.end_date = new Date(lastEnd.getTime() + 5 * 60 * 1000);
 
         gantt.parse({ data: tasks });
-        setTimeout(() => gantt.setSizes(), 0);
+
+        setTimeout(() => {
+          const pos = gantt.getTaskPosition(tasks[0]);
+          gantt.scrollTo(pos.left - 300, null);
+          gantt.setSizes();
+        }, 0);
       }
     };
 
@@ -175,7 +197,7 @@ export default function ProductionGanttPage() {
       <Box
         sx={{
           height: "calc(100vh - 128px)",
-          overflow: "hidden",
+          overflow: "auto",
           position: "relative",
         }}
       >
@@ -193,7 +215,13 @@ export default function ProductionGanttPage() {
             시나리오를 선택해주세요.
           </Box>
         ) : tasks.length > 0 ? (
-          <div id="gantt_here" style={{ width: "100%", height: "100%" }}></div>
+          <div
+            id="gantt_here"
+            style={{
+              minWidth: "100%",
+              height: "100%",
+            }}
+          ></div>
         ) : null}
       </Box>
     </Box>
