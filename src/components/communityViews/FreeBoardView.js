@@ -15,6 +15,10 @@ import {
   TextField,
   Button,
   Stack,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import useAuthRedirect from "hooks/useAuthRedirect";
 
@@ -24,11 +28,10 @@ export default function FreeBoardView() {
   const [search, setSearch] = useState("");
   const [posts, setPosts] = useState([]);
   const [selectedPost, setSelectedPost] = useState(null);
-  const [form, setForm] = useState({ title: "", content: "" });
   const [openDialog, setOpenDialog] = useState(false);
-  const [targetPost, setTargetPost] = useState(null);
+  const [form, setForm] = useState({ title: "", content: "" });
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-
+  const [targetPost, setTargetPost] = useState(null);
   const categoryName = "자유게시판";
 
   const router = useRouter();
@@ -36,27 +39,110 @@ export default function FreeBoardView() {
     typeof window !== "undefined" ? localStorage.getItem("token") : null;
   const userId =
     typeof window !== "undefined" ? localStorage.getItem("userId") : null;
-
   const fetchPosts = async () => {
     try {
       const res = await fetch(
-        `http://localhost:8080/api/post/post-category/${categoryName}`
+        `http://localhost:8080/api/post/post-category/자유게시판`
       );
       const data = await res.json();
       setPosts(data);
+      console.log("data:", data);
     } catch (err) {
       console.error("게시글 불러오기 실패", err);
     }
   };
 
   useEffect(() => {
-    if (token) fetchPosts();
+    if (token) {
+      fetchPosts();
+    }
   }, [token]);
 
   const formatCreatedAt = (dateString) => {
     if (!dateString) return "-";
     const created = new Date(dateString);
-    return created.toISOString().split("T")[0];
+    const now = new Date();
+    const isToday =
+      created.getFullYear() === now.getFullYear() &&
+      created.getMonth() === now.getMonth() &&
+      created.getDate() === now.getDate();
+
+    return isToday
+      ? created.toLocaleTimeString("ko-KR", {
+          hour: "2-digit",
+          minute: "2-digit",
+        })
+      : created.toISOString().split("T")[0];
+  };
+
+  const handleCreate = async () => {
+    const res = await fetch(
+      "http://localhost:8080/api/post?email=" + localStorage.getItem("email"),
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          title: form.title,
+          content: form.content,
+          categoryName: categoryName,
+        }),
+      }
+    );
+    if (res.ok) {
+      setForm({ title: "", content: "" });
+      setOpenDialog(false);
+      fetchPosts();
+    }
+  };
+
+  const handleUpdate = async () => {
+    if (!selectedPost) return;
+
+    const res = await fetch(
+      `http://localhost:8080/api/post/${selectedPost.id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          title: form.title,
+          content: form.content,
+        }),
+      }
+    );
+
+    if (res.ok) {
+      setForm({ title: "", content: "" });
+      setSelectedPost(null);
+      setOpenDialog(false);
+      fetchPosts();
+    } else {
+      alert("수정에 실패했습니다.");
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!targetPost) return;
+    console.log(targetPost.id);
+    const res = await fetch(`http://localhost:8080/api/post/${targetPost.id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (res.ok) {
+      fetchPosts();
+      setOpenDeleteDialog(false);
+      setTargetPost(null);
+    } else {
+      alert("삭제에 실패했습니다.");
+    }
   };
 
   return (
@@ -301,13 +387,9 @@ export default function FreeBoardView() {
       >
         <DialogTitle
           sx={{
-            borderColor: "#1a3d7c",
-            color: "#1a3d7c",
-            fontWeight: 600,
-            "&:hover": {
-              backgroundColor: "#f0f4fa",
-              borderColor: "#1a3d7c",
-            },
+            fontWeight: "bold",
+            fontSize: "1.2rem",
+            pb: 1,
           }}
         >
           🗑️ 게시글 삭제 확인
