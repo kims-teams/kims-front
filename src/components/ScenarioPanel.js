@@ -51,27 +51,13 @@ export default function ScenarioPanel() {
     try {
       const res = await fetch(
         "http://127.0.0.1:8080/api/scenario/" + scenarioName,
-        {
-          method: "POST",
-        }
+        { method: "POST" }
       );
 
       if (!res.ok) throw new Error("시나리오 생성 실패");
 
       const result = await res.json();
-
-      const scenarioWithData = {
-        scenario: {
-          id: result.scenario.id,
-          name: result.scenario.name,
-          bop: result.bop,
-          config: result.config,
-          resource: result.resource,
-          target: result.target,
-        },
-      };
-
-      addScenario(scenarioWithData);
+      addScenario(result); // 변경된 부분
       setScenarioName("");
       setOpenDialog(false);
     } catch (err) {
@@ -88,7 +74,7 @@ export default function ScenarioPanel() {
         const data = await res.json();
         setScenarioList(data);
         if (data.length > 0) {
-        setSelectedScenario(data[0]);
+          setSelectedScenario(data[0]);
         }
       } catch (err) {
         console.error("시나리오 목록 불러오기 실패:", err);
@@ -171,41 +157,39 @@ export default function ScenarioPanel() {
                 s.name.toLowerCase().includes(searchTerm.toLowerCase())
               )
               .map((s, idx) => (
-                
-
-<ListItem key={idx} disablePadding>
-  <ListItemButton
-    selected={selectedScenario?.id === s.id}
-    onClick={() => {
-      setSelectedScenario(s);
-      console.log(selectedScenario);
-    }}
-    sx={{
-      px: 1,
-      mb: 0.5,
-      borderRadius: 1,
-      transition: "box-shadow 0.2s ease-in-out",
-      ...(selectedScenario?.id === s.id && {
-        backgroundColor: "#d6d6d6",
-        "& .MuiListItemText-primary": {
-          fontWeight: "bold",
-          color: "#0a1f44",
-        },
-      }),
-      "&:hover": {
-        backgroundColor: "#f9f9f9",
-        boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
-      },
-    }}
-  >
-    <ListItemText primary={s.name} />
-    <ListItemSecondaryAction>
-      <IconButton size="small">
-        <MoreVertIcon fontSize="small" />
-      </IconButton>
-    </ListItemSecondaryAction>
-  </ListItemButton>
-</ListItem>
+                <ListItem key={idx} disablePadding>
+                  <ListItemButton
+                    selected={selectedScenario?.id === s.id}
+                    onClick={() => {
+                      setSelectedScenario(s);
+                      console.log(selectedScenario);
+                    }}
+                    sx={{
+                      px: 1,
+                      mb: 0.5,
+                      borderRadius: 1,
+                      transition: "box-shadow 0.2s ease-in-out",
+                      ...(selectedScenario?.id === s.id && {
+                        backgroundColor: "#d6d6d6",
+                        "& .MuiListItemText-primary": {
+                          fontWeight: "bold",
+                          color: "#0a1f44",
+                        },
+                      }),
+                      "&:hover": {
+                        backgroundColor: "#f9f9f9",
+                        boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
+                      },
+                    }}
+                  >
+                    <ListItemText primary={s.name} />
+                    <ListItemSecondaryAction>
+                      <IconButton size="small">
+                        <MoreVertIcon fontSize="small" />
+                      </IconButton>
+                    </ListItemSecondaryAction>
+                  </ListItemButton>
+                </ListItem>
               ))}
           </List>
 

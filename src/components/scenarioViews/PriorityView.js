@@ -147,10 +147,33 @@ export default function PriorityView() {
       )}
 
       <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
-        <Button variant="contained" onClick={handleOpenDialog}>
+        <Button
+          variant="contained"
+          onClick={handleOpenDialog}
+          sx={{
+            bgcolor: "#1a3d7c",
+            color: "#fff",
+            "&:hover": {
+              bgcolor: "#162f5d",
+            },
+          }}
+        >
           데이터 가져오기
         </Button>
-        <Button variant="outlined" onClick={handleSave}>
+        <Button
+          variant="outlined"
+          onClick={handleSave}
+          sx={{
+            color: "#1a3d7c",
+            borderColor: "#1a3d7c",
+            backgroundColor: "transparent",
+            "&:hover": {
+              backgroundColor: "#f0f4fa",
+              borderColor: "#162f5d",
+              color: "#162f5d",
+            },
+          }}
+        >
           저장
         </Button>
       </Stack>
