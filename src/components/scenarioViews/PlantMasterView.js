@@ -19,7 +19,7 @@ import { useScenarioStore } from "../../hooks/useScenarioStore";
 const columns = [
   { field: "id", headerName: "순번", width: 100 },
   { field: "siteId", headerName: "플랜트", width: 140 },
-  { field: "siteName", headerName: "사이트명", width: 140 },
+  { field: "siteName", headerName: "사이트명", width: 180 },
 ];
 
 export default function PlantMasterView() {

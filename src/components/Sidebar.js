@@ -18,6 +18,8 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import EngineeringIcon from "@mui/icons-material/Engineering";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import ForumIcon from "@mui/icons-material/Forum";
+import ShowChartIcon from "@mui/icons-material/ShowChart";
+
 import useCommunityViewStore from "../hooks/useCommunityViewStore";
 import { useRouter, usePathname } from "next/navigation";
 
@@ -26,6 +28,7 @@ export default function Sidebar() {
     engine: true,
     analysis: true,
     community: true,
+    forecast: true,
     ADMIN: true,
   });
 
@@ -164,6 +167,18 @@ export default function Sidebar() {
               >
                 <ListItemText primary="사내 게시판" />
               </ListItemButton>
+            </List>
+          </Box>
+        </Collapse>
+
+        <ListItemButton onClick={() => toggle("forecast")}>
+          <ShowChartIcon fontSize="small" sx={{ mr: 1 }} />
+          <ListItemText primary="수요예측" />
+          {open.forecast ? <ExpandLess /> : <ExpandMore />}
+        </ListItemButton>
+        <Collapse in={open.forecast}>
+          <Box sx={{ pl: 2, borderLeft: "2px solid #ccc", ml: 1 }}>
+            <List disablePadding>
               <ListItemButton
                 selected={selectedMenu === "수요예측"}
                 onClick={() => handleNav("수요예측")}

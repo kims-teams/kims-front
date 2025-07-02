@@ -13,20 +13,20 @@ import {
   IconButton,
   Box,
 } from "@mui/material";
+
 import SearchIcon from "@mui/icons-material/Search";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+
 import { useState } from "react";
 
-const simulationItems = [
-  "작업도구 사용 내역",
-  "작업장별 생산 계획",
-];
+const simulationItems = ["작업도구 사용 내역", "작업장별 생산 계획"];
 
 export default function RightSidebar({ onSelect, collapsed, setCollapsed }) {
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedItem, setSelectedItem] = useState("");
   const [openGroup, setOpenGroup] = useState({
     output: true,
     simulation: true,
@@ -56,6 +56,7 @@ export default function RightSidebar({ onSelect, collapsed, setCollapsed }) {
         overflow: "hidden",
         alignItems: collapsed ? "center" : "stretch",
         position: "relative",
+        bgcolor: "#fff",
       }}
     >
       <IconButton
@@ -119,7 +120,10 @@ export default function RightSidebar({ onSelect, collapsed, setCollapsed }) {
             >
               <ListItemText
                 primary="Output Data"
-                primaryTypographyProps={{ fontSize: "13px" }}
+                primaryTypographyProps={{
+                  fontSize: "13px",
+                  fontWeight: "bold",
+                }}
               />
               {openGroup.output ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
@@ -127,12 +131,15 @@ export default function RightSidebar({ onSelect, collapsed, setCollapsed }) {
             <Collapse in={openGroup.output} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
                 <ListItemButton
-                  sx={{ pl: 2 }}
                   onClick={() => toggleGroup("simulation")}
+                  sx={{ pl: 2 }}
                 >
                   <ListItemText
                     primary="Simulation"
-                    primaryTypographyProps={{ fontSize: "13px" }}
+                    primaryTypographyProps={{
+                      fontSize: "13px",
+                      fontWeight: "bold",
+                    }}
                   />
                   {openGroup.simulation ? <ExpandLess /> : <ExpandMore />}
                 </ListItemButton>
@@ -146,8 +153,27 @@ export default function RightSidebar({ onSelect, collapsed, setCollapsed }) {
                     {filteredItems.map((item, idx) => (
                       <ListItem key={idx} disablePadding>
                         <ListItemButton
-                          sx={{ pl: 4 }}
-                          onClick={() => onSelect?.(item)}
+                          selected={selectedItem === item}
+                          onClick={() => {
+                            setSelectedItem(item);
+                            onSelect?.(item);
+                          }}
+                          sx={{
+                            pl: 4,
+                            py: 0.5,
+                            my: 0.25,
+                            borderRadius: 1,
+                            ...(selectedItem === item && {
+                              backgroundColor: "#e0e0e0",
+                              "& .MuiListItemText-primary": {
+                                fontWeight: "bold",
+                                color: "#1a237e",
+                              },
+                            }),
+                            "&:hover": {
+                              backgroundColor: "#f5f5f5",
+                            },
+                          }}
                         >
                           <ListItemText
                             primary={item}
@@ -160,15 +186,6 @@ export default function RightSidebar({ onSelect, collapsed, setCollapsed }) {
                 </Collapse>
               </List>
             </Collapse>
-
-            <ListItem disablePadding>
-              <ListItemButton onClick={() => onSelect?.("TaskAct")}>
-                <ListItemText
-                  primary="TaskAct"
-                  primaryTypographyProps={{ fontSize: "12px" }}
-                />
-              </ListItemButton>
-            </ListItem>
           </List>
         </>
       )}

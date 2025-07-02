@@ -18,7 +18,7 @@ import { useScenarioStore } from "../../hooks/useScenarioStore";
 
 const columns = [
   { field: "id", headerName: "순번", width: 80 },
-  { field: "partId", headerName: "품목코드", width: 130 },
+  { field: "partId", headerName: "품목코드", width: 180 },
   { field: "partType", headerName: "Part유형", width: 130 },
   { field: "routingId", headerName: "라우팅 코드", width: 130 },
   { field: "partName", headerName: "품목명", width: 150 },
