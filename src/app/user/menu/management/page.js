@@ -8,6 +8,7 @@ import {
   TextField,
   InputAdornment,
   Tooltip,
+  Stack,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import SearchIcon from "@mui/icons-material/Search";
@@ -87,6 +88,7 @@ export default function Management() {
         alert("등록 실패");
       });
   };
+
   const handleUpdateUser = (savedUser) => {
     setUsers((prev) =>
       prev.map((user) =>
@@ -165,21 +167,32 @@ export default function Management() {
   return (
     <Box sx={{ p: 2 }}>
       <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
-        <TextField
-          variant="outlined"
-          size="small"
-          placeholder="사용자 검색"
-          sx={{ width: 300 }}
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon fontSize="small" />
-              </InputAdornment>
-            ),
-          }}
-        />
+        <Stack direction="row" spacing={1}>
+          <TextField
+            variant="outlined"
+            size="small"
+            placeholder="사용자 검색"
+            sx={{ width: 300 }}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon fontSize="small" />
+                </InputAdornment>
+              ),
+            }}
+          />
+          <Button
+            variant="outlined"
+            size="small"
+            onClick={() => {
+              console.log("검색:", search);
+            }}
+          >
+            검색
+          </Button>
+        </Stack>
         <Button
           variant="contained"
           size="small"
@@ -188,8 +201,7 @@ export default function Management() {
           + 사원 추가
         </Button>
       </Box>
-
-      <Box sx={{ height: 550 }}>
+      <Box sx={{ height: 785, width: "100%" }}>
         <DataGrid
           rows={rows}
           columns={columns}
