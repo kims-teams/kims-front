@@ -15,13 +15,12 @@ import {
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useScenarioStore } from "../../hooks/useScenarioStore";
-
 const columns = [
   { field: "id", headerName: "순번", width: 100 },
   { field: "routingId", headerName: "라우팅코드", width: 140 },
   { field: "operationId", headerName: "공정 코드", width: 140 },
   { field: "operationName", headerName: "공정 명", width: 140 },
-  { field: "operaionSeq", headerName: "공정 순서", width: 140 },
+  { field: "operationSeq", headerName: "공정 순서", width: 140 },
   { field: "operationType", headerName: "공정 유형", width: 140 },
 ];
 

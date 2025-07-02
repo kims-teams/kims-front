@@ -21,7 +21,7 @@ const columns = [
   { field: "routingId", headerName: "Routing코드", width: 140 },
   { field: "partId", headerName: "품목코드", width: 140 },
   { field: "operationId", headerName: "공정 코드", width: 140 },
-  { field: "routing_group", headerName: "Routing그룹", width: 140 },
+  { field: "routingGroup", headerName: "Routing그룹", width: 140 },
   { field: "workcenterId", headerName: "작업장코드", width: 140 },
   { field: "tactTime", headerName: "생산 간격", width: 140 },
   { field: "tactTimeUom", headerName: "생산 간격 단위", width: 140 },
@@ -100,7 +100,6 @@ export default function WorkcenterMapView() {
       setMessageType("error");
     }
   };
-
 
   const handleSave = async () => {
     const scenarioId = selectedScenario?.id;

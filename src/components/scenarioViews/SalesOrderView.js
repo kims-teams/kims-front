@@ -22,8 +22,8 @@ const columns = [
   { field: "partId", headerName: "품목코드", width: 140 },
   { field: "partName", headerName: "품목명", width: 140 },
   { field: "dueDate", headerName: "납기일", width: 140 },
-  { field: "demandQty", headerName: "주문수량", width: 140 },
-  { field: "headerCreationDate", headerName: "오더생성일(헤더)", width: 140 },
+  { field: "demandQty", headerName: "주문수량", width: 100 },
+  { field: "headerCreationDate", headerName: "오더생성일(헤더)", width: 230 },
 ];
 
 export default function SalesOrderView() {

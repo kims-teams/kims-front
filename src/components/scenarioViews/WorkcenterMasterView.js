@@ -21,7 +21,6 @@ const columns = [
   { field: "workcenterId", headerName: "작업장코드", width: 140 },
   { field: "workcenterName", headerName: "호기명", width: 140 },
   { field: "workcenterGroup", headerName: "호기그룹", width: 140 },
-  { field: "factorId", headerName: "우선순위 그룹", width: 140 },
   { field: "workcenterState", headerName: "호기상태", width: 140 },
   { field: "automation", headerName: "자동화 장비", width: 140 },
 ];

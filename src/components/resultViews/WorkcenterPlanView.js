@@ -15,40 +15,41 @@ const columns = [
 ];
 
 export default function UnusedWipView() {
-    const [data, setData] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const { selectedScenario } = useScenarioStore();
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const { selectedScenario } = useScenarioStore();
 
-    useEffect(() => {
-
-      if(!selectedScenario) return;
+  useEffect(() => {
+    if (!selectedScenario) return;
 
     const token = localStorage.getItem("token");
-      fetch(`http://localhost:8080/api/simulation/tool-usage?scenario-id=${selectedScenario.id}`, {
+    fetch(
+      `http://localhost:8080/api/simulation/workcenter-usage?scenario-id=${selectedScenario.id}`,
+      {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+      }
+    )
+      .then((res) => {
+        if (!res.ok) throw new Error("서버 오류");
+        return res.json();
       })
-        .then((res) => {
-          if (!res.ok) throw new Error("서버 오류");
-          return res.json();
-        })
-        .then((data) => {
-           const withIndex = data.map((item, idx) => ({
-      ...item,
-      index: idx + 1,
-    }));
-    setData(withIndex);
-    setLoading(false);
-        })
-        .catch((err) => {
-          console.error("데이터 받아오기 실패", err);
-          setLoading(false);
-        });
-    }, [selectedScenario]);
- 
-  
-    if (loading) return <div>로딩 중...</div>;
+      .then((data) => {
+        const withIndex = data.map((item, idx) => ({
+          ...item,
+          index: idx + 1,
+        }));
+        setData(withIndex);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("데이터 받아오기 실패", err);
+        setLoading(false);
+      });
+  }, [selectedScenario]);
+
+  if (loading) return <div>로딩 중...</div>;
   return (
     <Box sx={{ width: "100%", overflow: "auto" }}>
       <DataGrid

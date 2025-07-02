@@ -20,9 +20,7 @@ const columns = [
   { field: "id", headerName: "순번", width: 100 },
   { field: "toolId", headerName: "Tool Id", width: 140 },
   { field: "toolState", headerName: "상태", width: 140, type: "boolean" },
-  { field: "scenarioId", headerName: "시나리오", width: 140 },
   { field: "toolName", headerName: "Tool Name", width: 140 },
-  { field: "resourceId", headerName: "Resource 아이디", width: 140 },
 ];
 
 export default function ToolMasterView() {

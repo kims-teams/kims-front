@@ -19,7 +19,7 @@ import { useScenarioStore } from "../../hooks/useScenarioStore";
 const columns = [
   { field: "id", headerName: "순번", width: 100 },
   { field: "partId", headerName: "품목코드", width: 140 },
-  { field: "toolId", headerName: "Tool Id", width: 140 },
+  { field: "toolId", headerName: "Tool Id", width: 200 },
   { field: "partName", headerName: "품목명", width: 140 },
 ];
 
