@@ -110,48 +110,23 @@ export default function FreeBoardView() {
         <Table>
           <TableHead sx={{ backgroundColor: "#e6ecf8" }}>
             <TableRow>
-              <TableCell
-                align="center"
-                sx={{ color: "#1a3d7c", fontWeight: "bold" }}
-              >
-                번호
-              </TableCell>
-              <TableCell
-                align="left"
-                sx={{ color: "#1a3d7c", fontWeight: "bold" }}
-              >
-                제목
-              </TableCell>
-              <TableCell
-                align="center"
-                sx={{ color: "#1a3d7c", fontWeight: "bold" }}
-              >
-                사원이름
-              </TableCell>
-              <TableCell
-                align="center"
-                sx={{ color: "#1a3d7c", fontWeight: "bold" }}
-              >
-                이메일
-              </TableCell>
-              <TableCell
-                align="center"
-                sx={{ color: "#1a3d7c", fontWeight: "bold" }}
-              >
-                작성일
-              </TableCell>
-              <TableCell
-                align="center"
-                sx={{ color: "#1a3d7c", fontWeight: "bold" }}
-              >
-                수정
-              </TableCell>
-              <TableCell
-                align="center"
-                sx={{ color: "#1a3d7c", fontWeight: "bold" }}
-              >
-                삭제
-              </TableCell>
+              {[
+                "번호",
+                "제목",
+                "사원이름",
+                "이메일",
+                "작성일",
+                "수정",
+                "삭제",
+              ].map((col, i) => (
+                <TableCell
+                  key={i}
+                  align={col === "제목" ? "left" : "center"}
+                  sx={{ color: "#1a3d7c", fontWeight: "bold" }}
+                >
+                  {col}
+                </TableCell>
+              ))}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -220,11 +195,37 @@ export default function FreeBoardView() {
       </TableContainer>
 
       <Stack direction="row" justifyContent="center" spacing={2} mt={3}>
-        <Button variant="outlined" size="small">
+        <Button
+          variant="outlined"
+          size="small"
+          sx={{
+            borderColor: "#1a3d7c",
+            color: "#1a3d7c",
+            fontWeight: 600,
+            "&:hover": {
+              backgroundColor: "#f0f4fa",
+              borderColor: "#1a3d7c",
+            },
+          }}
+        >
           이전
         </Button>
-        <Typography variant="body2">1 page / 1 pages</Typography>
-        <Button variant="outlined" size="small">
+        <Typography variant="body2" sx={{ color: "#1a3d7c", fontWeight: 600 }}>
+          1 page / 1 pages
+        </Typography>
+        <Button
+          variant="outlined"
+          size="small"
+          sx={{
+            borderColor: "#1a3d7c",
+            color: "#1a3d7c",
+            fontWeight: 600,
+            "&:hover": {
+              backgroundColor: "#f0f4fa",
+              borderColor: "#1a3d7c",
+            },
+          }}
+        >
           다음
         </Button>
       </Stack>

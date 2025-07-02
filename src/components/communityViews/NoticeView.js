@@ -34,10 +34,10 @@ export default function NoticeView() {
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const [targetPost, setTargetPost] = useState(null);
   const [targetPostId, setTargetPostId] = useState(null);
-
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const postsPerPage = 8;
+
   const router = useRouter();
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role");
@@ -45,7 +45,7 @@ export default function NoticeView() {
 
   const loadNotices = async () => {
     const res = await fetch(
-      "http://localhost:8080/api/post/post-category/사내공지"
+      "http://localhost:8080/api/post/post-category/\uC0AC\uB0B4\uACF5\uC9C0"
     );
     const data = await res.json();
     setNotices(data);
@@ -58,7 +58,6 @@ export default function NoticeView() {
   const filteredNotices = notices.filter((notice) =>
     notice.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
   const indexOfLast = currentPage * postsPerPage;
   const indexOfFirst = indexOfLast - postsPerPage;
   const currentNotices = filteredNotices.slice(indexOfFirst, indexOfLast);
@@ -69,8 +68,8 @@ export default function NoticeView() {
     title,
     onClose,
     onConfirm,
-    confirmText = "확인",
-    cancelText = "취소",
+    confirmText = "\uD655\uC778",
+    cancelText = "\uCDE8\uC18C",
     children,
     dialogType = "default",
   }) => (
@@ -84,7 +83,7 @@ export default function NoticeView() {
     >
       <DialogTitle>
         <Box display="flex" alignItems="center" gap={1}>
-          {title.includes("완료") && (
+          {title.includes("\uC644\uB8CC") && (
             <CheckCircleIcon sx={{ color: "green" }} />
           )}
           <Typography fontWeight="bold" fontSize="1.2rem">
@@ -95,11 +94,19 @@ export default function NoticeView() {
       <DialogContent dividers>{children}</DialogContent>
       <DialogActions>
         {cancelText && (
-          <Button onClick={onClose} variant="outlined" color="inherit">
+          <Button
+            onClick={onClose}
+            variant="outlined"
+            sx={{ borderColor: "#1a3d7c", color: "#1a3d7c" }}
+          >
             {cancelText}
           </Button>
         )}
-        <Button onClick={onConfirm} variant="contained">
+        <Button
+          onClick={onConfirm}
+          variant="contained"
+          sx={{ bgcolor: "#1a3d7c", "&:hover": { bgcolor: "#162f5d" } }}
+        >
           {confirmText}
         </Button>
       </DialogActions>
@@ -126,7 +133,11 @@ export default function NoticeView() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <Button variant="outlined" onClick={() => setCurrentPage(1)}>
+          <Button
+            variant="outlined"
+            onClick={() => setCurrentPage(1)}
+            sx={{ borderColor: "#1a3d7c", color: "#1a3d7c" }}
+          >
             검색
           </Button>
 
@@ -135,7 +146,11 @@ export default function NoticeView() {
               startIcon={<AddIcon />}
               variant="contained"
               onClick={() => setOpenDialog(true)}
-              sx={{ borderRadius: 2 }}
+              sx={{
+                borderRadius: 2,
+                bgcolor: "#1a3d7c",
+                "&:hover": { bgcolor: "#162f5d" },
+              }}
             >
               새 공지
             </Button>
@@ -190,7 +205,7 @@ export default function NoticeView() {
                           cursor: "pointer",
                           transition: "color 0.2s ease",
                           "&:hover": {
-                            color: "primary.main",
+                            color: "#1a3d7c",
                             textDecoration: "underline",
                           },
                         }}
@@ -214,175 +229,19 @@ export default function NoticeView() {
             count={totalPages}
             page={currentPage}
             onChange={(_, value) => setCurrentPage(value)}
-            color="primary"
-            shape="rounded"
+            sx={{
+              "& .MuiPaginationItem-root": { color: "#1a3d7c" },
+              "& .Mui-selected": {
+                bgcolor: "#1a3d7c",
+                color: "white",
+                "&:hover": {
+                  bgcolor: "#162f5d",
+                },
+              },
+            }}
           />
         </Stack>
       )}
-
-      {renderDialog({
-        open: openDialog,
-        title: "📝 새 공지 작성",
-        onClose: () => setOpenDialog(false),
-        onConfirm: async () => {
-          if (role === "USER") return;
-          try {
-            const res = await fetch(
-              `http://localhost:8080/api/post?email=${email}`,
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                  title: form.title,
-                  content: form.content,
-                  categoryName: "사내공지",
-                }),
-              }
-            );
-            if (!res.ok) {
-              const msg = await res.text();
-              alert("작성 실패: " + msg);
-              return;
-            }
-            setSuccessDialogOpen(true);
-            setOpenDialog(false);
-            setForm({ title: "", content: "" });
-            loadNotices();
-          } catch (err) {
-            console.error("작성 오류", err);
-          }
-        },
-        confirmText: "등록",
-        children: (
-          <Stack spacing={2} mt={1}>
-            <TextField
-              label="제목"
-              fullWidth
-              value={form.title}
-              onChange={(e) => setForm({ ...form, title: e.target.value })}
-            />
-            <TextField
-              label="내용"
-              fullWidth
-              multiline
-              rows={6}
-              value={form.content}
-              onChange={(e) => setForm({ ...form, content: e.target.value })}
-            />
-          </Stack>
-        ),
-      })}
-
-      {renderDialog({
-        open: successDialogOpen,
-        title: "작성 완료",
-        onClose: () => setSuccessDialogOpen(false),
-        onConfirm: () => setSuccessDialogOpen(false),
-        cancelText: "",
-        confirmText: "확인",
-        dialogType: "success",
-        children: <Typography>공지글이 성공적으로 등록되었습니다.</Typography>,
-      })}
-
-      {renderDialog({
-        open: editDialogOpen,
-        title: "✏️ 공지 수정",
-        onClose: () => setEditDialogOpen(false),
-        onConfirm: async () => {
-          if (!targetPost) return;
-          try {
-            const res = await fetch(
-              `http://localhost:8080/api/post/${targetPost.id}`,
-              {
-                method: "PUT",
-                headers: {
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                  title: form.title,
-                  content: form.content,
-                }),
-              }
-            );
-            if (!res.ok) {
-              const msg = await res.text();
-              alert("수정 실패: " + msg);
-              return;
-            }
-            setEditDialogOpen(false);
-            setForm({ title: "", content: "" });
-            loadNotices();
-          } catch (err) {
-            console.error("수정 오류", err);
-          }
-        },
-        confirmText: "저장",
-        children: (
-          <Stack spacing={2} mt={1}>
-            <TextField
-              label="제목"
-              fullWidth
-              value={form.title}
-              onChange={(e) => setForm({ ...form, title: e.target.value })}
-            />
-            <TextField
-              label="내용"
-              fullWidth
-              multiline
-              rows={6}
-              value={form.content}
-              onChange={(e) => setForm({ ...form, content: e.target.value })}
-            />
-          </Stack>
-        ),
-      })}
-
-      {renderDialog({
-        open: confirmDialogOpen,
-        title: "⚠️ 삭제 확인",
-        onClose: () => setConfirmDialogOpen(false),
-        onConfirm: async () => {
-          if (role === "USER" || !targetPostId) return;
-          try {
-            const res = await fetch(
-              `http://localhost:8080/api/post/${targetPostId}`,
-              {
-                method: "DELETE",
-                headers: { Authorization: `Bearer ${token}` },
-              }
-            );
-            if (!res.ok) {
-              const msg = await res.text();
-              alert("삭제 실패: " + msg);
-              return;
-            }
-            setConfirmDialogOpen(false);
-            setTargetPostId(null);
-            loadNotices();
-          } catch (err) {
-            console.error("삭제 오류", err);
-          }
-        },
-        confirmText: "삭제",
-        dialogType: "confirm",
-        children: (
-          <>
-            <Typography>
-              <b>
-                {notices.find((n) => n.id === targetPostId)?.title || "공지"}
-              </b>
-              를 삭제하시겠습니까?
-            </Typography>
-            <Typography fontSize="0.9rem" color="text.secondary">
-              삭제 후에는 복구할 수 없습니다.
-            </Typography>
-          </>
-        ),
-      })}
     </Box>
   );
 }

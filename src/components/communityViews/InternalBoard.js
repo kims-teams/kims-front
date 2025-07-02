@@ -28,17 +28,14 @@ export default function InternalBoard() {
       try {
         const resp = await fetch("http://localhost:8080/api/post");
         const data = await resp.json();
-
         const sortedPosts = data.sort(
           (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
         );
-
         setPosts(sortedPosts);
       } catch (err) {
         console.error("게시글 불러오기 실패:", err);
       }
     };
-
     fetchPosts();
   }, []);
 
@@ -73,7 +70,7 @@ export default function InternalBoard() {
                 cursor: "pointer",
                 transition: "color 0.2s ease",
                 "&:hover": {
-                  color: "primary.main",
+                  color: "#1a3d7c",
                   textDecoration: "underline",
                 },
               }}
@@ -99,6 +96,7 @@ export default function InternalBoard() {
         <Typography variant="h5" fontWeight="bold">
           📌 전체 게시글
         </Typography>
+
         <Stack direction="row" spacing={1}>
           <TextField
             size="small"
@@ -106,7 +104,19 @@ export default function InternalBoard() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <Button variant="outlined" onClick={() => setCurrentPage(1)}>
+          <Button
+            onClick={() => setCurrentPage(1)}
+            variant="outlined"
+            sx={{
+              color: "#1a3d7c",
+              borderColor: "#1a3d7c",
+              "&:hover": {
+                backgroundColor: "#f0f4fa",
+                borderColor: "#162f5d",
+              },
+              fontWeight: "bold",
+            }}
+          >
             검색
           </Button>
         </Stack>
@@ -135,8 +145,20 @@ export default function InternalBoard() {
                 count={totalPages}
                 page={currentPage}
                 onChange={(_, value) => setCurrentPage(value)}
-                color="primary"
                 shape="rounded"
+                sx={{
+                  "& .MuiPaginationItem-root": {
+                    color: "#1a3d7c",
+                    fontWeight: 600,
+                    "&.Mui-selected": {
+                      backgroundColor: "#1a3d7c",
+                      color: "#fff",
+                      "&:hover": {
+                        backgroundColor: "#162f5d",
+                      },
+                    },
+                  },
+                }}
               />
             </Stack>
           )}
