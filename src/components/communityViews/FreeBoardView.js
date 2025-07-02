@@ -146,169 +146,183 @@ export default function FreeBoardView() {
   };
 
   return (
-    <Box sx={{ px: 4, py: 6 }}>
-      <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Typography variant="h4" fontWeight={600}>
-          자유게시판
-        </Typography>
-        <Box display="flex" gap={2}>
-          <TextField
-            placeholder="검색어를 입력해주세요."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            size="small"
-            sx={{ width: "300px" }}
-          />
-          <Button
-            variant="contained"
-            sx={{
-              backgroundColor: "#4a4a4a",
-              color: "#f8f8f0",
-              "&:hover": { backgroundColor: "#3a3a3a" },
-            }}
-          >
-            검색
-          </Button>
+    <>
+      <Box
+        sx={{
+          px: 3,
+          pt: 2,
+          pb: 3,
+          display: "flex",
+          flexDirection: "column",
+          height: "100%",
+        }}
+      >
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Typography variant="h4" fontWeight={600}>
+            자유게시판
+          </Typography>
+          <Box display="flex" gap={2}>
+            <TextField
+              placeholder="검색어를 입력해주세요."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              size="small"
+              sx={{ width: "300px" }}
+            />
+            <Button
+              variant="contained"
+              sx={{
+                backgroundColor: "#274472",
+                color: "#ffffff",
+                "&:hover": {
+                  backgroundColor: "#1c355d",
+                },
+              }}
+            >
+              검색
+            </Button>
 
-          <Button
-            variant="contained"
-            sx={{
-              backgroundColor: "#4a4a4a",
-              color: "#f8f8f0",
-              "&:hover": { backgroundColor: "#3a3a3a" },
-              height: "40px",
-            }}
-            onClick={() => {
-              setForm({ title: "", content: "" });
-              setSelectedPost(null);
-              setOpenDialog(true);
-            }}
-          >
-            글쓰기
-          </Button>
+            <Button
+              variant="contained"
+              sx={{
+                backgroundColor: "#274472",
+                color: "#ffffff",
+                "&:hover": {
+                  backgroundColor: "#1c355d",
+                },
+              }}
+              onClick={() => {
+                setForm({ title: "", content: "" });
+                setSelectedPost(null);
+                setOpenDialog(true);
+              }}
+            >
+              글쓰기
+            </Button>
+          </Box>
         </Box>
-      </Box>
 
-      <TableContainer component={Paper} sx={{ mt: 4 }}>
-        <Table>
-          <TableHead sx={{ backgroundColor: "#4a4a4a" }}>
-            <TableRow>
-              <TableCell align="center" sx={{ width: 50, color: "#f8f8f0" }}>
-                번호
-              </TableCell>
-              <TableCell align="left" sx={{ width: 220, color: "#f8f8f0" }}>
-                제목
-              </TableCell>
-              <TableCell align="center" sx={{ width: 100, color: "#f8f8f0" }}>
-                사원이름
-              </TableCell>
-              <TableCell align="center" sx={{ width: 180, color: "#f8f8f0" }}>
-                이메일
-              </TableCell>
-              <TableCell align="center" sx={{ width: 100, color: "#f8f8f0" }}>
-                작성일
-              </TableCell>
-              <TableCell align="center" sx={{ width: 80, color: "#f8f8f0" }}>
-                수정
-              </TableCell>
-              <TableCell
-                align="center"
-                sx={{ width: 60, color: "#f8f8f0" }}
-              ></TableCell>
-            </TableRow>
-          </TableHead>
-
-          <TableBody>
-            {posts.length > 0 ? (
-              posts
-                .filter((post) =>
-                  post.title.toLowerCase().includes(search.toLowerCase())
-                )
-                .map((post, index) => (
-                  <TableRow key={post.id}>
-                    <TableCell align="center">{index + 1}</TableCell>
-                    <TableCell
-                      align="left"
-                      sx={{
-                        color: "#000",
-                        cursor: "pointer",
-                        textDecoration: "none",
-                        transition: "color 0.2s ease",
-                        "&:hover": {
-                          color: "#1e88e5",
-                          textDecoration: "underline",
-                        },
-                      }}
-                      onClick={() =>
-                        router.push(`/user/menu/community/${post.id}`)
-                      }
-                    >
-                      {post.title}
-                    </TableCell>
-
-                    <TableCell align="center">
-                      {post.writerName || "-"}
-                    </TableCell>
-                    <TableCell align="center">
-                      {post.writerEmail || "-"}
-                    </TableCell>
-                    <TableCell align="center">
-                      {formatCreatedAt(post.createdAt)}
-                    </TableCell>
-                    <TableCell align="center">
-                      {Number(post.writerId) === Number(userId) && (
-                        <Button
-                          size="small"
-                          color="primary"
-                          onClick={() => {
-                            setSelectedPost(post);
-                            setForm({
-                              title: post.title,
-                              content: post.content,
-                            });
-                            setOpenDialog(true);
-                          }}
-                        >
-                          수정
-                        </Button>
-                      )}
-                    </TableCell>
-                    <TableCell align="center">
-                      {Number(post.writerId) === Number(userId) && (
-                        <Button
-                          size="small"
-                          color="error"
-                          onClick={() => {
-                            setTargetPost(post);
-                            setOpenDeleteDialog(true);
-                          }}
-                        >
-                          삭제
-                        </Button>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                ))
-            ) : (
+        <TableContainer component={Paper} sx={{ mt: 4, flex: 1 }}>
+          <Table>
+            <TableHead sx={{ backgroundColor: "#3a506b" }}>
               <TableRow>
-                <TableCell colSpan={7} align="center">
-                  게시글이 없습니다.
+                <TableCell align="center" sx={{ width: 50, color: "#f8f8f0" }}>
+                  번호
                 </TableCell>
+                <TableCell align="left" sx={{ width: 220, color: "#f8f8f0" }}>
+                  제목
+                </TableCell>
+                <TableCell align="center" sx={{ width: 100, color: "#f8f8f0" }}>
+                  사원이름
+                </TableCell>
+                <TableCell align="center" sx={{ width: 180, color: "#f8f8f0" }}>
+                  이메일
+                </TableCell>
+                <TableCell align="center" sx={{ width: 100, color: "#f8f8f0" }}>
+                  작성일
+                </TableCell>
+                <TableCell align="center" sx={{ width: 80, color: "#f8f8f0" }}>
+                  수정
+                </TableCell>
+                <TableCell
+                  align="center"
+                  sx={{ width: 60, color: "#f8f8f0" }}
+                ></TableCell>
               </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
 
-      <Stack direction="row" justifyContent="center" spacing={2} mt={3}>
-        <Button variant="outlined" size="small">
-          이전
-        </Button>
-        <Typography variant="body2">1 page / 1 pages</Typography>
-        <Button variant="outlined" size="small">
-          다음
-        </Button>
-      </Stack>
+            <TableBody>
+              {posts.length > 0 ? (
+                posts
+                  .filter((post) =>
+                    post.title.toLowerCase().includes(search.toLowerCase())
+                  )
+                  .map((post, index) => (
+                    <TableRow key={post.id}>
+                      <TableCell align="center">{index + 1}</TableCell>
+                      <TableCell
+                        align="left"
+                        sx={{
+                          color: "#000",
+                          cursor: "pointer",
+                          textDecoration: "none",
+                          transition: "color 0.2s ease",
+                          "&:hover": {
+                            color: "#1e88e5",
+                            textDecoration: "underline",
+                          },
+                        }}
+                        onClick={() =>
+                          router.push(`/user/menu/community/${post.id}`)
+                        }
+                      >
+                        {post.title}
+                      </TableCell>
+
+                      <TableCell align="center">
+                        {post.writerName || "-"}
+                      </TableCell>
+                      <TableCell align="center">
+                        {post.writerEmail || "-"}
+                      </TableCell>
+                      <TableCell align="center">
+                        {formatCreatedAt(post.createdAt)}
+                      </TableCell>
+                      <TableCell align="center">
+                        {Number(post.writerId) === Number(userId) && (
+                          <Button
+                            size="small"
+                            color="primary"
+                            onClick={() => {
+                              setSelectedPost(post);
+                              setForm({
+                                title: post.title,
+                                content: post.content,
+                              });
+                              setOpenDialog(true);
+                            }}
+                          >
+                            수정
+                          </Button>
+                        )}
+                      </TableCell>
+                      <TableCell align="center">
+                        {Number(post.writerId) === Number(userId) && (
+                          <Button
+                            size="small"
+                            color="error"
+                            onClick={() => {
+                              setTargetPost(post);
+                              setOpenDeleteDialog(true);
+                            }}
+                          >
+                            삭제
+                          </Button>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={7} align="center">
+                    게시글이 없습니다.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+
+        <Stack direction="row" justifyContent="center" spacing={2} mt={3}>
+          <Button variant="outlined" size="small">
+            이전
+          </Button>
+          <Typography variant="body2">1 page / 1 pages</Typography>
+          <Button variant="outlined" size="small">
+            다음
+          </Button>
+        </Stack>
+      </Box>
 
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
         <DialogTitle>{selectedPost ? "게시글 수정" : "새 글 작성"}</DialogTitle>
@@ -330,7 +344,15 @@ export default function FreeBoardView() {
             margin="normal"
           />
         </DialogContent>
-        <DialogActions>
+        <DialogActions
+          sx={{
+            display: "flex",
+            justifyContent: "flex-end",
+            gap: 1.5,
+            px: 3,
+            pb: 3,
+          }}
+        >
           <Button
             onClick={() => {
               setOpenDialog(false);
@@ -423,6 +445,6 @@ export default function FreeBoardView() {
           </Button>
         </DialogActions>
       </Dialog>
-    </Box>
+    </>
   );
 }

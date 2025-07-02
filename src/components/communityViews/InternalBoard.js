@@ -54,7 +54,7 @@ export default function InternalBoard() {
   const renderPostItem = (post) => (
     <ListItem
       key={post.id}
-      button
+      
       onClick={() => router.push(`/user/menu/community/${post.id}`)}
     >
       <ListItemText
