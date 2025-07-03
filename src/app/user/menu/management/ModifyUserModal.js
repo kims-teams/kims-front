@@ -111,7 +111,7 @@ export default function ModifyUserModal({
     };
 
     try {
-      const res = await fetch(`http://localhost:8080/api/user/${userId}`, {
+      const res = await fetch(`http://3.34.136.158:8080/api/user/${userId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

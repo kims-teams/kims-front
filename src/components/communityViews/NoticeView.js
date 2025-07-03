@@ -41,7 +41,7 @@ export default function NoticeView() {
 
   const loadNotices = async () => {
     const res = await fetch(
-      "http://localhost:8080/api/post/post-category/사내공지"
+      "http://3.34.136.158:8080/api/post/post-category/사내공지"
     );
     const data = await res.json();
     setNotices(data);
@@ -285,7 +285,7 @@ export default function NoticeView() {
           if (role === "USER") return;
           try {
             const res = await fetch(
-              `http://localhost:8080/api/post?email=${email}`,
+              `http://3.34.136.158:8080/api/post?email=${email}`,
               {
                 method: "POST",
                 headers: {
@@ -352,7 +352,7 @@ export default function NoticeView() {
           if (!targetPost) return;
           try {
             const res = await fetch(
-              `http://localhost:8080/api/post/${targetPost.id}`,
+              `http://3.34.136.158:8080/api/post/${targetPost.id}`,
               {
                 method: "PUT",
                 headers: {
@@ -406,7 +406,7 @@ export default function NoticeView() {
           if (role === "USER" || !targetPostId) return;
           try {
             const res = await fetch(
-              `http://localhost:8080/api/post/${targetPostId}`,
+              `http://3.34.136.158:8080/api/post/${targetPostId}`,
               {
                 method: "DELETE",
                 headers: { Authorization: `Bearer ${token}` },

@@ -50,7 +50,7 @@ export default function ScenarioPanel() {
 
     try {
       const res = await fetch(
-        "http://127.0.0.1:8080/api/scenario/" + scenarioName,
+        "http://3.34.136.158:8080/api/scenario/" + scenarioName,
         { method: "POST" }
       );
 
@@ -68,7 +68,7 @@ export default function ScenarioPanel() {
   useEffect(() => {
     const fetchScenarioList = async () => {
       try {
-        const res = await fetch("http://127.0.0.1:8080/api/scenario");
+        const res = await fetch("http://3.34.136.158:8080/api/scenario");
         if (!res.ok) throw new Error("시나리오 조회 실패");
 
         const data = await res.json();

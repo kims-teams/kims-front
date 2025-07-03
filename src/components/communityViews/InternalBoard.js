@@ -22,7 +22,7 @@ export default function InternalBoard() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const resp = await fetch("http://localhost:8080/api/post");
+        const resp = await fetch("http://3.34.136.158:8080/api/post");
         const data = await resp.json();
         const sortedPosts = data.sort(
           (a, b) => new Date(b.createdAt) - new Date(a.createdAt)

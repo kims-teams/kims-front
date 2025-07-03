@@ -24,7 +24,7 @@ export default function UnusedWipView() {
 
     const token = localStorage.getItem("token");
     fetch(
-      `http://localhost:8080/api/simulation/workcenter-usage?scenario-id=${selectedScenario.id}`,
+      `http://3.34.136.158:8080/api/simulation/workcenter-usage?scenario-id=${selectedScenario.id}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,

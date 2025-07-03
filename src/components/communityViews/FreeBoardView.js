@@ -46,7 +46,7 @@ export default function FreeBoardView() {
   const fetchPosts = async () => {
     try {
       const res = await fetch(
-        `http://localhost:8080/api/post/post-category/${categoryName}`
+        `http://3.34.136.158:8080/api/post/post-category/${categoryName}`
       );
       const data = await res.json();
       setPosts(data);
@@ -78,7 +78,8 @@ export default function FreeBoardView() {
 
   const handleCreate = async () => {
     const res = await fetch(
-      "http://localhost:8080/api/post?email=" + localStorage.getItem("email"),
+      "http://3.34.136.158:8080/api/post?email=" +
+        localStorage.getItem("email"),
       {
         method: "POST",
         headers: {
@@ -102,7 +103,7 @@ export default function FreeBoardView() {
   const handleUpdate = async () => {
     if (!selectedPost) return;
     const res = await fetch(
-      `http://localhost:8080/api/post/${selectedPost.id}`,
+      `http://3.34.136.158:8080/api/post/${selectedPost.id}`,
       {
         method: "PUT",
         headers: {
@@ -128,12 +129,15 @@ export default function FreeBoardView() {
 
   const handleDelete = async () => {
     if (!targetPost) return;
-    const res = await fetch(`http://localhost:8080/api/post/${targetPost.id}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const res = await fetch(
+      `http://3.34.136.158:8080/api/post/${targetPost.id}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     if (res.ok) {
       fetchPosts();

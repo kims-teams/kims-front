@@ -12,7 +12,7 @@ import { useState } from "react";
 
 export default function DeleteUserModal({ open, onClose, user, onDelete }) {
   const [isDeleting, setIsDeleting] = useState(false);
-  const [successOpen, setSuccessOpen] = useState(false); 
+  const [successOpen, setSuccessOpen] = useState(false);
 
   if (!user) return null;
 
@@ -22,7 +22,7 @@ export default function DeleteUserModal({ open, onClose, user, onDelete }) {
     setIsDeleting(true);
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`http://localhost:8080/api/user/${user.id}`, {
+      const res = await fetch(`http://3.34.136.158:8080/api/user/${user.id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -44,7 +44,7 @@ export default function DeleteUserModal({ open, onClose, user, onDelete }) {
 
   const handleSuccessClose = () => {
     setSuccessOpen(false);
-    onClose(); 
+    onClose();
   };
 
   return (

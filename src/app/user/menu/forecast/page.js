@@ -31,10 +31,13 @@ export default function Forecast() {
     formData.append("file", file);
 
     try {
-      const response = await fetch("http://127.0.0.1:5000/api/forecast/arima", {
-        method: "POST",
-        body: formData,
-      });
+      const response = await fetch(
+        "http://3.34.136.158:5000/api/forecast/arima",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
       if (!response.ok) throw new Error("ARIMA 오류");
       const data = await response.json();
       setArimaChart(data);
@@ -44,7 +47,7 @@ export default function Forecast() {
 
     try {
       const response = await fetch(
-        "http://127.0.0.1:5000/api/forecast/prophet",
+        "http://3.34.136.158:5000/api/forecast/prophet",
         {
           method: "POST",
           body: formData,

@@ -49,7 +49,7 @@ export default function PostDetailView() {
 
   const fetchPost = async () => {
     try {
-      const res = await fetch(`http://localhost:8080/api/post/${id}`);
+      const res = await fetch(`http://3.34.136.158:8080/api/post/${id}`);
       const data = await res.json();
       setPost(data);
     } catch (err) {
@@ -59,7 +59,9 @@ export default function PostDetailView() {
 
   const fetchComments = async () => {
     try {
-      const res = await fetch(`http://localhost:8080/api/comment/post/${id}`);
+      const res = await fetch(
+        `http://3.34.136.158:8080/api/comment/post/${id}`
+      );
       const data = await res.json();
       setComments(data);
     } catch (err) {
@@ -70,7 +72,7 @@ export default function PostDetailView() {
   const handleAddComment = async () => {
     if (!commentInput.trim()) return;
     try {
-      const res = await fetch(`http://localhost:8080/api/comment`, {
+      const res = await fetch(`http://3.34.136.158:8080/api/comment`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -97,18 +99,21 @@ export default function PostDetailView() {
   };
   const handleEditComment = async (commentId) => {
     try {
-      const res = await fetch(`http://localhost:8080/api/comment/${commentId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          content: editingContent,
-          postId: parseInt(id),
-          userId: parseInt(userId),
-        }),
-      });
+      const res = await fetch(
+        `http://3.34.136.158:8080/api/comment/${commentId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            content: editingContent,
+            postId: parseInt(id),
+            userId: parseInt(userId),
+          }),
+        }
+      );
       if (!res.ok) throw new Error("댓글 수정 실패");
       setEditingCommentId(null);
       setEditingContent("");
@@ -120,10 +125,13 @@ export default function PostDetailView() {
 
   const handleDeleteComment = async () => {
     try {
-      const res = await fetch(`http://localhost:8080/api/comment/${commentIdToDelete}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await fetch(
+        `http://3.34.136.158:8080/api/comment/${commentIdToDelete}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       if (!res.ok) throw new Error("댓글 삭제 실패");
       fetchComments();
       setOpenDeleteDialog(false);
@@ -161,7 +169,12 @@ export default function PostDetailView() {
               <Typography
                 variant="h6"
                 fontWeight="600"
-                sx={{ mb: 2, pb: 1, borderBottom: `2px solid ${navy}`, color: navy }}
+                sx={{
+                  mb: 2,
+                  pb: 1,
+                  borderBottom: `2px solid ${navy}`,
+                  color: navy,
+                }}
               >
                 댓글 ({comments.length})
               </Typography>
@@ -174,16 +187,20 @@ export default function PostDetailView() {
                     </Typography>
                     {parseInt(comment.writerId) === parseInt(userId) && (
                       <Stack direction="row" spacing={1}>
-                        <IconButton onClick={() => {
-                          setEditingCommentId(comment.id);
-                          setEditingContent(comment.content);
-                        }}>
+                        <IconButton
+                          onClick={() => {
+                            setEditingCommentId(comment.id);
+                            setEditingContent(comment.content);
+                          }}
+                        >
                           <EditIcon />
                         </IconButton>
-                        <IconButton onClick={() => {
-                          setCommentIdToDelete(comment.id);
-                          setOpenDeleteDialog(true);
-                        }}>
+                        <IconButton
+                          onClick={() => {
+                            setCommentIdToDelete(comment.id);
+                            setOpenDeleteDialog(true);
+                          }}
+                        >
                           <DeleteIcon />
                         </IconButton>
                       </Stack>
@@ -234,7 +251,11 @@ export default function PostDetailView() {
                 <Button
                   variant="contained"
                   onClick={handleAddComment}
-                  sx={{ mt: 2, bgcolor: navy, "&:hover": { bgcolor: darkNavy } }}
+                  sx={{
+                    mt: 2,
+                    bgcolor: navy,
+                    "&:hover": { bgcolor: darkNavy },
+                  }}
                 >
                   댓글 등록
                 </Button>
@@ -244,7 +265,10 @@ export default function PostDetailView() {
         </>
       )}
 
-      <Dialog open={openDeleteDialog} onClose={() => setOpenDeleteDialog(false)}>
+      <Dialog
+        open={openDeleteDialog}
+        onClose={() => setOpenDeleteDialog(false)}
+      >
         <DialogTitle>댓글 삭제 확인</DialogTitle>
         <DialogContent>
           <Typography>정말 이 댓글을 삭제하시겠습니까?</Typography>
