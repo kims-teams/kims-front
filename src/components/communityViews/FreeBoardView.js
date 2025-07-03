@@ -19,6 +19,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Pagination,
 } from "@mui/material";
 import useAuthRedirect from "hooks/useAuthRedirect";
 
@@ -32,6 +33,8 @@ export default function FreeBoardView() {
   const [form, setForm] = useState({ title: "", content: "" });
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [targetPost, setTargetPost] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const postsPerPage = 10;
   const categoryName = "자유게시판";
 
   const router = useRouter();
@@ -39,23 +42,21 @@ export default function FreeBoardView() {
     typeof window !== "undefined" ? localStorage.getItem("token") : null;
   const userId =
     typeof window !== "undefined" ? localStorage.getItem("userId") : null;
+
   const fetchPosts = async () => {
     try {
       const res = await fetch(
-        `http://localhost:8080/api/post/post-category/자유게시판`
+        `http://localhost:8080/api/post/post-category/${categoryName}`
       );
       const data = await res.json();
       setPosts(data);
-      console.log("data:", data);
     } catch (err) {
       console.error("게시글 불러오기 실패", err);
     }
   };
 
   useEffect(() => {
-    if (token) {
-      fetchPosts();
-    }
+    if (token) fetchPosts();
   }, [token]);
 
   const formatCreatedAt = (dateString) => {
@@ -100,7 +101,6 @@ export default function FreeBoardView() {
 
   const handleUpdate = async () => {
     if (!selectedPost) return;
-
     const res = await fetch(
       `http://localhost:8080/api/post/${selectedPost.id}`,
       {
@@ -128,7 +128,6 @@ export default function FreeBoardView() {
 
   const handleDelete = async () => {
     if (!targetPost) return;
-    console.log(targetPost.id);
     const res = await fetch(`http://localhost:8080/api/post/${targetPost.id}`, {
       method: "DELETE",
       headers: {
@@ -145,21 +144,30 @@ export default function FreeBoardView() {
     }
   };
 
+  const filteredPosts = posts.filter((post) =>
+    post.title.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const indexOfLast = currentPage * postsPerPage;
+  const indexOfFirst = indexOfLast - postsPerPage;
+  const currentPosts = filteredPosts.slice(indexOfFirst, indexOfLast);
+  const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
+
   return (
     <>
       <Box
         sx={{
-          px: 3,
-          pt: 2,
-          pb: 3,
+          px: 5,
+          pt: 4,
+          pb: 6,
           display: "flex",
           flexDirection: "column",
-          height: "100%",
+          height: "95%",
         }}
       >
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Typography variant="h4" fontWeight={600}>
-            자유게시판
+            자유 게시판
           </Typography>
           <Box display="flex" gap={2}>
             <TextField
@@ -170,18 +178,20 @@ export default function FreeBoardView() {
               sx={{ width: "300px" }}
             />
             <Button
-              variant="contained"
+              onClick={() => setCurrentPage(1)}
+              variant="outlined"
               sx={{
-                backgroundColor: "#274472",
-                color: "#ffffff",
+                color: "#1a3d7c",
+                borderColor: "#1a3d7c",
                 "&:hover": {
-                  backgroundColor: "#1c355d",
+                  backgroundColor: "#f0f4fa",
+                  borderColor: "#162f5d",
                 },
+                fontWeight: "bold",
               }}
             >
               검색
             </Button>
-
             <Button
               variant="contained"
               sx={{
@@ -224,84 +234,77 @@ export default function FreeBoardView() {
                 <TableCell align="center" sx={{ width: 80, color: "#f8f8f0" }}>
                   수정
                 </TableCell>
-                <TableCell
-                  align="center"
-                  sx={{ width: 60, color: "#f8f8f0" }}
-                ></TableCell>
+                <TableCell align="center" sx={{ width: 60, color: "#f8f8f0" }}>
+                  삭제
+                </TableCell>
               </TableRow>
             </TableHead>
-
             <TableBody>
-              {posts.length > 0 ? (
-                posts
-                  .filter((post) =>
-                    post.title.toLowerCase().includes(search.toLowerCase())
-                  )
-                  .map((post, index) => (
-                    <TableRow key={post.id}>
-                      <TableCell align="center">{index + 1}</TableCell>
-                      <TableCell
-                        align="left"
-                        sx={{
-                          color: "#000",
-                          cursor: "pointer",
-                          textDecoration: "none",
-                          transition: "color 0.2s ease",
-                          "&:hover": {
-                            color: "#1e88e5",
-                            textDecoration: "underline",
-                          },
-                        }}
-                        onClick={() =>
-                          router.push(`/user/menu/community/${post.id}`)
-                        }
-                      >
-                        {post.title}
-                      </TableCell>
-
-                      <TableCell align="center">
-                        {post.writerName || "-"}
-                      </TableCell>
-                      <TableCell align="center">
-                        {post.writerEmail || "-"}
-                      </TableCell>
-                      <TableCell align="center">
-                        {formatCreatedAt(post.createdAt)}
-                      </TableCell>
-                      <TableCell align="center">
-                        {Number(post.writerId) === Number(userId) && (
-                          <Button
-                            size="small"
-                            color="primary"
-                            onClick={() => {
-                              setSelectedPost(post);
-                              setForm({
-                                title: post.title,
-                                content: post.content,
-                              });
-                              setOpenDialog(true);
-                            }}
-                          >
-                            수정
-                          </Button>
-                        )}
-                      </TableCell>
-                      <TableCell align="center">
-                        {Number(post.writerId) === Number(userId) && (
-                          <Button
-                            size="small"
-                            color="error"
-                            onClick={() => {
-                              setTargetPost(post);
-                              setOpenDeleteDialog(true);
-                            }}
-                          >
-                            삭제
-                          </Button>
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  ))
+              {currentPosts.length > 0 ? (
+                currentPosts.map((post, index) => (
+                  <TableRow key={post.id}>
+                    <TableCell align="center">
+                      {indexOfFirst + index + 1}
+                    </TableCell>
+                    <TableCell
+                      align="left"
+                      sx={{
+                        color: "#000",
+                        cursor: "pointer",
+                        "&:hover": {
+                          color: "#1e88e5",
+                          textDecoration: "underline",
+                        },
+                      }}
+                      onClick={() =>
+                        router.push(`/user/menu/community/${post.id}`)
+                      }
+                    >
+                      {post.title}
+                    </TableCell>
+                    <TableCell align="center">
+                      {post.writerName || "-"}
+                    </TableCell>
+                    <TableCell align="center">
+                      {post.writerEmail || "-"}
+                    </TableCell>
+                    <TableCell align="center">
+                      {formatCreatedAt(post.createdAt)}
+                    </TableCell>
+                    <TableCell align="center">
+                      {Number(post.writerId) === Number(userId) && (
+                        <Button
+                          size="small"
+                          color="primary"
+                          onClick={() => {
+                            setSelectedPost(post);
+                            setForm({
+                              title: post.title,
+                              content: post.content,
+                            });
+                            setOpenDialog(true);
+                          }}
+                        >
+                          수정
+                        </Button>
+                      )}
+                    </TableCell>
+                    <TableCell align="center">
+                      {Number(post.writerId) === Number(userId) && (
+                        <Button
+                          size="small"
+                          color="error"
+                          onClick={() => {
+                            setTargetPost(post);
+                            setOpenDeleteDialog(true);
+                          }}
+                        >
+                          삭제
+                        </Button>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))
               ) : (
                 <TableRow>
                   <TableCell colSpan={7} align="center">
@@ -313,14 +316,31 @@ export default function FreeBoardView() {
           </Table>
         </TableContainer>
 
-        <Stack direction="row" justifyContent="center" spacing={2} mt={3}>
-          <Button variant="outlined" size="small">
-            이전
-          </Button>
-          <Typography variant="body2">1 page / 1 pages</Typography>
-          <Button variant="outlined" size="small">
-            다음
-          </Button>
+        <Stack mt={3} alignItems="center">
+          <Pagination
+            count={totalPages}
+            page={currentPage}
+            onChange={(_, value) => setCurrentPage(value)}
+            shape="rounded"
+            showFirstButton
+            showLastButton
+            sx={{
+              "& .MuiPaginationItem-root": {
+                color: "#1a3d7c",
+                fontWeight: 600,
+                borderRadius: "50%",
+                minWidth: 36,
+                height: 36,
+                "&.Mui-selected": {
+                  backgroundColor: "#1a3d7c",
+                  color: "#fff",
+                  "&:hover": {
+                    backgroundColor: "#162f5d",
+                  },
+                },
+              },
+            }}
+          />
         </Stack>
       </Box>
 
@@ -344,24 +364,8 @@ export default function FreeBoardView() {
             margin="normal"
           />
         </DialogContent>
-        <DialogActions
-          sx={{
-            display: "flex",
-            justifyContent: "flex-end",
-            gap: 1.5,
-            px: 3,
-            pb: 3,
-          }}
-        >
-          <Button
-            onClick={() => {
-              setOpenDialog(false);
-              setSelectedPost(null);
-              setForm({ title: "", content: "" });
-            }}
-          >
-            취소
-          </Button>
+        <DialogActions sx={{ justifyContent: "flex-end", px: 3, pb: 3 }}>
+          <Button onClick={() => setOpenDialog(false)}>취소</Button>
           <Button
             variant="contained"
             onClick={selectedPost ? handleUpdate : handleCreate}
@@ -373,25 +377,12 @@ export default function FreeBoardView() {
 
       <Dialog
         open={openDeleteDialog}
-        onClose={() => {
-          setOpenDeleteDialog(false);
-        }}
+        onClose={() => setOpenDeleteDialog(false)}
         fullWidth
         maxWidth="xs"
-        PaperProps={{
-          sx: {
-            borderRadius: 2,
-            p: 2,
-          },
-        }}
+        PaperProps={{ sx: { borderRadius: 2, p: 2 } }}
       >
-        <DialogTitle
-          sx={{
-            fontWeight: "bold",
-            fontSize: "1.2rem",
-            pb: 1,
-          }}
-        >
+        <DialogTitle sx={{ fontWeight: "bold", fontSize: "1.2rem", pb: 1 }}>
           🗑️ 게시글 삭제 확인
         </DialogTitle>
         <DialogContent dividers>
@@ -420,26 +411,14 @@ export default function FreeBoardView() {
           </Typography>
         </DialogContent>
         <DialogActions sx={{ justifyContent: "flex-end", pt: 2 }}>
-          <Button
-            onClick={() => {
-              setOpenDeleteDialog(false);
-              setTimeout(() => setTargetPost(null), 300);
-            }}
-            variant="outlined"
-            sx={{ textTransform: "none" }}
-          >
+          <Button onClick={() => setOpenDeleteDialog(false)} variant="outlined">
             취소
           </Button>
           <Button
             variant="contained"
             color="error"
-            onClick={() => {
-              handleDelete();
-            }}
-            sx={{
-              textTransform: "none",
-              fontWeight: "bold",
-            }}
+            onClick={handleDelete}
+            sx={{ fontWeight: "bold" }}
           >
             삭제
           </Button>

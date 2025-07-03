@@ -4,14 +4,10 @@ import { useEffect, useState } from "react";
 import {
   Box,
   Typography,
-  List,
-  ListItem,
-  ListItemText,
-  Divider,
-  Paper,
   Stack,
   TextField,
   Button,
+  Divider,
   Pagination,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
@@ -48,61 +44,65 @@ export default function InternalBoard() {
   const currentPosts = filteredPosts.slice(indexOfFirst, indexOfLast);
   const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
 
-  const renderPostItem = (post) => (
-    <ListItem
-      key={post.id}
-      
-      onClick={() => router.push(`/user/menu/community/${post.id}`)}
-    >
-      <ListItemText
-        primary={
-          <Box display="flex" gap={1} alignItems="center">
-            <Typography
-              variant="body2"
-              sx={{ color: "#1a3d7c", fontWeight: 600 }}
-            >
-              [{post.categoryName}]
-            </Typography>
-            <Typography
-              variant="body1"
-              fontWeight="bold"
-              sx={{
-                cursor: "pointer",
-                transition: "color 0.2s ease",
-                "&:hover": {
-                  color: "#1a3d7c",
-                  textDecoration: "underline",
-                },
-              }}
-            >
-              {post.title}
-            </Typography>
-          </Box>
-        }
-        secondary={new Date(post.createdAt).toLocaleString()}
-      />
-    </ListItem>
-  );
+  const renderPostItem = (post) => {
+    const createdAt = new Date(post.createdAt).toLocaleString("ko-KR", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
+    return (
+      <Box
+        key={post.id}
+        onClick={() => router.push(`/user/menu/community/${post.id}`)}
+        sx={{
+          py: 1.5,
+          px: 1,
+          cursor: "pointer",
+          transition: "all 0.2s ease",
+          "&:hover": {
+            backgroundColor: "#f9f9f9",
+          },
+        }}
+      >
+        <Typography
+          variant="subtitle1"
+          fontWeight="bold"
+          sx={{ mb: 0.5, color: "#1a3d7c" }}
+        >
+          {post.title}
+        </Typography>
+
+        <Typography variant="body2" color="text.secondary">
+          {post.writerName || "작성자"} · {createdAt}
+        </Typography>
+      </Box>
+    );
+  };
 
   return (
     <Box p={4}>
+      {/* 상단 제목 + 검색창 */}
       <Stack
-        direction={{ xs: "column", sm: "row" }}
+        direction="row"
         justifyContent="space-between"
-        alignItems={{ xs: "flex-start", sm: "center" }}
-        mb={3}
+        alignItems="center"
         spacing={2}
+        sx={{ mb: 2 }}
       >
-        <Typography variant="h5" fontWeight="bold">
-          📌 전체 게시글
+        <Typography variant="h4" fontWeight={600} sx={{ mb: 2 }}>
+          전체 게시글
         </Typography>
 
-        <Stack direction="row" spacing={1}>
+        <Stack direction="row" spacing={1} alignItems="center">
           <TextField
             size="small"
-            placeholder="제목 검색"
+            placeholder="검색어를 입력해주세요."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
+            sx={{ width: 240 }}
           />
           <Button
             onClick={() => setCurrentPage(1)}
@@ -122,22 +122,21 @@ export default function InternalBoard() {
         </Stack>
       </Stack>
 
+      {/* 게시글 목록 */}
       {filteredPosts.length === 0 ? (
         <Typography color="text.secondary">
           등록된 게시글이 없습니다.
         </Typography>
       ) : (
         <>
-          <Paper elevation={2}>
-            <List>
-              {currentPosts.map((post, idx) => (
-                <Box key={post.id}>
-                  {renderPostItem(post)}
-                  {idx !== currentPosts.length - 1 && <Divider />}
-                </Box>
-              ))}
-            </List>
-          </Paper>
+          <Box>
+            {currentPosts.map((post, idx) => (
+              <Box key={post.id}>
+                {renderPostItem(post)}
+                {idx !== currentPosts.length - 1 && <Divider />}
+              </Box>
+            ))}
+          </Box>
 
           {filteredPosts.length > postsPerPage && (
             <Stack mt={4} alignItems="center">
@@ -150,6 +149,9 @@ export default function InternalBoard() {
                   "& .MuiPaginationItem-root": {
                     color: "#1a3d7c",
                     fontWeight: 600,
+                    borderRadius: "50%",
+                    minWidth: 36,
+                    height: 36,
                     "&.Mui-selected": {
                       backgroundColor: "#1a3d7c",
                       color: "#fff",
