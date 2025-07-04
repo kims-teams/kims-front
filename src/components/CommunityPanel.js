@@ -1,10 +1,8 @@
 import { Box, List, ListItemButton, Stack, Typography } from "@mui/material";
 import React from "react";
 
-// 카테고리 정의 (아이콘 제거됨)
 const categories = [{ label: "사내공지" }, { label: "자유게시판" }];
 
-// 색상 상수
 const NAVY = "#002c5f";
 const NAVY_LIGHT = "#e3ecf9";
 const TEXT_GRAY = "#333";
@@ -36,7 +34,6 @@ export default function CommunityPanel({
       </Typography>
 
       <List disablePadding>
-        {/* 전체 게시글 */}
         <ListItemButton
           selected={isSelected("기본")}
           onClick={() => setSelectedCategory("기본")}
@@ -58,7 +55,6 @@ export default function CommunityPanel({
           </Typography>
         </ListItemButton>
 
-        {/* 사내공지 / 자유게시판 */}
         {categories.map(({ label }) => (
           <ListItemButton
             key={label}

@@ -172,7 +172,6 @@ export default function NoticeView() {
         </Stack>
       </Stack>
 
-      {/* 게시글 리스트 */}
       {filteredNotices.length === 0 ? (
         <Typography color="text.secondary">등록된 공지가 없습니다.</Typography>
       ) : (
@@ -248,7 +247,6 @@ export default function NoticeView() {
         </Box>
       )}
 
-      {/* 페이지네이션 */}
       {filteredNotices.length > postsPerPage && (
         <Stack mt={4} alignItems="center">
           <Pagination
@@ -276,7 +274,6 @@ export default function NoticeView() {
         </Stack>
       )}
 
-      {/* 다이얼로그들: 등록 / 완료 / 수정 / 삭제 */}
       {renderDialog({
         open: openDialog,
         title: "📝 새 공지 작성",

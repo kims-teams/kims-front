@@ -84,7 +84,6 @@ export default function InternalBoard() {
 
   return (
     <Box p={4}>
-      {/* 상단 제목 + 검색창 */}
       <Stack
         direction="row"
         justifyContent="space-between"
@@ -122,7 +121,6 @@ export default function InternalBoard() {
         </Stack>
       </Stack>
 
-      {/* 게시글 목록 */}
       {filteredPosts.length === 0 ? (
         <Typography color="text.secondary">
           등록된 게시글이 없습니다.

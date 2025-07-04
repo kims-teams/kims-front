@@ -81,21 +81,56 @@ export default function Forecast() {
   );
 
   return (
-    <div style={{ width: "900px", marginLeft: "40px" }}>
-      <div style={{ marginBottom: 16 }}>
-        <input
-          type="file"
-          accept=".xlsx,.xls,.csv"
-          onChange={handleFileChange}
-        />
-        <button onClick={handleUpload} style={{ marginLeft: 8 }}>
-          업로드 및 예측
-        </button>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "flex-start",
+        padding: "24px",
+        backgroundColor: "transparent",
+        maxWidth: "95vw",
+        overflowX: "hidden",
+      }}
+    >
+      <div
+        style={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "16px",
+        }}
+      >
+        <strong style={{ fontSize: "18px" }}>ARIMA & PROPHET 예측 비교</strong>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <input
+            type="file"
+            accept=".xlsx,.xls,.csv"
+            onChange={handleFileChange}
+          />
+          <button
+            onClick={handleUpload}
+            style={{
+              padding: "6px 14px",
+              backgroundColor: "#1a3d7c",
+              color: "white",
+              border: "none",
+              borderRadius: "3px",
+              cursor: "pointer",
+              fontWeight: "bold",
+            }}
+          >
+            업로드 및 예측
+          </button>
+        </div>
       </div>
-      <div style={{ marginBottom: 12, fontWeight: 800 }}>
-        ARIMA & PROPHET 예측 비교
-      </div>
-      <div style={{ width: "1450px", height: "750px" }}>
+
+      <div
+        style={{
+          width: "100%",
+          height: "750px",
+        }}
+      >
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={comparisonData}>
             <CartesianGrid strokeDasharray="3" />
