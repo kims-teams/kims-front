@@ -51,7 +51,7 @@ export default function ToolUsageView() {
 
   if (loading) return <div>로딩 중...</div>;
   return (
-    <Box sx={{ width: "100%", overflow: "auto" }}>
+    <Box sx={{ width: "100%", overflow: "auto", mt: 6 }}>
       <DataGrid
         autoHeight
         rows={data}

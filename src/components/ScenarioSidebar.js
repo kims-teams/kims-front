@@ -83,7 +83,7 @@ export default function ScenarioSidebar({ onSelect, collapsed, setCollapsed }) {
         sx={{
           position: "absolute",
           top: 6,
-          left: 6, 
+          left: 6,
           zIndex: 2000,
           backgroundColor: "white",
           border: "1px solid #ccc",
@@ -93,9 +93,9 @@ export default function ScenarioSidebar({ onSelect, collapsed, setCollapsed }) {
         }}
       >
         {collapsed ? (
-          <ChevronRightIcon fontSize="small" />
-        ) : (
           <ChevronLeftIcon fontSize="small" />
+        ) : (
+          <ChevronRightIcon fontSize="small" />
         )}
       </IconButton>
 

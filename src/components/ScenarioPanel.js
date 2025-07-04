@@ -57,7 +57,7 @@ export default function ScenarioPanel() {
       if (!res.ok) throw new Error("시나리오 생성 실패");
 
       const result = await res.json();
-      addScenario(result); // 변경된 부분
+      addScenario(result); 
       setScenarioName("");
       setOpenDialog(false);
     } catch (err) {

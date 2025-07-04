@@ -164,8 +164,7 @@ export default function ProductionGanttPage() {
     <Box sx={{ flexGrow: 1, height: "100%", overflow: "hidden" }}>
       <Box
         sx={{
-          px: 3,
-          py: 2,
+          py: 1.7,
           borderBottom: "1px solid #ddd",
           backgroundColor: "#f9f9f9",
         }}
@@ -196,7 +195,6 @@ export default function ProductionGanttPage() {
 
       <Box
         sx={{
-          height: "calc(100vh - 128px)",
           overflow: "auto",
           position: "relative",
         }}

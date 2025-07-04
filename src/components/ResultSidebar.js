@@ -87,7 +87,7 @@ export default function RightSidebar({ onSelect, collapsed, setCollapsed }) {
             variant="body2"
             sx={{ px: 4, color: "gray", fontSize: "15px", mt: 3 }}
           >
-            결과 데이터 목록
+            입력 데이터 목록
           </Typography>
 
           <InputBase
