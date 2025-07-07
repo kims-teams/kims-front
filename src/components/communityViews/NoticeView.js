@@ -281,21 +281,18 @@ export default function NoticeView() {
         onConfirm: async () => {
           if (role === "USER") return;
           try {
-            const res = await fetch(
-              `http://localhost:8080/api/post?email=${email}`,
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                  title: form.title,
-                  content: form.content,
-                  categoryName: "사내공지",
-                }),
-              }
-            );
+            const res = await fetch(`http://52.78.234.7:8080/api/post?email=${email}`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({
+                title: form.title,
+                content: form.content,
+                categoryName: "사내공지",
+              }),
+            });
             if (!res.ok) {
               const msg = await res.text();
               alert("작성 실패: " + msg);
@@ -349,7 +346,7 @@ export default function NoticeView() {
           if (!targetPost) return;
           try {
             const res = await fetch(
-              `http://localhost:8080/api/post/${targetPost.id}`,
+              `http://52.78.234.7:8080/api/post/${targetPost.id}`,
               {
                 method: "PUT",
                 headers: {
@@ -403,7 +400,7 @@ export default function NoticeView() {
           if (role === "USER" || !targetPostId) return;
           try {
             const res = await fetch(
-              `http://localhost:8080/api/post/${targetPostId}`,
+              `http://52.78.234.7:8080/api/post/${targetPostId}`,
               {
                 method: "DELETE",
                 headers: { Authorization: `Bearer ${token}` },
