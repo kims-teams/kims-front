@@ -15,6 +15,7 @@ import {
 import { DataGrid } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import { useScenarioStore } from "../../hooks/useScenarioStore";
+import { eachWeekOfInterval } from "date-fns";
 
 const columns = [
   { field: "id", headerName: "순번", width: 100 },
@@ -90,8 +91,10 @@ export default function BomView() {
       );
 
       if (!res.ok) throw new Error("업로드 실패");
-      const data = await res.json();
-      setBomData(data);
+      const json = await res.json();
+
+      setBomData(json.data);
+
       setMessage("파일 업로드 성공!");
       setMessageType("success");
       handleCloseDialog();
