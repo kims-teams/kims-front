@@ -53,7 +53,9 @@ export default function ProductionGanttPage() {
   }, [scenario]);
 
   const fetchGanttData = (scenarioId) => {
-    fetch(`http://52.78.234.7:5000/api/simulation/production-gantt/${scenarioId}`)
+    fetch(
+      `http://52.78.234.7:8080/api/simulation/production-gantt/${scenarioId}`
+    )
       .then((res) => res.json())
       .then((data) => {
         const formatted = data
