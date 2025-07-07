@@ -27,16 +27,16 @@ import {
   MoreVert as MoreVertIcon,
 } from "@mui/icons-material";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useScenarioStore } from "../hooks/useScenarioStore";
 import ListItemButton from "@mui/material/ListItemButton";
 
 export default function ScenarioPanel() {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
   const [scenarioName, setScenarioName] = useState("");
-
+  const [animating, setAnimating] = useState(false);
   const {
     scenarioList,
     setScenarioList,
@@ -44,6 +44,8 @@ export default function ScenarioPanel() {
     setSelectedScenario,
     addScenario,
   } = useScenarioStore();
+
+  const boxRef = useRef(null);
 
   const handleAddScenario = async () => {
     if (!scenarioName.trim()) return;
@@ -57,7 +59,7 @@ export default function ScenarioPanel() {
       if (!res.ok) throw new Error("시나리오 생성 실패");
 
       const result = await res.json();
-      addScenario(result); 
+      addScenario(result);
       setScenarioName("");
       setOpenDialog(false);
     } catch (err) {
@@ -84,17 +86,34 @@ export default function ScenarioPanel() {
     fetchScenarioList();
   }, []);
 
+  useEffect(() => {
+    const handleTransitionEnd = () => {
+      setAnimating(false);
+    };
+    const node = boxRef.current;
+    node?.addEventListener("transitionend", handleTransitionEnd);
+    return () => {
+      node?.removeEventListener("transitionend", handleTransitionEnd);
+    };
+  }, []);
+
   return (
     <Box
+      ref={boxRef}
       sx={{
         width: collapsed ? 24 : 260,
-        minHeight: "100%",
-        borderRight: "1px solid #ddd",
-        bgcolor: "#f5f5f5",
+        height: collapsed ? 865 : 865,
+        borderRight: "1px solid #dce1e8",
+        bgcolor: "#fdfefe",
         display: "flex",
         flexDirection: "column",
         alignItems: collapsed ? "center" : "stretch",
         transition: "width 0.2s ease",
+        overflowY: "auto",
+        borderRadius: 2,
+        ml: 2,
+        mt: 2,
+        boxShadow: collapsed ? "none" : "0 2px 8px rgba(0,0,0,0.05)",
       }}
     >
       <Box
@@ -104,7 +123,15 @@ export default function ScenarioPanel() {
           p: 1,
         }}
       >
-        <IconButton size="small" onClick={() => setCollapsed(!collapsed)}>
+        <IconButton
+          size="small"
+          onMouseOver={() => {
+            if (!animating) {
+              setCollapsed((prev) => !prev);
+              setAnimating(true);
+            }
+          }}
+        >
           {collapsed ? (
             <ArrowForwardIosIcon fontSize="small" />
           ) : (
@@ -149,7 +176,7 @@ export default function ScenarioPanel() {
             </Tooltip>
           </Box>
 
-          <Divider />
+          <Divider sx={{ mt: 1 }} />
 
           <List dense sx={{ px: 2, pt: 1 }}>
             {scenarioList
@@ -160,25 +187,25 @@ export default function ScenarioPanel() {
                 <ListItem key={idx} disablePadding>
                   <ListItemButton
                     selected={selectedScenario?.id === s.id}
-                    onClick={() => {
-                      setSelectedScenario(s);
-                      console.log(selectedScenario);
-                    }}
+                    onClick={() => setSelectedScenario(s)}
                     sx={{
-                      px: 1,
+                      pl: 2,
+                      pr: 1.2,
+                      py: 0.8,
                       mb: 0.5,
-                      borderRadius: 1,
-                      transition: "box-shadow 0.2s ease-in-out",
-                      ...(selectedScenario?.id === s.id && {
-                        backgroundColor: "#d6d6d6",
-                        "& .MuiListItemText-primary": {
-                          fontWeight: "bold",
-                          color: "#0a1f44",
-                        },
-                      }),
+                      borderRadius: 1.5,
+                      bgcolor:
+                        selectedScenario?.id === s.id
+                          ? "#e5f0ff"
+                          : "transparent",
+                      "& .MuiListItemText-primary": {
+                        fontWeight: selectedScenario?.id === s.id ? 600 : 400,
+                        fontSize: "13px",
+                        color:
+                          selectedScenario?.id === s.id ? "#1a3d7c" : "#333",
+                      },
                       "&:hover": {
-                        backgroundColor: "#f9f9f9",
-                        boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
+                        backgroundColor: "#f4f6f9",
                       },
                     }}
                   >
