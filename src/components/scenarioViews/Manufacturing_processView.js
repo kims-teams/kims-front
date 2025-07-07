@@ -83,8 +83,9 @@ export default function ManufacturingProcessView() {
       );
 
       if (!res.ok) throw new Error("업로드 실패");
-      const data = await res.json();
-      setRoutingData(data);
+      const json = await res.json();
+
+      setRoutingData(json.data);
       setMessage("파일 업로드 성공!");
       setMessageType("success");
       handleCloseDialog();

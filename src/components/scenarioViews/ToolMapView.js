@@ -85,8 +85,8 @@ export default function ToolMapView() {
 
       if (!res.ok) throw new Error("업로드 실패");
 
-      const data = await res.json();
-      setRows(data);
+      const json = await res.json();
+      setRows(json.data);
       setMessage("파일 업로드 성공!");
       setMessageType("success");
       handleCloseDialog();
