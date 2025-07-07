@@ -41,7 +41,7 @@ export default function NoticeView() {
 
   const loadNotices = async () => {
     const res = await fetch(
-      "http://localhost:8080/api/post/post-category/사내공지"
+      "http://52.78.234.7:8080/api/post/post-category/사내공지"
     );
     const data = await res.json();
     setNotices(data);

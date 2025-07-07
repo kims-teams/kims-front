@@ -22,7 +22,7 @@ export default function DeleteUserModal({ open, onClose, user, onDelete }) {
     setIsDeleting(true);
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`http://localhost:8080/api/user/${user.id}`, {
+      const res = await fetch(`http://52.78.234.7:8080api/user/${user.id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });

@@ -31,7 +31,7 @@ export default function Forecast() {
     formData.append("file", file);
 
     try {
-      const response = await fetch("http://127.0.0.1:5000/api/forecast/arima", {
+      const response = await fetch("http://52.78.234.7:8080/api/forecast/arima", {
         method: "POST",
         body: formData,
       });

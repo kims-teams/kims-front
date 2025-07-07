@@ -49,7 +49,7 @@ export default function PostDetailView() {
 
   const fetchPost = async () => {
     try {
-      const res = await fetch(`http://localhost:8080/api/post/${id}`);
+      const res = await fetch(`http://52.78.234.7:8080/api/post/${id}`);
       const data = await res.json();
       setPost(data);
     } catch (err) {
@@ -59,7 +59,7 @@ export default function PostDetailView() {
 
   const fetchComments = async () => {
     try {
-      const res = await fetch(`http://localhost:8080/api/comment/post/${id}`);
+      const res = await fetch(`http://52.78.234.7:8080/api/comment/post/${id}`);
       const data = await res.json();
       setComments(data);
     } catch (err) {
@@ -70,7 +70,7 @@ export default function PostDetailView() {
   const handleAddComment = async () => {
     if (!commentInput.trim()) return;
     try {
-      const res = await fetch(`http://localhost:8080/api/comment`, {
+      const res = await fetch(`http://52.78.234.7:8080/api/comment`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -97,7 +97,7 @@ export default function PostDetailView() {
   };
   const handleEditComment = async (commentId) => {
     try {
-      const res = await fetch(`http://localhost:8080/api/comment/${commentId}`, {
+      const res = await fetch(`http://52.78.234.7:8080/api/comment/${commentId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -120,7 +120,7 @@ export default function PostDetailView() {
 
   const handleDeleteComment = async () => {
     try {
-      const res = await fetch(`http://localhost:8080/api/comment/${commentIdToDelete}`, {
+      const res = await fetch(`http://52.78.234.7:8080/api/comment/${commentIdToDelete}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });

@@ -42,7 +42,7 @@ export default function WorkcenterMapView() {
       if (!selectedScenario?.id) return;
       try {
         const res = await fetch(
-          `http://localhost:8080/api/input/${entity}/${selectedScenario.id}`
+          `http://52.78.234.7:8080/api/input/${entity}/${selectedScenario.id}`
         );
         if (!res.ok) throw new Error("불러오기 실패");
 
@@ -81,7 +81,7 @@ export default function WorkcenterMapView() {
 
     try {
       const res = await fetch(
-        `http://127.0.0.1:5000/api/input-file/${entity}`,
+        `http://52.78.234.7:5000/api/input-file/${entity}`,
         {
           method: "POST",
           body: formData,
@@ -110,7 +110,7 @@ export default function WorkcenterMapView() {
     }
 
     try {
-      await fetch(`http://127.0.0.1:8080/api/input/${entity}`, {
+      await fetch(`http://52.78.234.7:8080/api/input/${entity}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

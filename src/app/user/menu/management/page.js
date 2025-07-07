@@ -34,7 +34,7 @@ export default function Management() {
   const [selectedUser, setSelectedUser] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/user")
+    fetch("http://52.78.234.7:8080/api/user")
       .then((res) => res.json())
       .then((data) => setUsers(data))
       .catch((err) => {
@@ -67,7 +67,7 @@ export default function Management() {
 
   const handleAddUser = (newUser) => {
     const token = localStorage.getItem("token");
-    fetch("http://localhost:8080/api/user", {
+    fetch("http://52.78.234.7:8080/api/user", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

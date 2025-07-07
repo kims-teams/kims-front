@@ -41,7 +41,7 @@ export default function ProductionGanttPage() {
   const scenario = selectedScenario?.id || "";
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/scenario")
+    fetch("http://52.78.234.7:8080/api/scenario")
       .then((res) => res.json())
       .then((data) => setScenarioList(data))
       .catch((err) => console.error("시나리오 목록 로딩 실패:", err));
@@ -53,7 +53,7 @@ export default function ProductionGanttPage() {
   }, [scenario]);
 
   const fetchGanttData = (scenarioId) => {
-    fetch(`http://localhost:8080/api/simulation/production-gantt/${scenarioId}`)
+    fetch(`http://52.78.234.7:5000/api/simulation/production-gantt/${scenarioId}`)
       .then((res) => res.json())
       .then((data) => {
         const formatted = data

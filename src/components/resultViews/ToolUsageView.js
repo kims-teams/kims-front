@@ -24,7 +24,7 @@ export default function ToolUsageView() {
 
     const token = localStorage.getItem("token");
     fetch(
-      `http://localhost:8080/api/simulation/tool-usage?scenario-id=${selectedScenario.id}`,
+      `http://52.78.234.7:8080/api/simulation/tool-usage?scenario-id=${selectedScenario.id}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
