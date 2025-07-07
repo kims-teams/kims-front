@@ -44,7 +44,7 @@ export default function Forecast() {
 
     try {
       const response = await fetch(
-        "http://127.0.0.1:5000/api/forecast/prophet",
+        "http://52.78.234.7:5000/api/forecast/prophet",
         {
           method: "POST",
           body: formData,
